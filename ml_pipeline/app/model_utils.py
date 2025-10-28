@@ -1,5 +1,5 @@
 # ======================================
-# 🧩 모델 로드 / 예측 헬퍼 (model_utils.py)
+# 🧩 모델 로드 / 예측 헬퍼 (Render-safe 버전)
 # ======================================
 import os
 import joblib
@@ -17,13 +17,14 @@ except ImportError:
     catboost = None
 
 
-# --------------------------------------
+# --------------------------------------------------
 # 1️⃣ 모델 로드 함수
-# --------------------------------------
+# --------------------------------------------------
 def load_models_from_minio(endpoint, bucket, prefix, local_dir="models_cache"):
     """
     MinIO에서 모델 파일을 다운로드 후 로드.
     MinIO 연결 실패 시 로컬 캐시에서 불러옵니다.
+
     반환 구조:
         ( (lgb_model, xgb_model, cat_model), meta )
     """
@@ -58,17 +59,28 @@ def load_models_from_minio(endpoint, bucket, prefix, local_dir="models_cache"):
     try:
         lgb_model = joblib.load(os.path.join(local_dir, "lgb_model.joblib"))
         xgb_model = joblib.load(os.path.join(local_dir, "xgb_model.joblib"))
-        cat_model = joblib.load(os.path.join(local_dir, "cat_model.joblib"))
+        cat_model_path = os.path.join(local_dir, "cat_model.joblib")
 
+        # catboost 없는 환경에서는 None으로 처리
+        if os.path.exists(cat_model_path):
+            try:
+                cat_model = joblib.load(cat_model_path)
+            except Exception as e:
+                print(f"⚠️  cat_model 로드 실패 ({e}) → cat_model=None 처리")
+                cat_model = None
+        else:
+            print("⚠️  cat_model.joblib 파일이 존재하지 않습니다. cat_model=None으로 처리합니다.")
+            cat_model = None
+
+        # 메타데이터 로드
         with open(os.path.join(local_dir, "model_meta.json"), "r") as f:
             meta = json.load(f)
 
-        # ✅ 기본값 보완 (features가 None인 경우 처리)
+        # ✅ 기본값 보완
         meta.setdefault("threshold", 0.5)
         meta.setdefault("weights", {"lgb": 0.4, "xgb": 0.3, "cat": 0.3})
         meta.setdefault("version", "unknown")
-        
-        # ✅ features가 None이면 빈 리스트로 변경
+
         if meta.get("features") is None:
             print("⚠️  model_meta.json의 features가 None입니다. 빈 리스트로 설정합니다.")
             meta["features"] = []
@@ -86,9 +98,9 @@ def load_models_from_minio(endpoint, bucket, prefix, local_dir="models_cache"):
         raise RuntimeError(f"❌ 모델 로드 실패: {e}")
 
 
-# --------------------------------------
+# --------------------------------------------------
 # 2️⃣ 예측 함수
-# --------------------------------------
+# --------------------------------------------------
 def predict_proba(models, meta, input_df: pd.DataFrame):
     """
     다중 모델 앙상블 확률 예측 수행
@@ -99,12 +111,16 @@ def predict_proba(models, meta, input_df: pd.DataFrame):
     lgb_model, xgb_model, cat_model = models
     weights = meta.get("weights", {"lgb": 0.4, "xgb": 0.3, "cat": 0.3})
 
-    # --- 예측 확률 계산 ---
+    # --- 예측 확률 계산 (catboost 없을 경우 스킵) ---
     probs = (
         weights["lgb"] * lgb_model.predict_proba(input_df)[:, 1]
         + weights["xgb"] * xgb_model.predict_proba(input_df)[:, 1]
-        + weights["cat"] * cat_model.predict_proba(input_df)[:, 1]
     )
+
+    if cat_model is not None:
+        probs += weights["cat"] * cat_model.predict_proba(input_df)[:, 1]
+    else:
+        print("⚠️  cat_model=None → LGBM + XGBoost만 사용하여 예측 수행")
 
     preds = (probs >= meta.get("threshold", 0.5)).astype(int)
 
@@ -113,3 +129,4 @@ def predict_proba(models, meta, input_df: pd.DataFrame):
         return float(probs[0]), int(preds[0])
     else:
         return probs.tolist(), preds.tolist()
+
