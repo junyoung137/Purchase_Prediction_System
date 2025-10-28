@@ -11,7 +11,7 @@ numpy==1.26.4
 scikit-learn==1.5.2
 xgboost==2.1.2
 lightgbm==4.5.0
-catboost==1.2.3  
+# catboost 제거 ✅
 
 # Model Serialization
 joblib==1.4.2
@@ -27,7 +27,5 @@ feast==0.38.0
 requests==2.32.3
 python-multipart==0.0.9
 
-# Environment
-python-dotenv==1.0.1
 # Environment
 python-dotenv==1.0.1
