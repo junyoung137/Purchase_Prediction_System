@@ -1,0 +1,33 @@
+{
+  "version": "v20251022T081526Z",
+  "created_at": "2025-10-22T08:15:26.761963",
+  "models": [
+    "lgb_model.joblib",
+    "xgb_model.joblib",
+    "cat_model.joblib"
+  ],
+  "eval": {
+    "timestamp": "2025-10-22T08:15:23.282577",
+    "ensemble": {
+      "auc": 1.0,
+      "f1_at_0.5": 1.0,
+      "best_f1": 1.0,
+      "best_threshold": 0.5,
+      "used_models": [
+        "lgb",
+        "xgb",
+        "cat"
+      ],
+      "weights": {
+        "lgb": 0.4,
+        "xgb": 0.3,
+        "cat": 0.3
+      }
+    }
+  },
+  "weights": {
+    "lgb": 0.4,
+    "xgb": 0.3,
+    "cat": 0.3
+  }
+}

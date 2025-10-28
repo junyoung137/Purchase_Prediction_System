@@ -1,0 +1,66 @@
+services:
+  # ======================================
+  # 🧠 FastAPI 모델 서빙 컨테이너
+  # ======================================
+  fastapi:
+    build: .
+    container_name: fastapi-model
+    restart: always
+    environment:
+      # ✅ MinIO (모델 & Feature 오프라인 스토어)
+      MINIO_ENDPOINT: http://minio:9000
+      BUCKET: model-store
+      PREFIX: session-purchase/deployed
+
+      # ✅ Feast 설정 (Airflow와 동일한 경로)
+      FEAST_REPO_PATH: /opt/airflow/feature_repo
+
+      # ✅ 기타 실행 환경
+      PYTHONUNBUFFERED: 1
+      TZ: Asia/Seoul
+
+    # ✅ 내부 FastAPI 포트
+    ports:
+      - "9787:8080"
+
+    volumes:
+      # 모델 캐시 디렉터리 (FastAPI 내부에서 모델 로드 시 사용)
+      - ./models_cache:/app/models_cache
+      # Feast repo 경로 (Airflow의 feature_repo와 공유)
+      - ../feature_repo:/opt/airflow/feature_repo
+
+    depends_on:
+      - redis
+
+    networks:
+      - spark-net     # MinIO, Spark 등과 통신
+      - backend       # Streamlit, Grafana 등 UI 계층 통신
+      - mlops-net     # Redis, Feast 온라인스토어 통신
+
+  # ======================================
+  # ⚡ Redis (Feast Online Store / 캐시용)
+  # ======================================
+  redis:
+    image: redis:7.2
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - mlops-net
+
+# ======================================
+# 🌐 네트워크 정의
+# ======================================
+networks:
+  # Spark 및 MinIO 등 데이터 파이프라인 계층과 연결
+  spark-net:
+    external: true     # 이미 존재하는 Spark 네트워크를 사용
+
+  # Streamlit, Grafana 등 시각화/백엔드 계층용
+  backend:
+    driver: bridge
+
+  # FastAPI ↔ Redis / Feast 통신용 MLOps 전용 네트워크
+  mlops-net:
+    driver: bridge

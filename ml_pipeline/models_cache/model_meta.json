@@ -1,0 +1,22 @@
+{
+  "weights": {
+    "lgb": 0.4,
+    "xgb": 0.3,
+    "cat": 0.3
+  },
+  "threshold": 0.9689228232495428,
+  "version": "v1",
+  "created_at": "2025-10-18 19:18:17",
+  "features": [
+    "total_sessions",
+    "recent_days",
+    "frequency",
+    "cart_to_view_ratio",
+    "event_per_session",
+    "session_activity_index",
+    "recency_ratio",
+    "cart_depth",
+    "recent_intensity",
+    "event_diversity"
+  ]
+}
