@@ -1,19 +1,93 @@
 # =====================================================
-# dashboard.py (v5.0 - 실무 중심 운영 버전)
+# dashboard.py (v6.0 - Streamlit Cloud 독립 실행 버전)
 # =====================================================
 import streamlit as st
 import pandas as pd
-import requests
-import json
+import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+import joblib
+from datetime import datetime
+import os
 
 # =========================================
-# 🔧 API 설정 (FastAPI 기준)
+# 🔧 모델 로드 (캐싱)
 # =========================================
-API_URL = "http://172.28.159.42:5000/predict"  # ⚠️ 포트 변경 필요시 수정
-HEALTH_URL = "http://172.28.159.42:5000/"       # FastAPI root endpoint
+@st.cache_resource
+def load_model():
+    """모델 파일 로드 (GitHub에 포함되어야 함)"""
+    try:
+        # 모델 파일 경로 시도
+        possible_paths = [
+            'models/xgboost_model.pkl',
+            'models/model.pkl',
+            'ml_pipeline/models/xgboost_model.pkl',
+            'model.pkl',
+        ]
+        
+        for path in possible_paths:
+            if os.path.exists(path):
+                model = joblib.load(path)
+                st.sidebar.success(f"✅ 모델 로드 성공: {path}")
+                return model
+        
+        # 모델 파일이 없으면 더미 모델 생성
+        st.sidebar.warning("⚠️ 모델 파일을 찾을 수 없어 더미 모델을 사용합니다.")
+        return None
+        
+    except Exception as e:
+        st.sidebar.error(f"❌ 모델 로드 실패: {e}")
+        return None
 
+model = load_model()
+
+# =========================================
+# 🎯 예측 함수
+# =========================================
+def predict(features_dict):
+    """
+    입력 features로 예측 수행
+    Args:
+        features_dict: {'feature_1': value, 'feature_2': value, ...}
+    Returns:
+        {'prediction': 0/1, 'probability': float, 'threshold': float}
+    """
+    try:
+        # DataFrame 생성
+        df = pd.DataFrame([features_dict])
+        
+        # 모델이 있으면 실제 예측
+        if model is not None:
+            proba = model.predict_proba(df)[0][1]  # 클래스 1의 확률
+            threshold = 0.5
+            pred = 1 if proba >= threshold else 0
+        else:
+            # 더미 예측 (간단한 규칙 기반)
+            # feature_1(방문횟수) + feature_4(장바구니) + feature_10(결제페이지) 기반
+            score = (
+                features_dict.get('feature_1', 0) * 0.03 +
+                features_dict.get('feature_4', 0) * 0.15 +
+                features_dict.get('feature_10', 0) * 0.25 +
+                features_dict.get('feature_5', 0) * 0.01
+            )
+            proba = min(max(score / 10, 0.05), 0.95)  # 0.05~0.95 사이로 정규화
+            threshold = 0.5
+            pred = 1 if proba >= threshold else 0
+        
+        return {
+            'prediction': pred,
+            'probability': proba,
+            'threshold': threshold,
+            'timestamp': datetime.now().isoformat()
+        }
+    
+    except Exception as e:
+        st.error(f"예측 중 오류 발생: {e}")
+        return None
+
+# =========================================
+# 🎨 Streamlit UI 설정
+# =========================================
 st.set_page_config(page_title="🛍️ 구매 예측 대시보드", layout="wide")
 st.title("🛍️ 구매 예측 대시보드")
 
@@ -81,22 +155,6 @@ st.sidebar.info("""
 """)
 
 # =========================================
-# Feature 매핑 정보
-# =========================================
-FEATURE_MAPPING = {
-    "총 방문 횟수": "feature_1",
-    "마지막 활동 후 경과일": "feature_2",
-    "활동 빈도": "feature_3",
-    "장바구니 담은 상품 수": "feature_4",
-    "상품 조회 수": "feature_5",
-    "세션 총 활동 횟수": "feature_6",
-    "평균 세션 시간": "feature_7",
-    "리뷰 작성 수": "feature_8",
-    "할인 상품 조회": "feature_9",
-    "결제 페이지 방문": "feature_10",
-}
-
-# =========================================
 # 1️⃣ 개별 예측 실행
 # =========================================
 st.markdown("### 1️⃣ 개별 고객 구매 가능성 예측")
@@ -134,15 +192,15 @@ with st.form("single_prediction_form"):
     submit = st.form_submit_button("🔍 예측 실행", use_container_width=True)
 
 # =========================================
-# 🔹 예측 로직 (FastAPI 형식 + 프리셋 적용)
+# 🔹 예측 로직
 # =========================================
 if submit:
     # 프리셋 세션 상태 초기화
     if 'preset' in st.session_state:
         del st.session_state.preset
     
-    # FastAPI SessionFeatures 모델에 맞춰 페이로드 생성
-    payload = {
+    # Features 딕셔너리 생성
+    features = {
         "feature_1": float(f1),
         "feature_2": float(f2),
         "feature_3": float(f3),
@@ -155,12 +213,10 @@ if submit:
         "feature_10": float(f10),
     }
 
-    try:
-        with st.spinner("예측 중..."):
-            res = requests.post(API_URL, json=payload, timeout=10)
-            res.raise_for_status()
-            result = res.json()
+    with st.spinner("예측 중..."):
+        result = predict(features)
 
+    if result:
         prob = result.get("probability", 0)
         pred = result.get("prediction", 0)
         threshold = result.get("threshold", 0.5)
@@ -172,7 +228,7 @@ if submit:
         col_b.metric("구매 확률", f"{prob:.2%}")
         col_c.metric("Threshold", f"{threshold:.2f}")
 
-        st.success("✅ 예측 성공 — 결과가 MinIO 로그에 자동 저장되었습니다.")
+        st.success("✅ 예측 완료!")
 
         # 게이지 차트
         fig = go.Figure(go.Indicator(
@@ -195,13 +251,10 @@ if submit:
         st.plotly_chart(fig, use_container_width=True)
 
         # 응답 상세 정보
-        with st.expander("📋 응답 상세 정보"):
+        with st.expander("📋 예측 상세 정보"):
             st.json(result)
-
-    except requests.exceptions.RequestException as e:
-        st.error(f"❌ API 요청 실패: {e}")
-    except Exception as e:
-        st.error(f"❌ 예측 실패: {e}")
+            st.write("**입력 Features:**")
+            st.json(features)
 
 # =========================================
 # 2️⃣ 배치 예측 (CSV)
@@ -220,6 +273,7 @@ uploaded = st.file_uploader("📂 CSV 업로드", type=["csv"])
 
 if uploaded:
     df = pd.read_csv(uploaded)
+    st.write("**업로드된 데이터 미리보기:**")
     st.dataframe(df.head(), use_container_width=True)
 
     # 컬럼 검증
@@ -234,28 +288,20 @@ if uploaded:
             progress = st.progress(0)
 
             for i, (_, row) in enumerate(df.iterrows()):
-                # FastAPI 형식으로 페이로드 생성
-                payload = {f"feature_{j}": float(row[f"feature_{j}"]) for j in range(1, 11)}
+                features = {f"feature_{j}": float(row[f"feature_{j}"]) for j in range(1, 11)}
+                result = predict(features)
                 
-                try:
-                    r = requests.post(API_URL, json=payload, timeout=10)
-                    r.raise_for_status()
-                    result = r.json()
-                    results.append({
-                        "probability": result.get("probability"),
-                        "prediction": result.get("prediction"),
-                        "threshold": result.get("threshold"),
-                        "timestamp": result.get("timestamp"),
-                    })
-                except Exception as e:
-                    results.append({"error": str(e)})
+                if result:
+                    results.append(result)
+                else:
+                    results.append({"error": "예측 실패"})
                 
                 progress.progress((i + 1) / len(df))
 
             progress.empty()
             out = pd.DataFrame(results)
             st.success("✅ 배치 예측 완료")
-            st.dataframe(out)
+            st.dataframe(out, use_container_width=True)
 
             # 통계 요약 및 세션 상태 저장
             if "prediction" in out.columns:
@@ -282,14 +328,57 @@ if uploaded:
                 # 고확률 고객 하이라이트
                 if high_potential > 0:
                     st.success(f"🎯 고확률 고객 (70% 이상): **{high_potential}명** 발견!")
+                
+                # 분포 시각화
+                fig = px.histogram(
+                    out, 
+                    x="probability", 
+                    nbins=20,
+                    title="구매 확률 분포",
+                    labels={"probability": "구매 확률", "count": "고객 수"}
+                )
+                st.plotly_chart(fig, use_container_width=True)
 
             csv_data = out.to_csv(index=False).encode("utf-8")
-            st.download_button("📥 결과 다운로드", csv_data, "predictions.csv", "text/csv")
+            st.download_button("📥 결과 다운로드 (CSV)", csv_data, "predictions.csv", "text/csv")
+
+# =========================================
+# 3️⃣ 샘플 데이터 생성기
+# =========================================
+st.markdown("---")
+st.markdown("### 3️⃣ 테스트용 샘플 데이터 생성")
+
+col_sample1, col_sample2 = st.columns(2)
+
+with col_sample1:
+    num_samples = st.number_input("생성할 샘플 수", min_value=10, max_value=1000, value=100, step=10)
+
+with col_sample2:
+    if st.button("🎲 랜덤 샘플 생성", use_container_width=True):
+        np.random.seed(42)
+        sample_data = pd.DataFrame({
+            f"feature_{i}": np.random.uniform(0, 30, num_samples) for i in range(1, 11)
+        })
+        
+        st.session_state.sample_data = sample_data
+        st.success(f"✅ {num_samples}개 샘플 데이터 생성 완료!")
+
+if 'sample_data' in st.session_state:
+    st.dataframe(st.session_state.sample_data.head(10), use_container_width=True)
+    
+    csv_sample = st.session_state.sample_data.to_csv(index=False).encode("utf-8")
+    st.download_button(
+        "📥 샘플 데이터 다운로드 (CSV)", 
+        csv_sample, 
+        "sample_customers.csv", 
+        "text/csv",
+        use_container_width=True
+    )
 
 # =========================================
 # 푸터
 # =========================================
 st.markdown("---")
 st.caption("""
-🚀 고객 구매 예측 시스템 (Production v5.0)  
+🚀 고객 구매 예측 시스템 (Streamlit Cloud v6.0)  
 """)
