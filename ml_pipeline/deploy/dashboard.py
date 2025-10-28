@@ -1,7 +1,11 @@
 # =====================================================
-# dashboard.py (v6.0 - Streamlit Cloud 독립 실행 버전)
+# dashboard.py (v6.1 - Streamlit Cloud 독립 실행 버전)
 # =====================================================
 import streamlit as st
+
+# ⚠️ CRITICAL: set_page_config은 가장 먼저 실행되어야 함!
+st.set_page_config(page_title="🛍️ 구매 예측 대시보드", layout="wide")
+
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -28,18 +32,15 @@ def load_model():
         for path in possible_paths:
             if os.path.exists(path):
                 model = joblib.load(path)
-                st.sidebar.success(f"✅ 모델 로드 성공: {path}")
-                return model
+                return model, path
         
-        # 모델 파일이 없으면 더미 모델 생성
-        st.sidebar.warning("⚠️ 모델 파일을 찾을 수 없어 더미 모델을 사용합니다.")
-        return None
+        # 모델 파일이 없으면 더미 모델 사용
+        return None, "더미 모델"
         
     except Exception as e:
-        st.sidebar.error(f"❌ 모델 로드 실패: {e}")
-        return None
+        return None, f"오류: {str(e)}"
 
-model = load_model()
+model, model_info = load_model()
 
 # =========================================
 # 🎯 예측 함수
@@ -86,15 +87,22 @@ def predict(features_dict):
         return None
 
 # =========================================
-# 🎨 Streamlit UI 설정
+# 🎨 UI 시작
 # =========================================
-st.set_page_config(page_title="🛍️ 구매 예측 대시보드", layout="wide")
 st.title("🛍️ 구매 예측 대시보드")
 
 # =========================================
 # 📊 사이드바: 실무 기능
 # =========================================
 st.sidebar.header("📊 빠른 분석")
+
+# 모델 상태 표시
+if model is not None:
+    st.sidebar.success(f"✅ 모델 로드 성공\n`{model_info}`")
+else:
+    st.sidebar.warning(f"⚠️ 더미 모델 사용 중\n(실제 모델 파일을 업로드하면 정확한 예측 가능)")
+
+st.sidebar.markdown("---")
 
 # 고위험/고가치 고객 프리셋
 st.sidebar.subheader("🎯 고객 프로필 프리셋")
@@ -380,5 +388,6 @@ if 'sample_data' in st.session_state:
 # =========================================
 st.markdown("---")
 st.caption("""
-🚀 고객 구매 예측 시스템 (Streamlit Cloud v6.0)  
+🚀 고객 구매 예측 시스템 (Streamlit Cloud v6.1)  
+✨ 모델 독립 실행 버전 - API 불필요
 """)
