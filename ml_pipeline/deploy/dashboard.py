@@ -11,8 +11,8 @@ import plotly.graph_objects as go
 # =========================================
 # 🔧 API 설정 (FastAPI 기준)
 # =========================================
-API_URL = "http://172.28.159.42:5000/predict"  # ⚠️ 포트 변경 필요시 수정
-HEALTH_URL = "http://172.28.159.42:5000/"       # FastAPI root endpoint
+API_URL = "https://your-app-name.onrender.com/predict"  # ⚠️ Render URL로 변경
+HEALTH_URL = "https://your-app-name.onrender.com/"
 
 st.set_page_config(page_title="🛍️ 구매 예측 대시보드", layout="wide")
 st.title("🛍️ 구매 예측 대시보드")
