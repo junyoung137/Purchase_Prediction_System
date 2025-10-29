@@ -144,7 +144,7 @@ if submit:
         col_b.metric("구매 확률", f"{prob:.2%}")
         col_c.metric("Threshold", f"{threshold:.2f}")
 
-        st.success("✅ 예측 성공 — 결과가 MinIO 로그에 자동 저장되었습니다.")
+        st.success("✅ 예측 성공")
 
         # 게이지 차트
         fig = go.Figure(go.Indicator(
