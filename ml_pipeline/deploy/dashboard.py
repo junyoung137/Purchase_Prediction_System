@@ -22,24 +22,52 @@ st.sidebar.subheader("🎯 고객 프로필 프리셋")
 
 preset_profiles = {
     "🔥 고관심 고객": {
-        "feature_1": 15.0, "feature_2": 2.0, "feature_3": 20.0,
-        "feature_4": 5.0, "feature_5": 30.0, "feature_6": 50.0,
-        "feature_7": 12.0, "feature_8": 3.0, "feature_9": 10.0, "feature_10": 4.0
+        "total_visits": 15.0,        # session_id
+        "total_events": 50.0,        # event_count
+        "product_views": 30.0,       # n_view
+        "cart_adds": 5.0,            # n_cart
+        "purchases": 4.0,            # n_trans
+        "last_activity_days": 2.0,
+        "activity_freq": 20.0,
+        "avg_session_time": 12.0,
+        "review_count": 3.0,
+        "discount_views": 10.0,
     },
     "⚠️ 이탈 위험 고객": {
-        "feature_1": 3.0, "feature_2": 30.0, "feature_3": 2.0,
-        "feature_4": 0.0, "feature_5": 5.0, "feature_6": 8.0,
-        "feature_7": 2.0, "feature_8": 0.0, "feature_9": 1.0, "feature_10": 0.0
+        "total_visits": 3.0,
+        "total_events": 8.0,
+        "product_views": 5.0,
+        "cart_adds": 0.0,
+        "purchases": 0.0,           # ✅ 구매 0
+        "last_activity_days": 30.0,
+        "activity_freq": 2.0,
+        "avg_session_time": 2.0,
+        "review_count": 0.0,
+        "discount_views": 1.0,
     },
     "💚 신규 방문자": {
-        "feature_1": 1.0, "feature_2": 0.0, "feature_3": 3.0,
-        "feature_4": 1.0, "feature_5": 8.0, "feature_6": 12.0,
-        "feature_7": 5.0, "feature_8": 0.0, "feature_9": 2.0, "feature_10": 0.0
+        "total_visits": 1.0,
+        "total_events": 12.0,
+        "product_views": 8.0,
+        "cart_adds": 1.0,
+        "purchases": 0.0,
+        "last_activity_days": 0.0,
+        "activity_freq": 3.0,
+        "avg_session_time": 5.0,
+        "review_count": 0.0,
+        "discount_views": 2.0,
     },
     "🎁 재구매 고객": {
-        "feature_1": 25.0, "feature_2": 7.0, "feature_3": 15.0,
-        "feature_4": 3.0, "feature_5": 20.0, "feature_6": 40.0,
-        "feature_7": 10.0, "feature_8": 5.0, "feature_9": 8.0, "feature_10": 3.0
+        "total_visits": 25.0,
+        "total_events": 40.0,
+        "product_views": 20.0,
+        "cart_adds": 3.0,
+        "purchases": 3.0,
+        "last_activity_days": 7.0,
+        "activity_freq": 15.0,
+        "avg_session_time": 10.0,
+        "review_count": 5.0,
+        "discount_views": 8.0,
     }
 }
 
@@ -54,7 +82,7 @@ if selected_preset != "선택 안함":
         for k, v in preset_profiles[selected_preset].items():
             st.session_state[k] = v
         st.sidebar.success(f"✅ '{selected_preset}' 값 적용 완료!")
-        st.rerun()  # ✅ 최신 Streamlit 호환
+        st.rerun()
 
 st.sidebar.markdown("---")
 
@@ -68,24 +96,43 @@ st.markdown("고객 세션의 주요 활동 정보를 입력하여 구매 확률
 col1, col2, col3 = st.columns(3, gap="medium")
 
 with col1:
-    st.number_input("총 방문 횟수", min_value=0.0, step=0.1, key="feature_1")
-    st.number_input("마지막 활동 후 경과일", min_value=0.0, step=0.1, key="feature_2")
-    st.number_input("활동 빈도", min_value=0.0, step=0.1, key="feature_3")
-    st.number_input("장바구니 담은 상품 수", min_value=0.0, step=0.1, key="feature_4")
+    st.number_input("총 방문 횟수", min_value=0.0, step=0.1, key="total_visits", help="session_id")
+    st.number_input("전체 이벤트 수", min_value=0.0, step=0.1, key="total_events", help="event_count")
+    st.number_input("상품 조회 수", min_value=0.0, step=0.1, key="product_views", help="n_view")
+    st.number_input("장바구니 담기 수", min_value=0.0, step=0.1, key="cart_adds", help="n_cart")
 
 with col2:
-    st.number_input("상품 조회 수", min_value=0.0, step=0.1, key="feature_5")
-    st.number_input("세션 총 활동 횟수", min_value=0.0, step=0.1, key="feature_6")
-    st.number_input("평균 세션 시간 (분)", min_value=0.0, step=0.1, key="feature_7")
+    st.number_input("결제 완료 수", min_value=0.0, step=0.1, key="purchases", help="n_trans")
+    st.number_input("마지막 활동 후 경과일", min_value=0.0, step=0.1, key="last_activity_days")
+    st.number_input("활동 빈도", min_value=0.0, step=0.1, key="activity_freq")
 
 with col3:
-    st.number_input("리뷰 작성 수", min_value=0.0, step=0.1, key="feature_8")
-    st.number_input("할인 상품 조회", min_value=0.0, step=0.1, key="feature_9")
-    st.number_input("결제 페이지 방문", min_value=0.0, step=0.1, key="feature_10")
+    st.number_input("평균 세션 시간 (분)", min_value=0.0, step=0.1, key="avg_session_time")
+    st.number_input("리뷰 작성 수", min_value=0.0, step=0.1, key="review_count")
+    st.number_input("할인 상품 조회", min_value=0.0, step=0.1, key="discount_views")
 
 st.markdown("---")
 if st.button("🔍 예측 실행", use_container_width=True):
-    payload = {f"feature_{i}": float(st.session_state.get(f"feature_{i}", 0)) for i in range(1, 8)}
+    # ✅ 입력값 가져오기
+    total_visits = float(st.session_state.get("total_visits", 0))
+    total_events = float(st.session_state.get("total_events", 0))
+    product_views = float(st.session_state.get("product_views", 0))
+    cart_adds = float(st.session_state.get("cart_adds", 0))
+    purchases = float(st.session_state.get("purchases", 0))
+    
+    # ✅ 0으로 나누기 방지
+    total_events = max(total_events, 1.0)
+    
+    # ✅ API 요청용 payload (모델이 학습한 7개 feature)
+    payload = {
+        "feature_1": total_visits,           # session_id
+        "feature_2": total_events,           # event_count
+        "feature_3": product_views,          # n_view
+        "feature_4": cart_adds,              # n_cart
+        "feature_5": purchases,              # n_trans
+        "feature_6": purchases / total_events,  # n_trans_ratio
+        "feature_7": product_views / total_events  # n_view_ratio
+    }
 
     try:
         with st.spinner("예측 중..."):
@@ -126,6 +173,8 @@ if st.button("🔍 예측 실행", use_container_width=True):
 
         with st.expander("📋 응답 상세 정보"):
             st.json(result)
+            st.markdown("**📊 전송된 Feature 값:**")
+            st.json(payload)
 
     except requests.exceptions.RequestException as e:
         st.error(f"❌ API 요청 실패: {e}")
@@ -141,7 +190,7 @@ st.markdown("### 2️⃣ 대량 고객 구매 가능성 예측 (CSV 업로드)")
 st.info("""
 📋 **CSV 업로드 안내:**
 - 각 행(row)은 1명의 고객 세션을 의미합니다.
-- 고객별 주요 활동 데이터(이벤트 수, 조회 수, 전환율 등)를 포함해야 합니다.
+- 필수 컬럼: `session_id`, `event_count`, `n_view`, `n_cart`, `n_trans`, `n_trans_ratio`, `n_view_ratio`
 - CSV는 UTF-8 인코딩 권장, 숫자(float) 형식이어야 합니다.
 """)
 
@@ -149,7 +198,7 @@ with st.expander("📘 자세한 컬럼 정의 보기 (운영자용)"):
     st.markdown("""
     | 컬럼명 | 설명 |
     |:--------|:------------------------------------------------|
-    | `session_id` | 고객 세션 ID |
+    | `session_id` | 고객 세션 ID (총 방문 횟수) |
     | `event_count` | 전체 이벤트 발생 횟수 |
     | `n_view` | 상품 조회 횟수 |
     | `n_cart` | 장바구니 담기 횟수 |
@@ -178,7 +227,15 @@ if uploaded:
             progress = st.progress(0)
 
             for i, (_, row) in enumerate(df.iterrows()):
-                payload = {col: float(row[col]) for col in required_cols}
+                payload = {
+                    "feature_1": float(row["session_id"]),
+                    "feature_2": float(row["event_count"]),
+                    "feature_3": float(row["n_view"]),
+                    "feature_4": float(row["n_cart"]),
+                    "feature_5": float(row["n_trans"]),
+                    "feature_6": float(row["n_trans_ratio"]),
+                    "feature_7": float(row["n_view_ratio"])
+                }
                 try:
                     r = requests.post(API_URL, json=payload, timeout=10)
                     r.raise_for_status()
@@ -187,7 +244,6 @@ if uploaded:
                         "probability": result.get("probability"),
                         "prediction": result.get("prediction"),
                         "threshold": result.get("threshold"),
-                        "timestamp": result.get("timestamp"),
                     })
                 except Exception as e:
                     results.append({"error": str(e)})
