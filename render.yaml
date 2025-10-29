@@ -1,5 +1,5 @@
 # =========================================
-# 🚀 Render Deploy Configuration (Stable)
+# 🚀 Render Deploy Configuration (Stable & Working)
 # =========================================
 services:
   - type: web
@@ -9,24 +9,31 @@ services:
     region: singapore
 
     # -------------------------------
+    # 📁 Root Directory
+    # -------------------------------
+    # ✅ Render가 여기서 build & run을 수행하도록 설정
+    rootDirectory: Purchase_Prediction_System
+
+    # -------------------------------
     # 🧱 Build commands
     # -------------------------------
     buildCommand: |
       apt-get update && apt-get install -y cargo rustc
       pip install --upgrade pip
-      pip install -r Purchase_Prediction_System/api_requirements.txt
+      pip install -r api_requirements.txt
 
     # -------------------------------
     # ▶️ Start command
     # -------------------------------
-    startCommand: uvicorn Purchase_Prediction_System.ml_pipeline.app.serve_model:app --host 0.0.0.0 --port $PORT
+    # ✅ ml_pipeline 경로 기준으로 FastAPI 실행
+    startCommand: uvicorn ml_pipeline.app.serve_model:app --host 0.0.0.0 --port $PORT
 
     # -------------------------------
     # 🌿 Environment variables
     # -------------------------------
     envVars:
       - key: PYTHON_VERSION
-        value: 3.10.11    
+        value: 3.11.10          # ✅ Python 3.11로 올리면 Feast 호환 문제 해결됨
       - key: FEAST_REPO_PATH
         value: /opt/airflow/feature_repo
       - key: MINIO_ENDPOINT
@@ -35,3 +42,5 @@ services:
         value: model-store
       - key: PREFIX
         value: session-purchase
+      - key: ENVIRONMENT
+        value: production
