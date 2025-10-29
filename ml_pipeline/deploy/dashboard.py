@@ -5,7 +5,6 @@ import streamlit as st
 import pandas as pd
 import requests
 import json
-import plotly.express as px
 import plotly.graph_objects as go
 
 # =========================================
@@ -60,28 +59,8 @@ if selected_preset != "선택 안함":
 
 st.sidebar.markdown("---")
 
-# 통계 대시보드 (배치 예측 후 표시)
-if 'batch_stats' in st.session_state:
-    st.sidebar.subheader("📈 최근 배치 분석 결과")
-    stats = st.session_state.batch_stats
-    
-    st.sidebar.metric("전체 고객 수", f"{stats['total']:,}명")
-    st.sidebar.metric("구매 예상", f"{stats['purchase']:,}명 ({stats['purchase_rate']:.1f}%)")
-    st.sidebar.metric("평균 구매 확률", f"{stats['avg_prob']:.1%}")
-    
-    if stats['high_potential'] > 0:
-        st.sidebar.success(f"🎯 고확률 고객: {stats['high_potential']}명")
-
-st.sidebar.markdown("---")
-st.sidebar.info("""
-💡 **사용 가이드**
-- **개별 예측**: 특정 고객의 구매 가능성 분석
-- **배치 예측**: 다수 고객 일괄 분석
-- **프리셋**: 대표 고객 프로필로 빠른 테스트
-""")
-
 # =========================================
-# Feature 매핑 정보
+# Feature 매핑
 # =========================================
 FEATURE_MAPPING = {
     "총 방문 횟수": "feature_1",
@@ -97,14 +76,11 @@ FEATURE_MAPPING = {
 }
 
 # =========================================
-# 1️⃣ 개별 예측 실행
+# 1️⃣ 개별 예측
 # =========================================
 st.markdown("### 1️⃣ 개별 고객 구매 가능성 예측")
 st.markdown("고객 세션의 주요 활동 정보를 입력하여 구매 확률을 예측합니다.")
 
-st.markdown("#### ✏️ 고객 활동 상세 입력")
-
-# 프리셋 적용된 경우 초기값 설정
 if 'preset' in st.session_state:
     preset = st.session_state.preset
     init_values = [preset[f"feature_{i}"] for i in range(1, 11)]
@@ -134,14 +110,13 @@ with st.form("single_prediction_form"):
     submit = st.form_submit_button("🔍 예측 실행", use_container_width=True)
 
 # =========================================
-# 🔹 예측 로직 (FastAPI 형식 + 프리셋 적용)
+# 🔹 예측 실행 로직
 # =========================================
 if submit:
-    # 프리셋 세션 상태 초기화
     if 'preset' in st.session_state:
         del st.session_state.preset
-    
-    # FastAPI SessionFeatures 모델에 맞춰 페이로드 생성
+
+    # 🚀 모델은 feature_1~7만 사용
     payload = {
         "feature_1": float(f1),
         "feature_2": float(f2),
@@ -149,10 +124,7 @@ if submit:
         "feature_4": float(f4),
         "feature_5": float(f5),
         "feature_6": float(f6),
-        "feature_7": float(f7),
-        "feature_8": float(f8),
-        "feature_9": float(f9),
-        "feature_10": float(f10),
+        "feature_7": float(f7)
     }
 
     try:
@@ -194,7 +166,6 @@ if submit:
         fig.update_layout(height=280)
         st.plotly_chart(fig, use_container_width=True)
 
-        # 응답 상세 정보
         with st.expander("📋 응답 상세 정보"):
             st.json(result)
 
@@ -204,92 +175,9 @@ if submit:
         st.error(f"❌ 예측 실패: {e}")
 
 # =========================================
-# 2️⃣ 배치 예측 (CSV)
-# =========================================
-st.markdown("---")
-st.markdown("### 2️⃣ 대량 고객 구매 가능성 예측 (CSV 업로드)")
-
-st.info("""
-📋 **CSV 파일 형식 요구사항:**
-- 컬럼명: `feature_1` ~ `feature_10` (정확히 10개)
-- 모든 값은 숫자(float)여야 합니다
-- 예시: `feature_1,feature_2,...,feature_10`
-""")
-
-uploaded = st.file_uploader("📂 CSV 업로드", type=["csv"])
-
-if uploaded:
-    df = pd.read_csv(uploaded)
-    st.dataframe(df.head(), use_container_width=True)
-
-    # 컬럼 검증
-    required_cols = [f"feature_{i}" for i in range(1, 11)]
-    missing_cols = set(required_cols) - set(df.columns)
-    
-    if missing_cols:
-        st.error(f"❌ 누락된 컬럼: {missing_cols}")
-    else:
-        if st.button("📈 배치 예측 실행", use_container_width=True):
-            results = []
-            progress = st.progress(0)
-
-            for i, (_, row) in enumerate(df.iterrows()):
-                # FastAPI 형식으로 페이로드 생성
-                payload = {f"feature_{j}": float(row[f"feature_{j}"]) for j in range(1, 11)}
-                
-                try:
-                    r = requests.post(API_URL, json=payload, timeout=10)
-                    r.raise_for_status()
-                    result = r.json()
-                    results.append({
-                        "probability": result.get("probability"),
-                        "prediction": result.get("prediction"),
-                        "threshold": result.get("threshold"),
-                        "timestamp": result.get("timestamp"),
-                    })
-                except Exception as e:
-                    results.append({"error": str(e)})
-                
-                progress.progress((i + 1) / len(df))
-
-            progress.empty()
-            out = pd.DataFrame(results)
-            st.success("✅ 배치 예측 완료")
-            st.dataframe(out)
-
-            # 통계 요약 및 세션 상태 저장
-            if "prediction" in out.columns:
-                col1, col2, col3 = st.columns(3)
-                total = len(out)
-                purchase = (out["prediction"] == 1).sum()
-                purchase_rate = (purchase / total * 100) if total > 0 else 0
-                avg_prob = out["probability"].mean() if "probability" in out.columns else 0
-                high_potential = (out["probability"] > 0.7).sum() if "probability" in out.columns else 0
-                
-                col1.metric("전체 건수", f"{total:,}명")
-                col2.metric("구매 예상", f"{purchase:,}명 ({purchase_rate:.1f}%)")
-                col3.metric("평균 구매 확률", f"{avg_prob:.1%}")
-                
-                # 사이드바에 표시할 통계 저장
-                st.session_state.batch_stats = {
-                    'total': total,
-                    'purchase': purchase,
-                    'purchase_rate': purchase_rate,
-                    'avg_prob': avg_prob,
-                    'high_potential': high_potential
-                }
-                
-                # 고확률 고객 하이라이트
-                if high_potential > 0:
-                    st.success(f"🎯 고확률 고객 (70% 이상): **{high_potential}명** 발견!")
-
-            csv_data = out.to_csv(index=False).encode("utf-8")
-            st.download_button("📥 결과 다운로드", csv_data, "predictions.csv", "text/csv")
-
-# =========================================
 # 푸터
 # =========================================
 st.markdown("---")
 st.caption("""
-🚀 고객 구매 예측 시스템 (Production v5.0)  
+🚀 고객 구매 예측 시스템 (Production v5.0)
 """)
