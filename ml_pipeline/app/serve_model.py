@@ -1,245 +1,152 @@
-# ======================================
-# ⚡ FastAPI + 구매 예측 API (Render 배포용 v4.1 - Feature 7개 호환)
-# ======================================
-
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
-import pandas as pd
 import os
-import sys
-from datetime import datetime
-import traceback
+import json
+import joblib
+from typing import Dict, Any
+import boto3
 
-# ✅ 경로 설정
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
-if PROJECT_ROOT not in sys.path:
-    sys.path.append(PROJECT_ROOT)
-
-# ✅ model_utils 임포트
-try:
-    from app.model_utils import load_models_from_minio, predict_proba
-    UTILS_LOADED = True
-except ImportError as e:
-    print(f"⚠️ model_utils 임포트 실패: {e}")
-    UTILS_LOADED = False
-
-# ✅ FastAPI 초기화
-app = FastAPI(
-    title="🛍️ E-Commerce Purchase Prediction API",
-    version="4.1",
-    description="실시간 고객 구매 확률 예측 API (Render 배포용)",
-    docs_url="/docs",
-    redoc_url="/redoc"
-)
-
-# ✅ CORS 설정
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# --------------------------------------------------
-# 📌 환경 변수
-# --------------------------------------------------
-MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "http://127.0.0.1:9000")
-BUCKET = os.getenv("BUCKET", "model-store")
-PREFIX = os.getenv("PREFIX", "session-purchase")
-MODEL_DIR = os.getenv("MODEL_DIR", "models_cache")
-ENVIRONMENT = os.getenv("ENVIRONMENT", "production")
-
-# --------------------------------------------------
-# 🌍 전역 변수
-# --------------------------------------------------
-models = None
-meta = {}
-startup_time = datetime.now()
-request_count = 0
+# ===========================
+# 📍 경로 설정 (Render & Local 겸용)
+# ===========================
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_CACHE_DIR = os.path.join(BASE_DIR, "models_cache")
+os.makedirs(MODEL_CACHE_DIR, exist_ok=True)
 
 
-# --------------------------------------------------
-# 🔧 서버 시작 시 모델 로드
-# --------------------------------------------------
-@app.on_event("startup")
-async def startup_event():
-    """서버 시작 시 모델 초기화"""
-    global models, meta
-    
-    print("=" * 60)
-    print("🚀 FastAPI 서버 시작 중...")
-    print(f"📍 Environment: {ENVIRONMENT}")
-    print(f"📍 MinIO Endpoint: {MINIO_ENDPOINT}")
-    print(f"📍 Bucket: {BUCKET}")
-    print(f"📍 Prefix: {PREFIX}")
-    print("=" * 60)
-    
-    if not UTILS_LOADED:
-        print("❌ model_utils 불러오기 실패 — 모델 로드 스킵")
-        return
+# ===========================
+# 📦 로컬 모델 로드 함수
+# ===========================
+def load_local_models() -> tuple:
+    """로컬 캐시에서 모델 로드 후 (models, meta) 튜플 반환"""
+    print("💡 Loading models from local cache...")
 
     try:
-        result = load_models_from_minio(
-            endpoint=MINIO_ENDPOINT,
-            bucket=BUCKET,
-            prefix=PREFIX,
-            local_dir=MODEL_DIR
-        )
+        lgb_path = os.path.join(MODEL_CACHE_DIR, "lgb_model.joblib")
+        xgb_path = os.path.join(MODEL_CACHE_DIR, "xgb_model.joblib")
+        cat_path = os.path.join(MODEL_CACHE_DIR, "cat_model.joblib")
+        meta_path = os.path.join(MODEL_CACHE_DIR, "model_meta.json")
 
-        if result is None or len(result) != 2:
-            raise ValueError("load_models_from_minio 결과가 잘못됨")
-
-        models, meta = result
-
-        version = meta.get('version', 'unknown')
-        threshold = meta.get('threshold', 0.5)
-        feature_count = len(meta.get('features', []))
-
-        print("✅ 모델 로드 완료!")
-        print(f"   - Version: {version}")
-        print(f"   - Threshold: {threshold}")
-        print(f"   - Feature Count: {feature_count}")
-        print("=" * 60)
-
-    except Exception as e:
-        print(f"❌ 모델 로드 실패: {e}")
-        traceback.print_exc()
-        models, meta = None, {}
-
-
-# --------------------------------------------------
-# 📥 입력 데이터 모델 정의 (7개 Feature 기준)
-# --------------------------------------------------
-class SessionFeatures(BaseModel):
-    """고객 세션 입력 피처 (7개 버전)"""
-    feature_1: float = Field(..., ge=0, description="총 방문 횟수")
-    feature_2: float = Field(..., ge=0, description="마지막 활동 후 경과일")
-    feature_3: float = Field(..., ge=0, description="활동 빈도")
-    feature_4: float = Field(..., ge=0, description="장바구니 담은 상품 수")
-    feature_5: float = Field(..., ge=0, description="상품 조회 수")
-    feature_6: float = Field(..., ge=0, description="세션 총 활동 횟수")
-    feature_7: float = Field(..., ge=0, description="평균 세션 시간 (분)")
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "feature_1": 15.0,
-                "feature_2": 2.0,
-                "feature_3": 20.0,
-                "feature_4": 5.0,
-                "feature_5": 30.0,
-                "feature_6": 50.0,
-                "feature_7": 12.0
-            }
+        models = {
+            "lgb_model": joblib.load(lgb_path),
+            "xgb_model": joblib.load(xgb_path),
+            "cat_model": joblib.load(cat_path) if os.path.exists(cat_path) else None
         }
 
+        with open(meta_path, "r", encoding="utf-8") as f:
+            meta = json.load(f)
 
-class PredictionResponse(BaseModel):
-    """예측 결과 응답 모델"""
-    probability: float
-    prediction: int
-    threshold: float
-    timestamp: str
-    model_version: str
+        print("✅ 로컬 모델 로드 완료")
+        return models, meta
+    except Exception as e:
+        raise RuntimeError(f"❌ 로컬 모델 로드 실패: {e}")
 
 
-# --------------------------------------------------
-# 🎯 예측 엔드포인트
-# --------------------------------------------------
-@app.post("/predict", response_model=PredictionResponse)
-async def predict(input_data: SessionFeatures):
-    """고객 세션 데이터를 받아 구매 확률 예측"""
-    global request_count
-    request_count += 1
-
-    if models is None:
-        raise HTTPException(status_code=503, detail="모델이 로드되지 않았습니다.")
+# ===========================
+# ☁️ MinIO에서 모델 로드
+# ===========================
+def load_models_from_minio(endpoint: str, bucket: str, prefix: str, local_dir: str = MODEL_CACHE_DIR):
+    """MinIO에서 모델 다운로드 후 (models, meta) 반환"""
+    print("📥 MinIO에서 모델 다운로드 시도 중...")
 
     try:
-        df = pd.DataFrame([input_data.model_dump()])
-        prob, pred = predict_proba(models, meta, df)
+        if not endpoint:
+            print("⚠️ MinIO endpoint가 설정되지 않음 → 로컬 캐시 사용 예정")
+            return load_local_models()
 
-        return PredictionResponse(
-            probability=float(prob),
-            prediction=int(pred),
-            threshold=float(meta.get("threshold", 0.5)),
-            timestamp=datetime.now().isoformat(),
-            model_version=meta.get("version", "unknown")
+        s3_client = boto3.client(
+            "s3",
+            endpoint_url=endpoint,
+            aws_access_key_id=os.getenv("MINIO_ACCESS_KEY", "minioadmin"),
+            aws_secret_access_key=os.getenv("MINIO_SECRET_KEY", "minioadmin"),
+            region_name="us-east-1",
         )
+
+        model_files = ["lgb_model.joblib", "xgb_model.joblib", "cat_model.joblib", "model_meta.json"]
+        for fname in model_files:
+            s3_key = f"{prefix}/{fname}"
+            local_path = os.path.join(local_dir, fname)
+            try:
+                s3_client.download_file(bucket, s3_key, local_path)
+                print(f"✅ {fname} 다운로드 성공")
+            except Exception as e:
+                print(f"⚠️ {fname} 다운로드 실패 ({e}) → 로컬 캐시 사용 예정")
+
+        # ✅ 로컬 캐시에서 다시 로드
+        return load_local_models()
+
     except Exception as e:
-        print(f"❌ 예측 중 오류 발생: {e}")
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"예측 실패: {e}")
+        print(f"❌ MinIO 로드 중 오류 발생: {e}")
+        print("⚠️ 로컬 캐시 모델로 대체합니다.")
+        return load_local_models()
 
 
-# --------------------------------------------------
-# 🏥 헬스체크
-# --------------------------------------------------
-@app.get("/health")
-async def health_check():
-    uptime = (datetime.now() - startup_time).total_seconds()
-    return {
-        "status": "healthy" if models else "degraded",
-        "models_loaded": models is not None,
-        "model_version": meta.get("version", "unknown"),
-        "threshold": meta.get("threshold", 0.5),
-        "feature_count": len(meta.get("features", [])),
-        "uptime_seconds": round(uptime, 2),
-        "total_requests": request_count,
-        "environment": ENVIRONMENT,
-        "timestamp": datetime.now().isoformat()
-    }
+# ===========================
+# 🧩 입력 피처 이름 자동 매핑
+# ===========================
+def align_feature_names(df, meta):
+    """
+    입력 DataFrame의 컬럼명을 모델 학습 시 사용된 feature 이름으로 자동 변경.
+    meta.json 내 "features" 키를 기준으로 매핑 수행.
+    """
+    expected_features = meta.get("features")
+
+    if expected_features and len(expected_features) == df.shape[1]:
+        old_cols = list(df.columns)
+        df.columns = expected_features
+        print(f"✅ 입력 피처명을 모델 학습 피처명으로 매핑 완료:\n   {old_cols} → {expected_features}")
+    else:
+        print("⚠️ meta['features'] 정보가 없거나 feature 수가 일치하지 않아 rename 생략됨")
+
+    return df
 
 
-# --------------------------------------------------
-# 🏠 루트
-# --------------------------------------------------
-@app.get("/")
-async def root():
-    uptime = (datetime.now() - startup_time).total_seconds()
-    return {
-        "message": "🛍️ E-Commerce Purchase Prediction API (7 features)",
-        "version": "4.1",
-        "status": "running",
-        "models_loaded": models is not None,
-        "feature_count": len(meta.get("features", [])),
-        "uptime_seconds": round(uptime, 2),
-        "environment": ENVIRONMENT
-    }
+# ===========================
+# 🧠 개별 모델 예측 유틸
+# ===========================
+def predict(models: Dict[str, Any], features: Any) -> Dict[str, float]:
+    """3개 모델의 개별 확률 예측"""
+    preds = {}
+    try:
+        if "lgb_model" in models and models["lgb_model"]:
+            preds["lgb"] = models["lgb_model"].predict_proba(features)[:, 1]
+        if "xgb_model" in models and models["xgb_model"]:
+            preds["xgb"] = models["xgb_model"].predict_proba(features)[:, 1]
+        if "cat_model" in models and models["cat_model"]:
+            preds["cat"] = models["cat_model"].predict_proba(features)[:, 1]
+    except Exception as e:
+        raise RuntimeError(f"❌ 예측 중 오류 발생: {e}")
+    return preds
 
 
-# --------------------------------------------------
-# 🧪 테스트 예측
-# --------------------------------------------------
-@app.get("/test")
-async def test_prediction():
-    """테스트용 샘플 예측"""
-    if models is None:
-        raise HTTPException(status_code=503, detail="모델이 로드되지 않았습니다.")
-    
-    sample = SessionFeatures(
-        feature_1=10.0,
-        feature_2=1.0,
-        feature_3=12.0,
-        feature_4=3.0,
-        feature_5=18.0,
-        feature_6=30.0,
-        feature_7=8.0
-    )
-    return await predict(sample)
+# ===========================
+# 🧩 평균 확률 + 최종 예측 반환 (FastAPI용)
+# ===========================
+def predict_proba(models: Dict[str, Any], meta: Dict[str, Any], df):
+    """
+    여러 모델의 예측 확률 평균을 계산하고, threshold 기준으로 최종 레이블 반환
+    FastAPI의 /predict 엔드포인트에서 사용
+    """
+    preds = []
 
+    try:
+        # ✅ 컬럼명 자동 정렬
+        df = align_feature_names(df, meta)
 
-# --------------------------------------------------
-# 🚀 로컬 실행
-# --------------------------------------------------
-if __name__ == "__main__":
-    import uvicorn
-    PORT = int(os.getenv("PORT", 8000))
-    print("=" * 60)
-    print(f"🚀 FastAPI 서버를 포트 {PORT}에서 시작합니다...")
-    print(f"📚 문서: http://localhost:{PORT}/docs")
-    print("=" * 60)
-    uvicorn.run("serve_model:app", host="0.0.0.0", port=PORT, reload=True)
+        if "lgb_model" in models and models["lgb_model"]:
+            preds.append(models["lgb_model"].predict_proba(df)[:, 1])
+        if "xgb_model" in models and models["xgb_model"]:
+            preds.append(models["xgb_model"].predict_proba(df)[:, 1])
+        if "cat_model" in models and models["cat_model"]:
+            preds.append(models["cat_model"].predict_proba(df)[:, 1])
+
+        if not preds:
+            raise ValueError("❌ 사용할 수 있는 모델이 없습니다.")
+
+        # 평균 확률 계산
+        avg_prob = sum(preds) / len(preds)
+        threshold = meta.get("threshold", 0.5)
+        pred_label = int(avg_prob[0] >= threshold)
+
+        return avg_prob[0], pred_label
+
+    except Exception as e:
+        raise RuntimeError(f"❌ predict_proba 실행 중 오류 발생: {e}")
