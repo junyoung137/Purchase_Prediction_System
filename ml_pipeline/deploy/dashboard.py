@@ -1,5 +1,5 @@
 # =====================================================
-# dashboard.py (프리셋 완전 연동 + Streamlit 최신버전 호환)
+# dashboard.py (프리셋 개선 + 비율 자동 계산 + 정규화)
 # =====================================================
 import streamlit as st
 import pandas as pd
@@ -7,7 +7,7 @@ import requests
 import plotly.graph_objects as go
 
 # =========================================
-# 🔧 API 설정 (FastAPI 기준)
+# 🔧 API 설정
 # =========================================
 API_URL = "https://purchase-prediction-system.onrender.com/predict"
 
@@ -22,39 +22,27 @@ st.sidebar.subheader("🎯 고객 프로필 프리셋")
 
 preset_profiles = {
     "🔥 고관심 고객": {
-        "feature_1": 15.0, "feature_2": 2.0, "feature_3": 20.0,
-        "feature_4": 5.0, "feature_5": 30.0, "feature_6": 50.0,
-        "feature_7": 12.0, "feature_8": 3.0, "feature_9": 10.0, "feature_10": 4.0
+        "event_count": 120, "n_view": 80, "n_cart": 20, "n_trans": 10
     },
     "⚠️ 이탈 위험 고객": {
-        "feature_1": 3.0, "feature_2": 30.0, "feature_3": 2.0,
-        "feature_4": 0.0, "feature_5": 5.0, "feature_6": 8.0,
-        "feature_7": 2.0, "feature_8": 0.0, "feature_9": 1.0, "feature_10": 0.0
+        "event_count": 30, "n_view": 3, "n_cart": 0, "n_trans": 0
     },
     "💚 신규 방문자": {
-        "feature_1": 1.0, "feature_2": 0.0, "feature_3": 3.0,
-        "feature_4": 1.0, "feature_5": 8.0, "feature_6": 12.0,
-        "feature_7": 5.0, "feature_8": 0.0, "feature_9": 2.0, "feature_10": 0.0
+        "event_count": 10, "n_view": 5, "n_cart": 0, "n_trans": 0
     },
     "🎁 재구매 고객": {
-        "feature_1": 25.0, "feature_2": 7.0, "feature_3": 15.0,
-        "feature_4": 3.0, "feature_5": 20.0, "feature_6": 40.0,
-        "feature_7": 10.0, "feature_8": 5.0, "feature_9": 8.0, "feature_10": 3.0
+        "event_count": 200, "n_view": 120, "n_cart": 30, "n_trans": 15
     }
 }
 
-selected_preset = st.sidebar.selectbox(
-    "프로필 선택",
-    ["선택 안함"] + list(preset_profiles.keys())
-)
+selected_preset = st.sidebar.selectbox("프로필 선택", ["선택 안함"] + list(preset_profiles.keys()))
 
-# ✅ 프리셋 클릭 시 세션 상태에 값 저장
 if selected_preset != "선택 안함":
     if st.sidebar.button("📋 값 적용하기", use_container_width=True):
         for k, v in preset_profiles[selected_preset].items():
             st.session_state[k] = v
         st.sidebar.success(f"✅ '{selected_preset}' 값 적용 완료!")
-        st.rerun()  # ✅ 최신 Streamlit 호환
+        st.rerun()
 
 st.sidebar.markdown("---")
 
@@ -62,30 +50,43 @@ st.sidebar.markdown("---")
 # 1️⃣ 개별 예측
 # =========================================
 st.markdown("### 1️⃣ 개별 고객 구매 가능성 예측")
-st.markdown("고객 세션의 주요 활동 정보를 입력하여 구매 확률을 예측합니다.")
+st.markdown("고객 세션 활동 정보를 입력하여 구매 확률을 예측합니다.")
 
-# ✅ 각 입력창을 session_state에 직접 연결
-col1, col2, col3 = st.columns(3, gap="medium")
+col1, col2 = st.columns(2, gap="medium")
 
 with col1:
-    st.number_input("총 방문 횟수", min_value=0.0, step=0.1, key="feature_1")
-    st.number_input("마지막 활동 후 경과일", min_value=0.0, step=0.1, key="feature_2")
-    st.number_input("활동 빈도", min_value=0.0, step=0.1, key="feature_3")
-    st.number_input("장바구니 담은 상품 수", min_value=0.0, step=0.1, key="feature_4")
+    st.number_input("전체 이벤트 발생 횟수 (event_count)", min_value=0.0, step=1.0, key="event_count")
+    st.number_input("상품 조회 횟수 (n_view)", min_value=0.0, step=1.0, key="n_view")
 
 with col2:
-    st.number_input("상품 조회 수", min_value=0.0, step=0.1, key="feature_5")
-    st.number_input("세션 총 활동 횟수", min_value=0.0, step=0.1, key="feature_6")
-    st.number_input("평균 세션 시간 (분)", min_value=0.0, step=0.1, key="feature_7")
-
-with col3:
-    st.number_input("리뷰 작성 수", min_value=0.0, step=0.1, key="feature_8")
-    st.number_input("할인 상품 조회", min_value=0.0, step=0.1, key="feature_9")
-    st.number_input("결제 페이지 방문", min_value=0.0, step=0.1, key="feature_10")
+    st.number_input("장바구니 담기 횟수 (n_cart)", min_value=0.0, step=1.0, key="n_cart")
+    st.number_input("결제 완료 횟수 (n_trans)", min_value=0.0, step=1.0, key="n_trans")
 
 st.markdown("---")
+
 if st.button("🔍 예측 실행", use_container_width=True):
-    payload = {f"feature_{i}": float(st.session_state.get(f"feature_{i}", 0)) for i in range(1, 8)}
+    # ✅ 비율 자동 계산 + 정규화
+    event_count = st.session_state.get("event_count", 0)
+    n_view = st.session_state.get("n_view", 0)
+    n_cart = st.session_state.get("n_cart", 0)
+    n_trans = st.session_state.get("n_trans", 0)
+
+    n_trans_ratio = (n_trans / event_count) if event_count > 0 else 0
+    n_view_ratio = (n_view / event_count) if event_count > 0 else 0
+
+    # 0~1 정규화
+    n_trans_ratio = min(n_trans_ratio, 1.0)
+    n_view_ratio = min(n_view_ratio, 1.0)
+
+    payload = {
+        "session_id": "manual_input",
+        "event_count": event_count,
+        "n_view": n_view,
+        "n_cart": n_cart,
+        "n_trans": n_trans,
+        "n_trans_ratio": n_trans_ratio,
+        "n_view_ratio": n_view_ratio,
+    }
 
     try:
         with st.spinner("예측 중..."):
@@ -94,9 +95,8 @@ if st.button("🔍 예측 실행", use_container_width=True):
             result = res.json()
 
         prob = result.get("probability", 0)
-        pred = result.get("prediction", 0)
-        threshold = result.get("threshold", 0.5)
-        label = "✅ 구매 예상" if pred == 1 else "❌ 비구매 예상"
+        threshold = 0.6  # ✅ 조정된 기준값
+        label = "✅ 구매 예상" if prob >= threshold else "❌ 비구매 예상"
 
         col_a, col_b, col_c = st.columns(3)
         col_a.metric("예측 결과", label)
@@ -145,19 +145,6 @@ st.info("""
 - CSV는 UTF-8 인코딩 권장, 숫자(float) 형식이어야 합니다.
 """)
 
-with st.expander("📘 자세한 컬럼 정의 보기 (운영자용)"):
-    st.markdown("""
-    | 컬럼명 | 설명 |
-    |:--------|:------------------------------------------------|
-    | `session_id` | 고객 세션 ID |
-    | `event_count` | 전체 이벤트 발생 횟수 |
-    | `n_view` | 상품 조회 횟수 |
-    | `n_cart` | 장바구니 담기 횟수 |
-    | `n_trans` | 결제 완료 횟수 |
-    | `n_trans_ratio` | 결제 전환율 (n_trans / event_count) |
-    | `n_view_ratio` | 조회 비율 (n_view / event_count) |
-    """)
-
 uploaded = st.file_uploader("📂 CSV 파일 업로드", type=["csv"])
 
 if uploaded:
@@ -178,7 +165,7 @@ if uploaded:
             progress = st.progress(0)
 
             for i, (_, row) in enumerate(df.iterrows()):
-                payload = {col: float(row[col]) for col in required_cols}
+                payload = {col: float(row[col]) if col != "session_id" else str(row[col]) for col in required_cols}
                 try:
                     r = requests.post(API_URL, json=payload, timeout=10)
                     r.raise_for_status()
@@ -186,7 +173,7 @@ if uploaded:
                     results.append({
                         "probability": result.get("probability"),
                         "prediction": result.get("prediction"),
-                        "threshold": result.get("threshold"),
+                        "threshold": 0.6,
                         "timestamp": result.get("timestamp"),
                     })
                 except Exception as e:
@@ -198,10 +185,10 @@ if uploaded:
             st.success("✅ 배치 예측 완료")
             st.dataframe(out)
 
-            if "prediction" in out.columns:
+            if "probability" in out.columns:
                 col1, col2, col3 = st.columns(3)
                 total = len(out)
-                purchase = (out["prediction"] == 1).sum()
+                purchase = (out["probability"] >= 0.6).sum()
                 purchase_rate = (purchase / total * 100)
                 avg_prob = out["probability"].mean()
                 high_potential = (out["probability"] > 0.7).sum()
@@ -220,4 +207,5 @@ if uploaded:
 # 푸터
 # =========================================
 st.markdown("---")
-st.caption("🚀 고객 구매 예측 시스템 (Production v5.0, 최신 Streamlit 호환)")
+st.caption("🚀 고객 구매 예측 시스템 (v6.0)
+
