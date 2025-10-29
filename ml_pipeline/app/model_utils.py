@@ -15,36 +15,36 @@ os.makedirs(MODEL_CACHE_DIR, exist_ok=True)
 # ===========================
 # 📦 로컬 모델 로드 함수
 # ===========================
-def load_local_models() -> Dict[str, Any]:
-    """로컬 캐시에서 모델 로드"""
+def load_local_models() -> tuple:
+    """로컬 캐시에서 모델 로드 후 (models, meta) 튜플 반환"""
     print("💡 Loading models from local cache...")
 
-    models = {}
     try:
         lgb_path = os.path.join(MODEL_CACHE_DIR, "lgb_model.joblib")
         xgb_path = os.path.join(MODEL_CACHE_DIR, "xgb_model.joblib")
         cat_path = os.path.join(MODEL_CACHE_DIR, "cat_model.joblib")
         meta_path = os.path.join(MODEL_CACHE_DIR, "model_meta.json")
 
-        models["lgb_model"] = joblib.load(lgb_path)
-        models["xgb_model"] = joblib.load(xgb_path)
-        models["cat_model"] = joblib.load(cat_path) if os.path.exists(cat_path) else None
+        models = {
+            "lgb_model": joblib.load(lgb_path),
+            "xgb_model": joblib.load(xgb_path),
+            "cat_model": joblib.load(cat_path) if os.path.exists(cat_path) else None
+        }
 
         with open(meta_path, "r", encoding="utf-8") as f:
-            models["meta"] = json.load(f)
+            meta = json.load(f)
 
         print("✅ 로컬 모델 로드 완료")
+        return models, meta   # ✅ 튜플 반환으로 변경
     except Exception as e:
         raise RuntimeError(f"❌ 로컬 모델 로드 실패: {e}")
-
-    return models
 
 
 # ===========================
 # ☁️ MinIO에서 모델 로드
 # ===========================
 def load_models_from_minio(endpoint: str, bucket: str, prefix: str, local_dir: str = MODEL_CACHE_DIR):
-    """MinIO에서 모델 다운로드, 실패 시 로컬 캐시 사용"""
+    """MinIO에서 모델 다운로드 후 (models, meta) 반환"""
     print("📥 MinIO에서 모델 다운로드 시도 중...")
 
     try:
@@ -60,13 +60,7 @@ def load_models_from_minio(endpoint: str, bucket: str, prefix: str, local_dir: s
             region_name="us-east-1",
         )
 
-        model_files = [
-            "lgb_model.joblib",
-            "xgb_model.joblib",
-            "cat_model.joblib",
-            "model_meta.json",
-        ]
-
+        model_files = ["lgb_model.joblib", "xgb_model.joblib", "cat_model.joblib", "model_meta.json"]
         for fname in model_files:
             s3_key = f"{prefix}/{fname}"
             local_path = os.path.join(local_dir, fname)
@@ -76,14 +70,12 @@ def load_models_from_minio(endpoint: str, bucket: str, prefix: str, local_dir: s
             except Exception as e:
                 print(f"⚠️ {fname} 다운로드 실패 ({e}) → 로컬 캐시 사용 예정")
 
-        # ✅ 다운로드 성공/실패 상관없이 캐시 로드 시도
-        return load_local_models()
-
+        # ✅ 로컬 캐시로부터 다시 로드
+        return load_local_models()  # (models, meta) 튜플 반환
     except Exception as e:
         print(f"❌ MinIO 로드 중 오류 발생: {e}")
         print("⚠️ 로컬 캐시 모델로 대체합니다.")
         return load_local_models()
-
 
 # ===========================
 # 🧠 개별 모델 예측 유틸
