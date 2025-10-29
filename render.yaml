@@ -18,7 +18,7 @@ services:
       - key: PYTHON_VERSION
         value: 3.11.10
       - key: FEAST_REPO_PATH
-        value: /opt/airflow/feature_repo
+        value: ""
       - key: MINIO_ENDPOINT
         value: http://127.0.0.1:9900
       - key: BUCKET
