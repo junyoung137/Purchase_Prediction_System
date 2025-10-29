@@ -1,132 +1,105 @@
-# ======================================
-# 🧩 모델 로드 / 예측 헬퍼 (Render-safe 버전)
-# ======================================
 import os
-import joblib
 import json
-import pandas as pd
-import s3fs
+import joblib
+import tempfile
+from io import BytesIO
+from typing import Dict, Any
+import boto3
 
-# --------------------------------------------------
-# 🧩 catboost import 예외 처리
-# --------------------------------------------------
-try:
-    import catboost
-except ImportError:
-    print("⚠️  catboost 패키지가 설치되어 있지 않습니다. (Render 환경에서는 무시됩니다)")
-    catboost = None
+# ===========================
+# 📍 경로 설정 (Render & Local 겸용)
+# ===========================
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_CACHE_DIR = os.path.join(BASE_DIR, "models_cache")
+os.makedirs(MODEL_CACHE_DIR, exist_ok=True)
 
 
-# --------------------------------------------------
-# 1️⃣ 모델 로드 함수
-# --------------------------------------------------
-def load_models_from_minio(endpoint, bucket, prefix, local_dir="models_cache"):
-    """
-    MinIO에서 모델 파일을 다운로드 후 로드.
-    MinIO 연결 실패 시 로컬 캐시에서 불러옵니다.
+# ===========================
+# 📦 모델 로드 함수
+# ===========================
+def load_local_models() -> Dict[str, Any]:
+    """로컬 캐시에서 모델 로드"""
+    print("💡 Loading models from local cache...")
 
-    반환 구조:
-        ( (lgb_model, xgb_model, cat_model), meta )
-    """
-    os.makedirs(local_dir, exist_ok=True)
-
-    files = [
-        "lgb_model.joblib",
-        "xgb_model.joblib",
-        "cat_model.joblib",
-        "model_meta.json",
-    ]
-
-    # --- 1. MinIO 연결 및 다운로드 시도 ---
-    print(f"🔄 MinIO({endpoint})에서 모델 다운로드 시도...")
-    fs = s3fs.S3FileSystem(
-        key="minioadmin",
-        secret="minioadmin",
-        client_kwargs={"endpoint_url": endpoint},
-    )
-
-    for fname in files:
-        remote = f"s3://{bucket}/{prefix}/{fname}"
-        local = os.path.join(local_dir, fname)
-        try:
-            with fs.open(remote, "rb") as src, open(local, "wb") as dst:
-                dst.write(src.read())
-            print(f"☁️  Downloaded: {remote} → {local}")
-        except Exception as e:
-            print(f"⚠️  {fname} 다운로드 실패 ({e}) → 로컬 캐시 사용 예정")
-
-    # --- 2. 로컬 캐시에서 모델 로드 ---
+    models = {}
     try:
-        lgb_model = joblib.load(os.path.join(local_dir, "lgb_model.joblib"))
-        xgb_model = joblib.load(os.path.join(local_dir, "xgb_model.joblib"))
-        cat_model_path = os.path.join(local_dir, "cat_model.joblib")
+        lgb_path = os.path.join(MODEL_CACHE_DIR, "lgb_model.joblib")
+        xgb_path = os.path.join(MODEL_CACHE_DIR, "xgb_model.joblib")
+        cat_path = os.path.join(MODEL_CACHE_DIR, "cat_model.joblib")
+        meta_path = os.path.join(MODEL_CACHE_DIR, "model_meta.json")
 
-        # catboost 없는 환경에서는 None으로 처리
-        if os.path.exists(cat_model_path):
+        models["lgb_model"] = joblib.load(lgb_path)
+        models["xgb_model"] = joblib.load(xgb_path)
+        models["cat_model"] = joblib.load(cat_path) if os.path.exists(cat_path) else None
+
+        with open(meta_path, "r", encoding="utf-8") as f:
+            models["meta"] = json.load(f)
+
+        print("✅ 로컬 모델 로드 완료")
+    except Exception as e:
+        raise RuntimeError(f"❌ 로컬 모델 로드 실패: {e}")
+
+    return models
+
+
+# ===========================
+# ☁️ MinIO에서 모델 로드
+# ===========================
+def load_models_from_minio(endpoint: str, bucket: str, prefix: str, local_dir: str = MODEL_CACHE_DIR):
+    """MinIO에서 모델 다운로드, 실패 시 로컬 캐시 사용"""
+    print("📥 MinIO에서 모델 다운로드 시도 중...")
+
+    try:
+        if not endpoint:
+            print("⚠️ MinIO endpoint가 설정되지 않음 → 로컬 캐시 사용 예정")
+            return load_local_models()
+
+        s3_client = boto3.client(
+            "s3",
+            endpoint_url=endpoint,
+            aws_access_key_id=os.getenv("MINIO_ACCESS_KEY", "minioadmin"),
+            aws_secret_access_key=os.getenv("MINIO_SECRET_KEY", "minioadmin"),
+            region_name="us-east-1",
+        )
+
+        model_files = [
+            "lgb_model.joblib",
+            "xgb_model.joblib",
+            "cat_model.joblib",
+            "model_meta.json",
+        ]
+
+        for fname in model_files:
+            s3_key = f"{prefix}/{fname}"
+            local_path = os.path.join(local_dir, fname)
             try:
-                cat_model = joblib.load(cat_model_path)
+                s3_client.download_file(bucket, s3_key, local_path)
+                print(f"✅ {fname} 다운로드 성공")
             except Exception as e:
-                print(f"⚠️  cat_model 로드 실패 ({e}) → cat_model=None 처리")
-                cat_model = None
-        else:
-            print("⚠️  cat_model.joblib 파일이 존재하지 않습니다. cat_model=None으로 처리합니다.")
-            cat_model = None
+                print(f"⚠️ {fname} 다운로드 실패 ({e}) → 로컬 캐시 사용 예정")
 
-        # 메타데이터 로드
-        with open(os.path.join(local_dir, "model_meta.json"), "r") as f:
-            meta = json.load(f)
-
-        # ✅ 기본값 보완
-        meta.setdefault("threshold", 0.5)
-        meta.setdefault("weights", {"lgb": 0.4, "xgb": 0.3, "cat": 0.3})
-        meta.setdefault("version", "unknown")
-
-        if meta.get("features") is None:
-            print("⚠️  model_meta.json의 features가 None입니다. 빈 리스트로 설정합니다.")
-            meta["features"] = []
-        elif not isinstance(meta.get("features"), list):
-            print(f"⚠️  features 타입 오류: {type(meta.get('features'))}. 빈 리스트로 설정합니다.")
-            meta["features"] = []
-
-        feature_count = len(meta.get("features", []))
-        print(f"✅ 모델 및 메타 로드 완료 (version={meta.get('version')}, features={feature_count})")
-
-        # ✅ 일관된 구조로 반환
-        return (lgb_model, xgb_model, cat_model), meta
+        # ✅ 다운로드 성공/실패 상관없이 캐시 로드 시도
+        return load_local_models()
 
     except Exception as e:
-        raise RuntimeError(f"❌ 모델 로드 실패: {e}")
+        print(f"❌ MinIO 로드 중 오류 발생: {e}")
+        print("⚠️ 로컬 캐시 모델로 대체합니다.")
+        return load_local_models()
 
 
-# --------------------------------------------------
-# 2️⃣ 예측 함수
-# --------------------------------------------------
-def predict_proba(models, meta, input_df: pd.DataFrame):
-    """
-    다중 모델 앙상블 확률 예측 수행
-    - models: (lgb_model, xgb_model, cat_model)
-    - meta: model_meta.json 로드 결과
-    - input_df: 입력 데이터 (DataFrame)
-    """
-    lgb_model, xgb_model, cat_model = models
-    weights = meta.get("weights", {"lgb": 0.4, "xgb": 0.3, "cat": 0.3})
-
-    # --- 예측 확률 계산 (catboost 없을 경우 스킵) ---
-    probs = (
-        weights["lgb"] * lgb_model.predict_proba(input_df)[:, 1]
-        + weights["xgb"] * xgb_model.predict_proba(input_df)[:, 1]
-    )
-
-    if cat_model is not None:
-        probs += weights["cat"] * cat_model.predict_proba(input_df)[:, 1]
-    else:
-        print("⚠️  cat_model=None → LGBM + XGBoost만 사용하여 예측 수행")
-
-    preds = (probs >= meta.get("threshold", 0.5)).astype(int)
-
-    # 단일 입력일 경우 스칼라 반환
-    if len(probs) == 1:
-        return float(probs[0]), int(preds[0])
-    else:
-        return probs.tolist(), preds.tolist()
-
+# ===========================
+# 🧠 예측 유틸 (선택 사항)
+# ===========================
+def predict(models: Dict[str, Any], features: Any) -> Dict[str, float]:
+    """3개 모델의 평균 예측"""
+    preds = {}
+    try:
+        if "lgb_model" in models and models["lgb_model"]:
+            preds["lgb"] = models["lgb_model"].predict_proba(features)[:, 1]
+        if "xgb_model" in models and models["xgb_model"]:
+            preds["xgb"] = models["xgb_model"].predict_proba(features)[:, 1]
+        if "cat_model" in models and models["cat_model"]:
+            preds["cat"] = models["cat_model"].predict_proba(features)[:, 1]
+    except Exception as e:
+        raise RuntimeError(f"❌ 예측 중 오류 발생: {e}")
+    return preds
