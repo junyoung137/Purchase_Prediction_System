@@ -80,19 +80,36 @@ def load_models_from_minio(endpoint: str, bucket: str, prefix: str, local_dir: s
 # ===========================
 # 🧠 개별 모델 예측 유틸
 # ===========================
-def predict(models: Dict[str, Any], features: Any) -> Dict[str, float]:
-    """3개 모델의 개별 확률 예측"""
-    preds = {}
+def predict_proba(models: Dict[str, Any], meta: Dict[str, Any], df):
+    """
+    여러 모델의 예측 확률 평균을 계산하고, threshold 기준으로 최종 레이블 반환
+    FastAPI의 /predict 엔드포인트에서 사용
+    """
+    preds = []
     try:
+        # ✅ meta에 정의된 features만 사용 (예측용)
+        if "features" in meta:
+            df = df[meta["features"]]
+
         if "lgb_model" in models and models["lgb_model"]:
-            preds["lgb"] = models["lgb_model"].predict_proba(features)[:, 1]
+            preds.append(models["lgb_model"].predict_proba(df)[:, 1])
         if "xgb_model" in models and models["xgb_model"]:
-            preds["xgb"] = models["xgb_model"].predict_proba(features)[:, 1]
+            preds.append(models["xgb_model"].predict_proba(df)[:, 1])
         if "cat_model" in models and models["cat_model"]:
-            preds["cat"] = models["cat_model"].predict_proba(features)[:, 1]
+            preds.append(models["cat_model"].predict_proba(df)[:, 1])
+
+        if not preds:
+            raise ValueError("❌ 사용할 수 있는 모델이 없습니다.")
+
+        # 평균 확률 계산
+        avg_prob = sum(preds) / len(preds)
+        threshold = meta.get("threshold", 0.5)
+        pred_label = int(avg_prob[0] >= threshold)
+
+        return avg_prob[0], pred_label
+
     except Exception as e:
-        raise RuntimeError(f"❌ 예측 중 오류 발생: {e}")
-    return preds
+        raise RuntimeError(f"❌ predict_proba 실행 중 오류 발생: {e}")
 
 
 # ===========================
