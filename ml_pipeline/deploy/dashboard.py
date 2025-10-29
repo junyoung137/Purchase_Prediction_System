@@ -190,7 +190,7 @@ st.markdown("### 2️⃣ 대량 고객 구매 가능성 예측 (CSV 업로드)")
 st.info("""
 📋 **CSV 업로드 안내:**
 - 각 행(row)은 1명의 고객 세션을 의미합니다.
-- 필수 컬럼: `session_id`, `event_count`, `n_view`, `n_cart`, `n_trans`, `n_trans_ratio`, `n_view_ratio`
+- 고객별 주요 활동 데이터(이벤트 수, 조회 수, 전환율 등)를 포함해야 합니다.
 - CSV는 UTF-8 인코딩 권장, 숫자(float) 형식이어야 합니다.
 """)
 
