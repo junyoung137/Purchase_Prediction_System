@@ -175,6 +175,89 @@ if submit:
         st.error(f"❌ 예측 실패: {e}")
 
 # =========================================
+# 2️⃣ 배치 예측 (CSV)
+# =========================================
+st.markdown("---")
+st.markdown("### 2️⃣ 대량 고객 구매 가능성 예측 (CSV 업로드)")
+
+st.info("""
+📋 **CSV 파일 형식 요구사항:**
+- 컬럼명: `feature_1` ~ `feature_10` (정확히 10개)
+- 모든 값은 숫자(float)여야 합니다
+- 예시: `feature_1,feature_2,...,feature_10`
+""")
+
+uploaded = st.file_uploader("📂 CSV 업로드", type=["csv"])
+
+if uploaded:
+    df = pd.read_csv(uploaded)
+    st.dataframe(df.head(), use_container_width=True)
+
+    # 컬럼 검증
+    required_cols = [f"feature_{i}" for i in range(1, 11)]
+    missing_cols = set(required_cols) - set(df.columns)
+    
+    if missing_cols:
+        st.error(f"❌ 누락된 컬럼: {missing_cols}")
+    else:
+        if st.button("📈 배치 예측 실행", use_container_width=True):
+            results = []
+            progress = st.progress(0)
+
+            for i, (_, row) in enumerate(df.iterrows()):
+                # FastAPI 형식으로 페이로드 생성
+                payload = {f"feature_{j}": float(row[f"feature_{j}"]) for j in range(1, 11)}
+                
+                try:
+                    r = requests.post(API_URL, json=payload, timeout=10)
+                    r.raise_for_status()
+                    result = r.json()
+                    results.append({
+                        "probability": result.get("probability"),
+                        "prediction": result.get("prediction"),
+                        "threshold": result.get("threshold"),
+                        "timestamp": result.get("timestamp"),
+                    })
+                except Exception as e:
+                    results.append({"error": str(e)})
+                
+                progress.progress((i + 1) / len(df))
+
+            progress.empty()
+            out = pd.DataFrame(results)
+            st.success("✅ 배치 예측 완료")
+            st.dataframe(out)
+
+            # 통계 요약 및 세션 상태 저장
+            if "prediction" in out.columns:
+                col1, col2, col3 = st.columns(3)
+                total = len(out)
+                purchase = (out["prediction"] == 1).sum()
+                purchase_rate = (purchase / total * 100) if total > 0 else 0
+                avg_prob = out["probability"].mean() if "probability" in out.columns else 0
+                high_potential = (out["probability"] > 0.7).sum() if "probability" in out.columns else 0
+                
+                col1.metric("전체 건수", f"{total:,}명")
+                col2.metric("구매 예상", f"{purchase:,}명 ({purchase_rate:.1f}%)")
+                col3.metric("평균 구매 확률", f"{avg_prob:.1%}")
+                
+                # 사이드바에 표시할 통계 저장
+                st.session_state.batch_stats = {
+                    'total': total,
+                    'purchase': purchase,
+                    'purchase_rate': purchase_rate,
+                    'avg_prob': avg_prob,
+                    'high_potential': high_potential
+                }
+                
+                # 고확률 고객 하이라이트
+                if high_potential > 0:
+                    st.success(f"🎯 고확률 고객 (70% 이상): **{high_potential}명** 발견!")
+
+            csv_data = out.to_csv(index=False).encode("utf-8")
+            st.download_button("📥 결과 다운로드", csv_data, "predictions.csv", "text/csv")
+
+# =========================================
 # 푸터
 # =========================================
 st.markdown("---")
