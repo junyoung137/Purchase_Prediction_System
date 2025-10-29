@@ -83,9 +83,6 @@ def load_models_from_minio(endpoint: str, bucket: str, prefix: str, local_dir: s
 # 🧠 예측 유틸리티
 # ============================================================
 def predict_proba(models: Dict[str, Any], meta: Dict[str, Any], df: pd.DataFrame):
-    """
-    여러 모델의 예측 확률 평균을 계산하고, threshold 기준으로 최종 레이블 반환
-    """
     preds = []
     try:
         # meta 정보 기반 feature 필터링
@@ -96,12 +93,16 @@ def predict_proba(models: Dict[str, Any], meta: Dict[str, Any], df: pd.DataFrame
         else:
             print("⚠️ meta['features'] 정보 없음 — 전체 컬럼 사용")
 
+        print(f"[DEBUG] 모델 키: {list(models.keys())}")
+        for name, m in models.items():
+            print(f"[DEBUG] {name}: {'✅ 로드됨' if m else '❌ None'}")
+
         # 모델별 예측 확률 계산
-        if "lgb_model" in models and models["lgb_model"]:
+        if models.get("lgb_model"):
             preds.append(models["lgb_model"].predict_proba(df)[:, 1])
-        if "xgb_model" in models and models["xgb_model"]:
+        if models.get("xgb_model"):
             preds.append(models["xgb_model"].predict_proba(df)[:, 1])
-        if "cat_model" in models and models["cat_model"]:
+        if models.get("cat_model"):
             preds.append(models["cat_model"].predict_proba(df)[:, 1])
 
         if not preds:
@@ -111,9 +112,11 @@ def predict_proba(models: Dict[str, Any], meta: Dict[str, Any], df: pd.DataFrame
         threshold = meta.get("threshold", 0.5)
         pred_label = int(avg_prob[0] >= threshold)
 
+        print(f"[DEBUG] 예측 성공: 확률={avg_prob[0]}, 라벨={pred_label}")
         return avg_prob[0], pred_label
 
     except Exception as e:
+        print(f"❌ predict_proba 내부 오류: {e}")
         raise RuntimeError(f"❌ predict_proba 실행 중 오류 발생: {e}")
 
 # ============================================================
