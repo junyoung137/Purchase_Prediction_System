@@ -1,5 +1,5 @@
 # ============================================================
-# 🧠 serve_model.py — FastAPI 기반 구매 예측 API
+# 🧠 serve_model.py — FastAPI 기반 구매 예측 API (7개 feature, 자동 매핑 포함)
 # ============================================================
 import os
 import json
@@ -80,18 +80,34 @@ def load_models_from_minio(endpoint: str, bucket: str, prefix: str, local_dir: s
         return load_local_models()
 
 # ============================================================
+# 🧩 feature 이름 자동 매핑 함수
+# ============================================================
+def align_feature_names(df, meta):
+    """
+    입력 DataFrame 컬럼명을 meta['features']에 정의된 실제 학습 피처명으로 매핑
+    """
+    expected_features = meta.get("features")
+
+    if expected_features and len(expected_features) == df.shape[1]:
+        old_cols = list(df.columns)
+        df.columns = expected_features
+        print(f"✅ 입력 피처명 매핑 완료:\n   {old_cols} → {expected_features}")
+    else:
+        print("⚠️ meta['features'] 정보가 없거나 수 불일치로 rename 생략")
+
+    return df
+
+# ============================================================
 # 🧠 예측 유틸리티
 # ============================================================
 def predict_proba(models: Dict[str, Any], meta: Dict[str, Any], df: pd.DataFrame):
+    """
+    여러 모델의 예측 확률 평균을 계산하고, threshold 기준으로 최종 레이블 반환
+    """
     preds = []
     try:
-        # meta 정보 기반 feature 필터링
-        if "features" in meta and isinstance(meta["features"], list):
-            feature_cols = [f for f in meta["features"] if f in df.columns]
-            df = df[feature_cols]
-            print(f"[DEBUG] 사용된 feature 컬럼 ({len(df.columns)}개): {list(df.columns)}")
-        else:
-            print("⚠️ meta['features'] 정보 없음 — 전체 컬럼 사용")
+        # ✅ 입력 컬럼명 자동 매핑
+        df = align_feature_names(df, meta)
 
         print(f"[DEBUG] 모델 키: {list(models.keys())}")
         for name, m in models.items():
@@ -124,7 +140,7 @@ def predict_proba(models: Dict[str, Any], meta: Dict[str, Any], df: pd.DataFrame
 # ============================================================
 app = FastAPI(
     title="🛍️ Purchase Prediction API",
-    description="LightGBM + XGBoost + CatBoost 앙상블 기반 구매 예측 API (7개 feature 버전)",
+    description="LightGBM + XGBoost + CatBoost 앙상블 기반 구매 예측 API (7개 feature 자동 매핑)",
     version="1.0.0"
 )
 
