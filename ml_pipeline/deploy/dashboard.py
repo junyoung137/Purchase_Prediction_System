@@ -1,5 +1,5 @@
 # =====================================================
-# dashboard.py (프리셋 연동 완성 버전)
+# dashboard.py (프리셋 완전 연동 + Streamlit 최신버전 호환)
 # =====================================================
 import streamlit as st
 import pandas as pd
@@ -54,7 +54,7 @@ if selected_preset != "선택 안함":
         for k, v in preset_profiles[selected_preset].items():
             st.session_state[k] = v
         st.sidebar.success(f"✅ '{selected_preset}' 값 적용 완료!")
-        st.experimental_rerun()
+        st.rerun()  # ✅ 최신 Streamlit 호환
 
 st.sidebar.markdown("---")
 
@@ -104,6 +104,7 @@ if st.button("🔍 예측 실행", use_container_width=True):
         col_c.metric("Threshold", f"{threshold:.2f}")
         st.success("✅ 예측 성공")
 
+        # 게이지 차트
         fig = go.Figure(go.Indicator(
             mode="gauge+number+delta",
             value=prob * 100,
@@ -219,4 +220,4 @@ if uploaded:
 # 푸터
 # =========================================
 st.markdown("---")
-st.caption("🚀 고객 구매 예측 시스템 (Production v5.0, 프리셋 연동 버전)")
+st.caption("🚀 고객 구매 예측 시스템 (Production v5.0, 최신 Streamlit 호환)")
