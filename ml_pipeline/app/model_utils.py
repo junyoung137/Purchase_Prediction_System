@@ -87,12 +87,15 @@ def predict_proba(models: Dict[str, Any], meta: Dict[str, Any], df):
     """
     preds = []
     try:
-        # ✅ 메타에 정의된 feature만 남기기 (예측 시 shape mismatch 방지)
-        if "features" in meta:
-            existing_features = meta["features"]
-            df = df[[f for f in existing_features if f in df.columns]]
+        # ✅ 메타 정보에 있는 feature만 남기기 (중복/파생 변수 제거)
+        if "features" in meta and isinstance(meta["features"], list):
+            feature_cols = [f for f in meta["features"] if f in df.columns]
+            df = df[feature_cols]
+            print(f"[DEBUG] 사용된 feature 컬럼 ({len(df.columns)}개): {list(df.columns)}")
+        else:
+            print("⚠️ meta['features']가 정의되어 있지 않아 전체 feature 사용")
 
-        # ✅ 예측 수행
+        # ✅ 모델별 예측 수행
         if "lgb_model" in models and models["lgb_model"]:
             preds.append(models["lgb_model"].predict_proba(df)[:, 1])
         if "xgb_model" in models and models["xgb_model"]:
@@ -103,7 +106,7 @@ def predict_proba(models: Dict[str, Any], meta: Dict[str, Any], df):
         if not preds:
             raise ValueError("❌ 사용할 수 있는 모델이 없습니다.")
 
-        # ✅ 평균 확률 + 임계값 기준 예측
+        # ✅ 평균 확률 계산 + threshold 비교
         avg_prob = sum(preds) / len(preds)
         threshold = meta.get("threshold", 0.5)
         pred_label = int(avg_prob[0] >= threshold)
@@ -112,7 +115,6 @@ def predict_proba(models: Dict[str, Any], meta: Dict[str, Any], df):
 
     except Exception as e:
         raise RuntimeError(f"❌ predict_proba 실행 중 오류 발생: {e}")
-
 # ===========================
 # 🧩 평균 확률 + 최종 예측 반환 (FastAPI용)
 # ===========================
