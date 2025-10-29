@@ -10,6 +10,7 @@ numpy
 # Machine Learning
 scikit-learn
 xgboost
+catboost
 lightgbm
 
 # Model Serialization
