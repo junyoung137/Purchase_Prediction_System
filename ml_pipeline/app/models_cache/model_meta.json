@@ -1,6 +1,7 @@
 {
   "version": "v20251022T081526Z",
   "created_at": "2025-10-22T08:15:26.761963",
+  "model_type": "ensemble",
 
   "models": [
     "lgb_model.joblib",
@@ -33,15 +34,12 @@
   },
 
   "features": [
-    "feature_1",
-    "feature_2",
-    "feature_3",
-    "feature_4",
-    "feature_5",
-    "feature_6",
-    "feature_7",
-    "feature_8",
-    "feature_9",
-    "feature_10"
+    "session_id",
+    "event_count",
+    "n_view",
+    "n_cart",
+    "n_trans",
+    "n_trans_ratio",
+    "n_view_ratio"
   ]
 }
