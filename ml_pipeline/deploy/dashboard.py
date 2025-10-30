@@ -169,10 +169,11 @@ if theme == "dark":
             box-shadow: 0 2px 6px rgba(0,0,0,0.25) !important;
         }
 
-        /* ✅ 선택된 텍스트 */
+        /* ✅ 선택된 텍스트 - 모든 하위 요소 */
         div[data-baseweb="select"] span, 
         div[data-baseweb="select"] input, 
-        div[data-baseweb="select"] div {
+        div[data-baseweb="select"] div,
+        div[data-baseweb="select"] * {
             color: #ffffff !important;
         }
 
@@ -181,13 +182,19 @@ if theme == "dark":
             background-color: #2f323c !important;
             border: 1px solid rgba(255,255,255,0.15) !important;
             border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
         }
 
         /* ✅ 각 항목 기본 상태 */
         ul[role="listbox"] li {
             color: #ffffff !important;
             font-weight: 500 !important;
-            padding: 6px 10px !important;
+            padding: 8px 12px !important;
+        }
+
+        /* ✅ 항목 내 모든 텍스트 */
+        ul[role="listbox"] li * {
+            color: #ffffff !important;
         }
 
         /* ✅ hover 시 */
@@ -203,7 +210,7 @@ if theme == "dark":
             font-weight: 600 !important;
         }
 
-        /* ✅ 비활성(‘선택 안함’) */
+        /* ✅ 비활성('선택 안함') */
         ul[role="listbox"] li[aria-disabled="true"] {
             color: #9ca3af !important;
         }
