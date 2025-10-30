@@ -307,6 +307,9 @@ else:
         div.stButton > button:hover {
             background-color: #1e40af;
         }
+        div.stButton > button p {
+            color: #ffffff !important;
+        }
         
         /* 사이드바 버튼 */
         section[data-testid="stSidebar"] div.stButton > button {
@@ -316,6 +319,9 @@ else:
         }
         section[data-testid="stSidebar"] div.stButton > button:hover {
             background-color: #d97706;
+        }
+        section[data-testid="stSidebar"] div.stButton > button p {
+            color: #ffffff !important;
         }
         </style>
     """, unsafe_allow_html=True)
