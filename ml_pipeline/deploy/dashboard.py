@@ -255,17 +255,17 @@ else:
             box-shadow: 0 0 0 2px rgba(59,130,246,0.15) !important;
         }
 
-        /* ===== 버튼 ===== */
+        /* ===== 일반 버튼 (예측 실행 포함) ===== */
         div.stButton > button {
-            background-color: #3b82f6 !important;
-            color: #ffffff !important;
+            background-color: #3b82f6 !important;   /* 파란색 유지 */
+            color: #ffffff !important;              /* ✅ 항상 흰 글씨 유지 */
             font-weight: 600 !important;
             border-radius: 8px !important;
             border: none !important;
             transition: background-color 0.2s ease-in-out;
         }
         div.stButton > button:hover {
-            background-color: #1e40af !important;
+            background-color: #1e40af !important; /* hover 시 한 톤 진한 파랑 */
         }
 
         /* ===== 사이드바 전환 버튼 (다크 모드로 전환) ===== */
@@ -281,20 +281,23 @@ else:
             background-color: #d1d5db !important;
         }
 
-        /* ===== 안내박스 ===== */
+        /* ===== 안내박스 (CSV 업로드 안내) ===== */
         .stAlert {
-            background-color: #f1f5f9 !important;
+            background-color: #dbeafe !important;     /* 기존보다 진한 하늘색 */
             border-left: 4px solid #3b82f6 !important;
             border-radius: 8px !important;
         }
 
-        /* ✅ 안내박스 내 텍스트 색상 보정 (모바일 라이트 모드 가독성 향상) */
-        .stAlert p, .stAlert span, .stAlert li {
+        /* ✅ 안내박스 내 텍스트 색상 보정 (모바일에서도 명확히 표시) */
+        .stAlert p, .stAlert span, .stAlert li, .stAlert strong {
             color: #111827 !important;
+            font-weight: 500 !important;
         }
+
+        /* ✅ 캡션 및 일반 문장 텍스트 색상 (💡 안내문 포함) */
         div[data-testid="stMarkdownContainer"] p,
-        div[data-testid="stMarkdownContainer"] li,
-        div[data-testid="stMarkdownContainer"] span {
+        div[data-testid="stMarkdownContainer"] span,
+        div[data-testid="stMarkdownContainer"] li {
             color: #111827 !important;
         }
 
@@ -306,6 +309,7 @@ else:
         }
         </style>
     """, unsafe_allow_html=True)
+
 # =========================================
 # 1️⃣ 개별 예측
 # =========================================
