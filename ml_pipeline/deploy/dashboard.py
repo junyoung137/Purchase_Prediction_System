@@ -160,60 +160,52 @@ if theme == "dark":
             border-right: 1px solid rgba(255,255,255,0.05) !important;
         }
 
-        /* ✅ Expander */
-        details[data-testid="stExpander"] {
-            background-color: #2f323c !important;
-            border: 1px solid rgba(255,255,255,0.08) !important;
-            border-radius: 10px !important;
-            padding: 6px 10px !important;
-            margin-bottom: 10px !important;
-            transition: all 0.25s ease-in-out;
-        }
-        details[data-testid="stExpander"]:hover {
-            background-color: #3a3d48 !important;
-            border-color: rgba(255,255,255,0.15) !important;
-        }
-
-        summary {
-            color: #f3f4f6 !important;
-            font-weight: 600 !important;
-        }
-
         /* ===== Selectbox (드롭다운) ===== */
         div[data-baseweb="select"] > div {
             background-color: #2f323c !important;
-            color: #f9fafb !important;
+            color: #ffffff !important;
             border: 1px solid rgba(255,255,255,0.15) !important;
             border-radius: 6px !important;
             box-shadow: 0 2px 6px rgba(0,0,0,0.25) !important;
         }
 
-        /* ✅ 선택된 텍스트 색상 */
+        /* ✅ 선택된 텍스트 & placeholder */
         div[data-baseweb="select"] span, 
         div[data-baseweb="select"] input, 
         div[data-baseweb="select"] div {
             color: #ffffff !important;
         }
 
-        /* ✅ 드롭다운 목록 */
+        /* ✅ 드롭다운 전체 영역 */
         ul[role="listbox"] {
             background-color: #2f323c !important;
             border: 1px solid rgba(255,255,255,0.15) !important;
             border-radius: 8px !important;
         }
+
+        /* ✅ 각 항목 기본 상태 */
         ul[role="listbox"] li {
-            color: #f9fafb !important;
+            color: #ffffff !important;
             font-weight: 500 !important;
             padding: 6px 10px !important;
         }
+
+        /* ✅ hover 시 */
         ul[role="listbox"] li:hover {
             background-color: #3a3d48 !important;
             color: #ffffff !important;
         }
 
-        /* ✅ placeholder 색상 */
-        div[data-baseweb="select"] div[data-testid="stMarkdownContainer"] p {
-            color: #d1d5db !important;
+        /* ✅ 선택된 항목 (선택 후 focus 유지되는 상태 포함) */
+        ul[role="listbox"] li[aria-selected="true"] {
+            background-color: #4b5563 !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
+        }
+
+        /* ✅ 비활성/placeholder 색상 */
+        ul[role="listbox"] li[aria-disabled="true"] {
+            color: #9ca3af !important;
         }
 
         /* ===== 텍스트 ===== */
@@ -221,7 +213,7 @@ if theme == "dark":
             color: #f3f4f6 !important;
         }
 
-        /* ===== 버튼 (예측 실행 포함) ===== */
+        /* ===== 버튼 ===== */
         div.stButton > button {
             background-color: #3b5ad6 !important;
             color: #ffffff !important;
@@ -230,33 +222,12 @@ if theme == "dark":
             border: none !important;
             transition: background-color 0.2s ease-in-out;
         }
-        div.stButton > button span {
-            color: #ffffff !important;
-        }
         div.stButton > button:hover {
             background-color: #4c6ef5 !important;
         }
 
-        /* ✅ 사이드바 전환 버튼 */
-        section[data-testid="stSidebar"] div.stButton > button {
-            background-color: #b45309 !important;
-            color: #fefce8 !important;
-            font-weight: 600 !important;
-            border-radius: 8px !important;
-            border: 1px solid #92400e !important;
-            transition: all 0.25s ease-in-out;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        }
-        section[data-testid="stSidebar"] div.stButton > button:hover {
-            background-color: #d97706 !important;
-            border-color: #b45309 !important;
-            color: #fff8e1 !important;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-        }
-
-        /* 구분선 */
+        /* ===== 구분선 ===== */
         section[data-testid="stSidebar"] hr {
-            border: none !important;
             border-top: 1px solid rgba(255,255,255,0.08) !important;
             margin: 1rem 0 !important;
         }
@@ -285,15 +256,23 @@ else:
             font-weight: 600 !important;
         }
 
-        /* ===== 입력창 ===== */
+        /* ===== Selectbox ===== */
         div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
             color: #111827 !important;
             border: 1px solid #cbd5e1 !important;
             border-radius: 6px !important;
         }
+        ul[role="listbox"] {
+            background-color: #ffffff !important;
+            border: 1px solid #e5e7eb !important;
+            border-radius: 8px !important;
+        }
         ul[role="listbox"] li {
             color: #111827 !important;
+        }
+        ul[role="listbox"] li:hover {
+            background-color: #f3f4f6 !important;
         }
 
         /* ===== 버튼 ===== */
@@ -308,8 +287,15 @@ else:
         div.stButton > button:hover {
             background-color: #1e40af !important;
         }
+
+        /* ===== 구분선 ===== */
+        section[data-testid="stSidebar"] hr {
+            border-top: 1px solid #e5e7eb !important;
+            margin: 1rem 0 !important;
+        }
         </style>
     """, unsafe_allow_html=True)
+
 # =========================================
 # 1️⃣ 개별 예측
 # =========================================
