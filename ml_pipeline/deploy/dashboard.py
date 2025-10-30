@@ -129,9 +129,22 @@ st.sidebar.markdown("---")
 st.sidebar.markdown("---")
 st.sidebar.subheader("🎨 테마 설정")
 
-theme = st.sidebar.radio("모드 선택", ["🌞 라이트 모드", "🌙 다크 모드"])
+# ✅ 기본값: 다크 모드
+if "theme" not in st.session_state:
+    st.session_state["theme"] = "dark"
 
-if theme == "🌙 다크 모드":
+# ✅ 토글 버튼 방식
+toggle_label = "🌞 라이트 모드로 전환" if st.session_state["theme"] == "dark" else "🌙 다크 모드로 전환"
+if st.sidebar.button(toggle_label, use_container_width=True):
+    st.session_state["theme"] = "light" if st.session_state["theme"] == "dark" else "dark"
+    st.rerun()
+
+theme = st.session_state["theme"]
+
+# =========================================
+# 🌙 다크 모드 스타일 (기본)
+# =========================================
+if theme == "dark":
     st.markdown("""
         <style>
         /* ===== 전체 영역 ===== */
@@ -170,26 +183,29 @@ if theme == "🌙 다크 모드":
         }
 
         /* ===== 버튼 ===== */
-        button[kind="primary"], button[kind="secondary"] {
+        div.stButton > button {
             background-color: #3b5ad6 !important;
             color: #ffffff !important;
+            font-weight: 600 !important;
             border-radius: 8px !important;
+            border: none !important;
         }
-
-        button[kind="primary"]:hover, button[kind="secondary"]:hover {
+        div.stButton > button:hover {
             background-color: #4c6ef5 !important;
         }
         </style>
     """, unsafe_allow_html=True)
 
+# =========================================
+# 🌞 라이트 모드 스타일
+# =========================================
 else:
-    # ✅ 라이트 모드 완전 보정 (모바일 포함)
     st.markdown("""
         <style>
         /* ===== 전체 영역 ===== */
         .stApp {
             background-color: #ffffff !important;
-            color: #111827 !important;  /* ✅ 진한 검정 */
+            color: #111827 !important;
         }
 
         /* ===== 사이드바 ===== */
@@ -205,12 +221,12 @@ else:
 
         /* ===== CSV 안내박스 ===== */
         .stAlert {
-            background-color: #f1f5f9 !important;  /* ✅ 옅은 회색 */
-            border-left: 4px solid #2563eb !important; /* ✅ 파란 포인트 */
+            background-color: #f1f5f9 !important;
+            border-left: 4px solid #2563eb !important;
             border-radius: 8px !important;
         }
         .stAlert div, .stAlert p, .stAlert span, .stAlert li {
-            color: #1e293b !important; /* ✅ 안정적 대비 */
+            color: #1e293b !important;
         }
 
         /* ===== 입력창 ===== */
@@ -222,14 +238,16 @@ else:
         }
 
         /* ===== 버튼 ===== */
-        button[kind="primary"], button[kind="secondary"] {
+        div.stButton > button {
             background-color: #2563eb !important;
-            color: #ffffff !important;
+            color: #ffffff !important;  /* ✅ 흰색 텍스트로 고정 */
+            font-weight: 600 !important;
             border-radius: 8px !important;
+            border: none !important;
         }
-
-        button[kind="primary"]:hover, button[kind="secondary"]:hover {
+        div.stButton > button:hover {
             background-color: #3b82f6 !important;
+            color: #ffffff !important;
         }
         </style>
     """, unsafe_allow_html=True)
