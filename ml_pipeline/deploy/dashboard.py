@@ -82,6 +82,23 @@ st.markdown("---")
 # 📊 사이드바: 프리셋
 # =========================================
 st.sidebar.header("📊 빠른 분석")
+
+# =========================================
+# 🌙 라이트 모드 & 다크 모드 (먼저 정의)
+# =========================================
+st.sidebar.subheader("🎨 테마 설정")
+
+if "theme" not in st.session_state:
+    st.session_state["theme"] = "dark"
+
+toggle_label = "🌞 라이트 모드로 전환" if st.session_state["theme"] == "dark" else "🌙 다크 모드로 전환"
+if st.sidebar.button(toggle_label, use_container_width=True):
+    st.session_state["theme"] = "light" if st.session_state["theme"] == "dark" else "dark"
+    st.rerun()
+
+theme = st.session_state["theme"]
+
+st.sidebar.markdown("---")
 st.sidebar.subheader("🎯 고객 프로필 프리셋")
 
 preset_profiles = {
@@ -187,21 +204,6 @@ with st.sidebar.expander("🕐 최근 예측 기록"):
             st.write(f"- {entry['time']} | {entry['preset']}")
 
 st.sidebar.markdown("---")
-
-# =========================================
-# 🌙 라이트 모드 & 다크 모드
-# =========================================
-st.sidebar.subheader("🎨 테마 설정")
-
-if "theme" not in st.session_state:
-    st.session_state["theme"] = "dark"
-
-toggle_label = "🌞 라이트 모드로 전환" if st.session_state["theme"] == "dark" else "🌙 다크 모드로 전환"
-if st.sidebar.button(toggle_label, use_container_width=True):
-    st.session_state["theme"] = "light" if st.session_state["theme"] == "dark" else "dark"
-    st.rerun()
-
-theme = st.session_state["theme"]
 
 # =========================================
 # 🎨 테마 스타일
