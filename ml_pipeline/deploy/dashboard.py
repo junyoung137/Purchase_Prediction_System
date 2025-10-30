@@ -384,7 +384,39 @@ if theme == "dark":
             font-weight: 700 !important;
         }
 
-        /* ===== 일반 버튼 ===== */
+        /* ===== Expander 스타일링 ===== */
+        [data-testid="stExpander"] {
+            background-color: #ffffff !important;
+            border: 1px solid #e5e7eb !important;
+            border-radius: 8px !important;
+        }
+
+        /* ===== 정보 박스 스타일링 ===== */
+        .stInfo, [data-testid="stInfo"] {
+            background-color: #eff6ff !important;
+            border-left: 4px solid #3b82f6 !important;
+            color: #1e40af !important;
+        }
+
+        .stSuccess, [data-testid="stSuccess"] {
+            background-color: #f0fdf4 !important;
+            border-left: 4px solid #22c55e !important;
+            color: #15803d !important;
+        }
+
+        .stWarning, [data-testid="stWarning"] {
+            background-color: #fffbeb !important;
+            border-left: 4px solid #f59e0b !important;
+            color: #92400e !important;
+        }
+
+        .stError, [data-testid="stError"] {
+            background-color: #fef2f2 !important;
+            border-left: 4px solid #ef4444 !important;
+            color: #991b1b !important;
+        }
+
+        /* ===== Selectbox ===== */
         div.stButton > button {
             background-color: #3b5ad6 !important;
             color: #ffffff !important;
@@ -481,6 +513,65 @@ else:
             font-family: 'Pretendard', 'Inter', sans-serif;
         }
 
+        /* ===== 메인 컨텐츠 영역 배경 ===== */
+        [data-testid="stVerticalBlock"] > [data-testid="stVerticalBlock"] {
+            background-color: #f9fafb !important;
+        }
+
+        /* ===== 입력 필드 컨테이너 (카드 스타일) ===== */
+        [data-testid="stNumberInput"] {
+            background-color: #ffffff !important;
+            padding: 12px !important;
+            border-radius: 8px !important;
+            border: 1px solid #e5e7eb !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+            transition: all 0.2s ease-in-out !important;
+        }
+
+        [data-testid="stNumberInput"]:hover {
+            border-color: rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 2px 6px rgba(59, 130, 246, 0.1) !important;
+        }
+
+        /* ===== 입력 필드 라벨 ===== */
+        [data-testid="stNumberInput"] label {
+            color: #374151 !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            margin-bottom: 6px !important;
+        }
+
+        /* ===== 입력 필드 input ===== */
+        [data-testid="stNumberInput"] input {
+            background-color: #f9fafb !important;
+            color: #111827 !important;
+            border: 1px solid #d1d5db !important;
+            border-radius: 6px !important;
+            padding: 8px 12px !important;
+            font-size: 15px !important;
+            font-weight: 500 !important;
+        }
+
+        [data-testid="stNumberInput"] input:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+            background-color: #ffffff !important;
+        }
+
+        /* ===== 입력 필드 버튼 (+/-) ===== */
+        [data-testid="stNumberInput"] button {
+            background-color: #f3f4f6 !important;
+            color: #374151 !important;
+            border: 1px solid #d1d5db !important;
+            border-radius: 4px !important;
+        }
+
+        [data-testid="stNumberInput"] button:hover {
+            background-color: #e5e7eb !important;
+            border-color: #9ca3af !important;
+            color: #111827 !important;
+        }
+
         /* ===== 사이드바 ===== */
         section[data-testid="stSidebar"] {
             background-color: #f8fafc !important;
@@ -501,7 +592,59 @@ else:
             font-weight: 500 !important;
         }
 
-        /* ===== Selectbox ===== */
+        /* ===== Metric 카드 스타일링 ===== */
+        [data-testid="stMetric"] {
+            background-color: #ffffff !important;
+            padding: 16px !important;
+            border-radius: 8px !important;
+            border: 1px solid #e5e7eb !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        [data-testid="stMetric"] label {
+            color: #6b7280 !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+        }
+
+        [data-testid="stMetric"] [data-testid="stMetricValue"] {
+            color: #111827 !important;
+            font-size: 24px !important;
+            font-weight: 700 !important;
+        }
+
+        /* ===== 파일 업로더 스타일링 ===== */
+        [data-testid="stFileUploader"] {
+            background-color: #ffffff !important;
+            border: 2px dashed #d1d5db !important;
+            border-radius: 8px !important;
+            padding: 20px !important;
+        }
+
+        [data-testid="stFileUploader"] section {
+            background-color: transparent !important;
+            border: none !important;
+        }
+
+        [data-testid="stFileUploader"] label,
+        [data-testid="stFileUploader"] small,
+        [data-testid="stFileUploader"] p,
+        [data-testid="stFileUploader"] span {
+            color: #374151 !important;
+        }
+
+        [data-testid="stFileUploader"] button {
+            background-color: #3b82f6 !important;
+            color: #ffffff !important;
+            border: none !important;
+            padding: 8px 16px !important;
+            border-radius: 6px !important;
+            font-weight: 600 !important;
+        }
+
+        [data-testid="stFileUploader"] button:hover {
+            background-color: #2563eb !important;
+        }
         div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
             color: #111827 !important;
