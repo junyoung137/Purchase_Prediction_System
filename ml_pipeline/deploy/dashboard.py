@@ -272,7 +272,22 @@ if theme == "dark":
         }
 
         /* ===== 텍스트 ===== */
-        h1, h2, h3, h4, h5, h6, p, span, label, li {
+        h1, h2, h3, h4, h5, h6, p, span, label, li, div {
+            color: #f3f4f6 !important;
+        }
+        
+        /* ===== Metric 라벨과 값 ===== */
+        [data-testid="stMetricLabel"],
+        [data-testid="stMetricValue"],
+        [data-testid="stMetricDelta"],
+        [data-testid="metric-container"] *,
+        [data-testid="stMetric"] * {
+            color: #f3f4f6 !important;
+        }
+        
+        /* ===== Number Input 라벨 ===== */
+        [data-testid="stNumberInput"] label,
+        [data-testid="stNumberInput"] * {
             color: #f3f4f6 !important;
         }
 
@@ -331,9 +346,24 @@ else:
         }
 
         /* ===== 제목 및 텍스트 ===== */
-        h1, h2, h3, h4, h5, h6, label {
+        h1, h2, h3, h4, h5, h6, label, p, span, div, li {
             color: #111827 !important;
             font-weight: 600 !important;
+        }
+        
+        /* ===== Metric 라벨과 값 ===== */
+        [data-testid="stMetricLabel"],
+        [data-testid="stMetricValue"],
+        [data-testid="stMetricDelta"],
+        [data-testid="metric-container"] *,
+        [data-testid="stMetric"] * {
+            color: #111827 !important;
+        }
+        
+        /* ===== Number Input 라벨 ===== */
+        [data-testid="stNumberInput"] label,
+        [data-testid="stNumberInput"] * {
+            color: #111827 !important;
         }
 
         /* ===== Selectbox ===== */
