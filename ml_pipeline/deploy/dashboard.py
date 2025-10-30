@@ -525,8 +525,6 @@ if st.button("🔍 예측 실행", use_container_width=True):
         fig.update_layout(height=280)
         st.plotly_chart(fig, use_container_width=True)
         st.success("✅ 예측 완료!")
-        
-        st.rerun()
 
 st.caption("💡 첫 실행 시 서버 초기화로 1분가량 지연될 수 있습니다.")
 
@@ -534,9 +532,9 @@ st.caption("💡 첫 실행 시 서버 초기화로 1분가량 지연될 수 있
 # 2️⃣ 배치 예측 (CSV)
 # =========================================
 st.markdown("---")
-st.markdown("### 2️⃣ 대량 고객 구매 가능성 예측")
+st.markdown("### 2️⃣ 대량 고객 구매 가능성 예측 (CSV 업로드)")
 
-# 간결한 안내 메시지
+# CSV 업로드 안내 박스
 if theme == "dark":
     st.markdown("""
         <div style='background-color: #1e3a5f; border-left: 3px solid #3b82f6; padding: 10px 14px; border-radius: 6px; margin-bottom: 16px;'>
