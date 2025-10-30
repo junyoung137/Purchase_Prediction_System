@@ -221,6 +221,38 @@ if theme == "dark":
             border-top: 1px solid rgba(255,255,255,0.08) !important;
             margin: 1rem 0 !important;
         }
+
+        /* ===== Selectbox (드롭다운) 스타일 보정 ===== */
+div[data-baseweb="select"] > div {
+    background-color: #2f323c !important;   /* 드롭다운 입력칸 배경 */
+    color: #f9fafb !important;              /* 글씨색 밝게 */
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    border-radius: 6px !important;
+}
+
+/* 드롭다운 리스트 영역 */
+ul[role="listbox"] {
+    background-color: #2f323c !important;   /* 팝업 박스 배경 */
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    border-radius: 8px !important;
+}
+
+/* 각 항목 */
+ul[role="listbox"] li {
+    color: #f3f4f6 !important;              /* 글씨 밝게 */
+    font-weight: 500 !important;
+    padding: 6px 10px !important;
+}
+
+/* hover 시 강조 효과 */
+ul[role="listbox"] li:hover {
+    background-color: #3a3d48 !important;   /* hover 시 은은한 대비 */
+}
+
+/* 선택된 항목 강조 */
+div[data-baseweb="select"] span {
+    color: #f3f4f6 !important;
+}
         </style>
     """, unsafe_allow_html=True)
 
