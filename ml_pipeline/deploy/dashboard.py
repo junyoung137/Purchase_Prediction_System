@@ -169,7 +169,7 @@ if theme == "dark":
             box-shadow: 0 2px 6px rgba(0,0,0,0.25) !important;
         }
 
-        /* ✅ 선택된 텍스트 & placeholder */
+        /* ✅ 선택된 텍스트 */
         div[data-baseweb="select"] span, 
         div[data-baseweb="select"] input, 
         div[data-baseweb="select"] div {
@@ -196,14 +196,14 @@ if theme == "dark":
             color: #ffffff !important;
         }
 
-        /* ✅ 선택된 항목 (선택 후 focus 유지되는 상태 포함) */
+        /* ✅ 선택된 항목 */
         ul[role="listbox"] li[aria-selected="true"] {
             background-color: #4b5563 !important;
             color: #ffffff !important;
             font-weight: 600 !important;
         }
 
-        /* ✅ 비활성/placeholder 색상 */
+        /* ✅ 비활성(‘선택 안함’) */
         ul[role="listbox"] li[aria-disabled="true"] {
             color: #9ca3af !important;
         }
@@ -213,7 +213,7 @@ if theme == "dark":
             color: #f3f4f6 !important;
         }
 
-        /* ===== 버튼 ===== */
+        /* ===== 일반 버튼 ===== */
         div.stButton > button {
             background-color: #3b5ad6 !important;
             color: #ffffff !important;
@@ -224,6 +224,23 @@ if theme == "dark":
         }
         div.stButton > button:hover {
             background-color: #4c6ef5 !important;
+        }
+
+        /* ✅ 사이드바 내 전환 버튼 (원래의 주황색 복원) */
+        section[data-testid="stSidebar"] div.stButton > button {
+            background-color: #b45309 !important;
+            color: #fefce8 !important;
+            font-weight: 600 !important;
+            border-radius: 8px !important;
+            border: 1px solid #92400e !important;
+            transition: all 0.25s ease-in-out;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        section[data-testid="stSidebar"] div.stButton > button:hover {
+            background-color: #d97706 !important;
+            border-color: #b45309 !important;
+            color: #fff8e1 !important;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
         }
 
         /* ===== 구분선 ===== */
@@ -275,7 +292,7 @@ else:
             background-color: #f3f4f6 !important;
         }
 
-        /* ===== 버튼 ===== */
+        /* ===== 일반 버튼 ===== */
         div.stButton > button {
             background-color: #3b82f6 !important;
             color: #ffffff !important;
@@ -288,6 +305,22 @@ else:
             background-color: #1e40af !important;
         }
 
+        /* ✅ 사이드바 전환 버튼 (라이트 모드에서도 동일 주황색 유지) */
+        section[data-testid="stSidebar"] div.stButton > button {
+            background-color: #b45309 !important;
+            color: #fefce8 !important;
+            font-weight: 600 !important;
+            border-radius: 8px !important;
+            border: 1px solid #92400e !important;
+            transition: all 0.25s ease-in-out;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        section[data-testid="stSidebar"] div.stButton > button:hover {
+            background-color: #d97706 !important;
+            border-color: #b45309 !important;
+            color: #fff8e1 !important;
+        }
+
         /* ===== 구분선 ===== */
         section[data-testid="stSidebar"] hr {
             border-top: 1px solid #e5e7eb !important;
@@ -295,7 +328,6 @@ else:
         }
         </style>
     """, unsafe_allow_html=True)
-
 # =========================================
 # 1️⃣ 개별 예측
 # =========================================
