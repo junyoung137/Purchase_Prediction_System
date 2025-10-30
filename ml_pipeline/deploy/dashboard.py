@@ -221,13 +221,23 @@ else:
             font-weight: 600 !important;
         }
 
-        /* ===== 세션 입력 구역 카드 스타일 ===== */
+        /* ✅ 고객 세션 입력 섹션 전체 배경 */
+        div[data-testid="stHorizontalBlock"] {
+            background-color: #f8fafc !important; /* 옅은 하늘톤 */
+            border: 1px solid #e5e7eb !important;
+            border-radius: 14px !important;
+            padding: 25px 25px 10px 25px !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            margin-bottom: 25px !important;
+        }
+
+        /* ===== 각 입력칸 내부 ===== */
         div[data-testid="column"] > div > div {
             background-color: #ffffff !important;
             border: 1px solid #e5e7eb !important;
-            border-radius: 12px !important;
-            padding: 20px 18px !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-radius: 10px !important;
+            padding: 20px 16px !important;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
         }
 
         /* ===== 입력창 ===== */
@@ -239,12 +249,12 @@ else:
         }
         input:focus {
             border-color: #3b82f6 !important;
-            box-shadow: 0 0 0 2px rgba(59,130,246,0.2) !important;
+            box-shadow: 0 0 0 2px rgba(59,130,246,0.15) !important;
         }
 
         /* ===== 버튼 ===== */
         div.stButton > button {
-            background-color: #3b82f6 !important; /* 톤 다운 블루 */
+            background-color: #3b82f6 !important;
             color: #ffffff !important;
             font-weight: 600 !important;
             border-radius: 8px !important;
