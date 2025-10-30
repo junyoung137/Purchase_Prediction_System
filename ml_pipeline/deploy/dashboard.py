@@ -155,14 +155,14 @@ if theme == "dark":
 
         /* ===== 사이드바 ===== */
         section[data-testid="stSidebar"] {
-            background-color: #252831 !important; /* ✅ 원래 색상 유지 */
+            background-color: #252831 !important; /* 원래 색 유지 */
             color: #e5e7eb !important;
             border-right: 1px solid rgba(255,255,255,0.05) !important;
         }
 
-        /* ✅ Expander (탭만 밝게 구분) */
+        /* ✅ Expander (탭 구분감 강화) */
         details[data-testid="stExpander"] {
-            background-color: #2f323c !important; /* 사이드바보다 살짝 밝은 회색 */
+            background-color: #2f323c !important;
             border: 1px solid rgba(255,255,255,0.08) !important;
             border-radius: 10px !important;
             padding: 6px 10px !important;
@@ -170,14 +170,38 @@ if theme == "dark":
             transition: all 0.25s ease-in-out;
         }
         details[data-testid="stExpander"]:hover {
-            background-color: #3a3d48 !important; /* hover 시 부드럽게 강조 */
+            background-color: #3a3d48 !important;
             border-color: rgba(255,255,255,0.15) !important;
         }
 
-        /* ✅ Expander 제목 */
         summary {
             color: #f3f4f6 !important;
             font-weight: 600 !important;
+        }
+
+        /* ===== Selectbox (드롭다운) ===== */
+        div[data-baseweb="select"] > div {
+            background-color: #2f323c !important;
+            color: #f9fafb !important;
+            border: 1px solid rgba(255,255,255,0.15) !important;
+            border-radius: 6px !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25) !important;
+        }
+        ul[role="listbox"] {
+            background-color: #2f323c !important;
+            border: 1px solid rgba(255,255,255,0.15) !important;
+            border-radius: 8px !important;
+        }
+        ul[role="listbox"] li {
+            color: #f3f4f6 !important;
+            font-weight: 500 !important;
+            padding: 6px 10px !important;
+        }
+        ul[role="listbox"] li:hover {
+            background-color: #3a3d48 !important;
+        }
+        div[data-baseweb="select"] span {
+            color: #f3f4f6 !important;
         }
 
         /* ===== 텍스트 ===== */
@@ -185,7 +209,7 @@ if theme == "dark":
             color: #f3f4f6 !important;
         }
 
-        /* ===== 일반 버튼 ===== */
+        /* ===== 버튼 (예측 실행 포함) ===== */
         div.stButton > button {
             background-color: #3b5ad6 !important;
             color: #ffffff !important;
@@ -194,11 +218,14 @@ if theme == "dark":
             border: none !important;
             transition: background-color 0.2s ease-in-out;
         }
+        div.stButton > button span {
+            color: #ffffff !important;
+        }
         div.stButton > button:hover {
             background-color: #4c6ef5 !important;
         }
 
-        /* ✅ 사이드바 전환 버튼 (라이트 모드로 전환) */
+        /* ✅ 사이드바 전환 버튼 */
         section[data-testid="stSidebar"] div.stButton > button {
             background-color: #b45309 !important;
             color: #fefce8 !important;
@@ -215,44 +242,12 @@ if theme == "dark":
             box-shadow: 0 3px 8px rgba(0,0,0,0.3);
         }
 
-        /* ✅ 구분선 보완 */
+        /* 구분선 */
         section[data-testid="stSidebar"] hr {
             border: none !important;
             border-top: 1px solid rgba(255,255,255,0.08) !important;
             margin: 1rem 0 !important;
         }
-
-        /* ===== Selectbox (드롭다운) 스타일 보정 ===== */
-div[data-baseweb="select"] > div {
-    background-color: #2f323c !important;   /* 드롭다운 입력칸 배경 */
-    color: #f9fafb !important;              /* 글씨색 밝게 */
-    border: 1px solid rgba(255,255,255,0.15) !important;
-    border-radius: 6px !important;
-}
-
-/* 드롭다운 리스트 영역 */
-ul[role="listbox"] {
-    background-color: #2f323c !important;   /* 팝업 박스 배경 */
-    border: 1px solid rgba(255,255,255,0.15) !important;
-    border-radius: 8px !important;
-}
-
-/* 각 항목 */
-ul[role="listbox"] li {
-    color: #f3f4f6 !important;              /* 글씨 밝게 */
-    font-weight: 500 !important;
-    padding: 6px 10px !important;
-}
-
-/* hover 시 강조 효과 */
-ul[role="listbox"] li:hover {
-    background-color: #3a3d48 !important;   /* hover 시 은은한 대비 */
-}
-
-/* 선택된 항목 강조 */
-div[data-baseweb="select"] span {
-    color: #f3f4f6 !important;
-}
         </style>
     """, unsafe_allow_html=True)
 
@@ -278,7 +273,7 @@ else:
             font-weight: 600 !important;
         }
 
-        /* ✅ 고객 세션 입력 섹션 */
+        /* ===== 고객 세션 입력 섹션 ===== */
         div[data-testid="stHorizontalBlock"] {
             background-color: #f3f6fa !important;
             border: 1px solid #d1d5db !important;
@@ -286,6 +281,11 @@ else:
             padding: 30px 30px 15px 30px !important;
             box-shadow: 0 6px 14px rgba(0,0,0,0.08);
             margin-bottom: 30px !important;
+            transition: all 0.3s ease-in-out;
+        }
+        div[data-testid="stHorizontalBlock"]:hover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.10);
+            border-color: #cbd5e1 !important;
         }
 
         /* ===== 입력칸 ===== */
@@ -304,32 +304,41 @@ else:
             border: 1px solid #cbd5e1 !important;
             border-radius: 6px !important;
         }
+        input:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59,130,246,0.15) !important;
+        }
 
         /* ===== 버튼 (예측 실행 포함) ===== */
         div.stButton > button {
             background-color: #3b82f6 !important;
-            color: #ffffff !important; /* ✅ 항상 흰색 유지 */
+            color: #ffffff !important;
             font-weight: 600 !important;
             border-radius: 8px !important;
             border: none !important;
             transition: all 0.2s ease-in-out;
         }
         div.stButton > button span {
-            color: #ffffff !important; /* ✅ 버튼 내부 span 글씨도 강제 흰색 */
+            color: #ffffff !important;
         }
         div.stButton > button:hover {
             background-color: #1e40af !important;
         }
 
-        /* ===== 사이드바 토글 버튼 ===== */
+        /* ===== 사이드바 전환 버튼 ===== */
         section[data-testid="stSidebar"] div.stButton > button {
             background-color: #e5e7eb !important;
             color: #111827 !important;
-            border: 1px solid #d1d5db !important;
+            font-weight: 500 !important;
             border-radius: 8px !important;
+            border: 1px solid #d1d5db !important;
+            transition: all 0.2s ease-in-out;
+        }
+        section[data-testid="stSidebar"] div.stButton > button:hover {
+            background-color: #d1d5db !important;
         }
 
-        /* ===== 안내박스 (CSV 업로드 안내) ===== */
+        /* ===== 안내박스 ===== */
         .stAlert {
             background-color: #dbeafe !important;
             border-left: 4px solid #3b82f6 !important;
@@ -340,9 +349,9 @@ else:
             font-weight: 500 !important;
         }
 
-        /* ✅ 일반 텍스트 (💡 안내문 포함) */
-        div[data-testid="stMarkdownContainer"] p:not(button p),
-        div[data-testid="stMarkdownContainer"] span:not(button span),
+        /* 일반 텍스트 (💡 안내문 포함) */
+        div[data-testid="stMarkdownContainer"] p,
+        div[data-testid="stMarkdownContainer"] span,
         div[data-testid="stMarkdownContainer"] li {
             color: #111827 !important;
         }
@@ -355,6 +364,7 @@ else:
         }
         </style>
     """, unsafe_allow_html=True)
+
 
 # =========================================
 # 1️⃣ 개별 예측
