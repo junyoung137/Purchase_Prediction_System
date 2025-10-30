@@ -271,8 +271,21 @@ if theme == "dark":
         }
 
         /* ===== 텍스트 ===== */
-        h1, h2, h3, h4, h5, h6, p, span, label, li {
+        h1, h2, h3, h4, h5, h6, p, span, label, li, div {
             color: #f3f4f6 !important;
+        }
+        
+        /* ===== Metric 카드 텍스트 ===== */
+        [data-testid="stMetricLabel"], 
+        [data-testid="stMetricValue"],
+        [data-testid="stMetricDelta"] {
+            color: #f3f4f6 !important;
+        }
+        
+        /* ===== Metric 값 강조 ===== */
+        [data-testid="stMetricValue"] {
+            font-size: 1.5rem !important;
+            font-weight: 700 !important;
         }
 
         /* ===== 일반 버튼 ===== */
@@ -330,9 +343,22 @@ else:
         }
 
         /* ===== 제목 및 텍스트 ===== */
-        h1, h2, h3, h4, h5, h6, label {
+        h1, h2, h3, h4, h5, h6, label, p, span, div {
             color: #111827 !important;
             font-weight: 600 !important;
+        }
+        
+        /* ===== Metric 카드 텍스트 ===== */
+        [data-testid="stMetricLabel"], 
+        [data-testid="stMetricValue"],
+        [data-testid="stMetricDelta"] {
+            color: #111827 !important;
+        }
+        
+        /* ===== Metric 값 강조 ===== */
+        [data-testid="stMetricValue"] {
+            font-size: 1.5rem !important;
+            font-weight: 700 !important;
         }
 
         /* ===== Selectbox ===== */
