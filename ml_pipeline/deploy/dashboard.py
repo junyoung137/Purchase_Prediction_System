@@ -209,6 +209,39 @@ if theme == "dark":
             border-color: rgba(255, 255, 255, 0.2) !important;
         }
 
+        /* ===== 파일 업로더 스타일링 ===== */
+        [data-testid="stFileUploader"] {
+            background-color: #25262b !important;
+            border: 2px dashed rgba(255, 255, 255, 0.15) !important;
+            border-radius: 8px !important;
+            padding: 20px !important;
+        }
+
+        [data-testid="stFileUploader"] section {
+            background-color: transparent !important;
+            border: none !important;
+        }
+
+        [data-testid="stFileUploader"] label,
+        [data-testid="stFileUploader"] small,
+        [data-testid="stFileUploader"] p,
+        [data-testid="stFileUploader"] span {
+            color: #e5e7eb !important;
+        }
+
+        [data-testid="stFileUploader"] button {
+            background-color: #3b5ad6 !important;
+            color: #ffffff !important;
+            border: none !important;
+            padding: 8px 16px !important;
+            border-radius: 6px !important;
+            font-weight: 600 !important;
+        }
+
+        [data-testid="stFileUploader"] button:hover {
+            background-color: #4c6ef5 !important;
+        }
+
         /* ===== 사이드바 ===== */
         section[data-testid="stSidebar"] {
             background-color: #252831 !important;
