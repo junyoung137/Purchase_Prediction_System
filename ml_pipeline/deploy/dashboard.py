@@ -300,7 +300,7 @@ else:
         /* 일반 버튼 */
         div.stButton > button {
             background-color: #3b82f6;
-            color: #ffffff;
+            color: #ffffff !important;
             font-weight: 600;
             border-radius: 8px;
         }
@@ -311,7 +311,7 @@ else:
         /* 사이드바 버튼 */
         section[data-testid="stSidebar"] div.stButton > button {
             background-color: #b45309;
-            color: #fefce8;
+            color: #ffffff !important;
             border: 1px solid #92400e;
         }
         section[data-testid="stSidebar"] div.stButton > button:hover {
