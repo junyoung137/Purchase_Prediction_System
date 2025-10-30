@@ -124,7 +124,7 @@ with st.sidebar.expander("🕒 최근 예측 기록"):
 st.sidebar.markdown("---")
 
 # =========================================
-# 🌙 테마 토글 (시각 최적화 다크모드)
+# 🌙 실무형 다크모드 (Low-Contrast Dark Theme)
 # =========================================
 st.sidebar.markdown("---")
 st.sidebar.subheader("🎨 테마 설정")
@@ -134,57 +134,70 @@ theme = st.sidebar.radio("모드 선택", ["🌞 라이트 모드", "🌙 다크
 if theme == "🌙 다크 모드":
     st.markdown("""
         <style>
-        /* 전체 배경 및 텍스트 */
+        /* ===== 전체 영역 ===== */
         .stApp {
-            background-color: #0b1120;
-            color: #f8fafc;
+            background-color: #1c1f26;  /* ✅ 부드러운 블루그레이 */
+            color: #e5e7eb;
         }
-        /* 사이드바 */
+        /* ===== 사이드바 ===== */
         section[data-testid="stSidebar"] {
-            background-color: #111827;
-            color: #f1f5f9;
+            background-color: #23272f;  /* ✅ 덜 어두운 톤 */
+            color: #e2e8f0;
         }
-        /* 제목, 헤더 */
-        h1, h2, h3, h4, h5, h6, p, label {
-            color: #e2e8f0 !important;
+        /* ===== 텍스트 ===== */
+        h1, h2, h3, h4, h5, h6, label, p {
+            color: #f1f5f9 !important;
         }
-        /* 입력창 (input, number_input 등) */
-        input, textarea {
-            background-color: #1e293b !important;
+        /* ===== 입력창, 셀렉트박스 ===== */
+        input, textarea, select, div[data-baseweb="select"] > div {
+            background-color: #2a2f38 !important;
             color: #f8fafc !important;
-            border: 1px solid #334155 !important;
+            border: 1px solid #3f4552 !important;
+            border-radius: 6px !important;
         }
-        /* 버튼 */
-        button {
+        /* ===== 버튼 ===== */
+        button[kind="secondary"] {
+            background-color: #3b82f6 !important;
+            color: white !important;
+            border-radius: 6px !important;
+            border: none !important;
+        }
+        button[kind="primary"] {
             background-color: #2563eb !important;
+            color: #ffffff !important;
+        }
+        /* ===== Metric 텍스트 ===== */
+        div[data-testid="stMetricValue"] {
+            color: #60a5fa !important;
+        }
+        /* ===== Expander (접기/펼치기 박스) ===== */
+        div.streamlit-expanderHeader {
+            background-color: #2a2f38 !important;
             color: #f8fafc !important;
             border-radius: 6px !important;
         }
-        /* Metric 값 */
-        div[data-testid="stMetricValue"] {
-            color: #38bdf8 !important;
+        /* ===== 데이터프레임 배경 ===== */
+        div[data-testid="stDataFrame"] {
+            background-color: #1e242c !important;
+            color: #e2e8f0 !important;
         }
-        /* Expander 배경 */
-        div.streamlit-expanderHeader {
-            background-color: #1e293b !important;
-            color: #f8fafc !important;
-        }
-        /* 구분선 및 라벨 강조 */
-        hr, .stMarkdown {
+        /* ===== 구분선 / 링크 ===== */
+        hr, a, .stMarkdown {
             color: #94a3b8 !important;
+        }
+        /* ===== number_input 버튼 색상 줄이기 ===== */
+        button[title="Decrease"], button[title="Increase"] {
+            background-color: #374151 !important;
+            color: #e5e7eb !important;
         }
         </style>
     """, unsafe_allow_html=True)
 else:
+    # 라이트 모드 기본값 유지
     st.markdown("""
         <style>
-        .stApp {
-            background-color: #ffffff;
-            color: #000000;
-        }
-        section[data-testid="stSidebar"] {
-            background-color: #f8fafc;
-        }
+        .stApp { background-color: #ffffff; color: #000000; }
+        section[data-testid="stSidebar"] { background-color: #f8fafc; }
         </style>
     """, unsafe_allow_html=True)
 # =========================================
