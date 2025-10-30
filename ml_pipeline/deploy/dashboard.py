@@ -148,8 +148,65 @@ if theme == "dark":
         <style>
         /* ===== 전체 영역 ===== */
         .stApp {
-            background-color: #1e1f25 !important;
+            background-color: #1a1b1e !important;
             color: #f3f4f6 !important;
+        }
+
+        /* ===== 메인 컨텐츠 영역 배경 ===== */
+        [data-testid="stVerticalBlock"] > [data-testid="stVerticalBlock"] {
+            background-color: #1a1b1e !important;
+        }
+
+        /* ===== 입력 필드 컨테이너 (카드 스타일) ===== */
+        [data-testid="stNumberInput"] {
+            background-color: #25262b !important;
+            padding: 12px !important;
+            border-radius: 8px !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+            transition: all 0.2s ease-in-out !important;
+        }
+
+        [data-testid="stNumberInput"]:hover {
+            border-color: rgba(59, 90, 214, 0.4) !important;
+            box-shadow: 0 4px 12px rgba(59, 90, 214, 0.15) !important;
+        }
+
+        /* ===== 입력 필드 라벨 ===== */
+        [data-testid="stNumberInput"] label {
+            color: #e5e7eb !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            margin-bottom: 6px !important;
+        }
+
+        /* ===== 입력 필드 input ===== */
+        [data-testid="stNumberInput"] input {
+            background-color: #1a1b1e !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 6px !important;
+            padding: 8px 12px !important;
+            font-size: 15px !important;
+            font-weight: 500 !important;
+        }
+
+        [data-testid="stNumberInput"] input:focus {
+            border-color: #3b5ad6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 90, 214, 0.2) !important;
+        }
+
+        /* ===== 입력 필드 버튼 (+/-) ===== */
+        [data-testid="stNumberInput"] button {
+            background-color: #2f323c !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 4px !important;
+        }
+
+        [data-testid="stNumberInput"] button:hover {
+            background-color: #3a3d48 !important;
+            border-color: rgba(255, 255, 255, 0.2) !important;
         }
 
         /* ===== 사이드바 ===== */
@@ -258,16 +315,34 @@ if theme == "dark":
         }
 
         /* ===== 텍스트 ===== */
-        h1, h2, h3, h4, h5, h6, p, span, label, li {
+        h1, h2, h3, h4, h5, h6 {
             color: #f3f4f6 !important;
+            font-weight: 700 !important;
+        }
+        
+        p, span, label, li {
+            color: #e5e7eb !important;
         }
 
-        /* ✅ caption 텍스트는 밝은 회색으로 (경고 메시지 가독성) */
-        .stCaption, 
-        [data-testid="stCaption"],
-        small {
-            color: #e5e7eb !important;
+        /* ===== Metric 카드 스타일링 ===== */
+        [data-testid="stMetric"] {
+            background-color: #25262b !important;
+            padding: 16px !important;
+            border-radius: 8px !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        [data-testid="stMetric"] label {
+            color: #9ca3af !important;
+            font-size: 13px !important;
             font-weight: 500 !important;
+        }
+
+        [data-testid="stMetric"] [data-testid="stMetricValue"] {
+            color: #ffffff !important;
+            font-size: 24px !important;
+            font-weight: 700 !important;
         }
 
         /* ===== 일반 버튼 ===== */
@@ -283,9 +358,44 @@ if theme == "dark":
             background-color: #4c6ef5 !important;
         }
 
-        /* ✅ 버튼 텍스트 강제 흰색 */
-        div.stButton > button * {
-            color: #ffffff !important;
+        /* ✅ caption 텍스트는 밝은 회색으로 (경고 메시지 가독성) */
+        .stCaption, 
+        [data-testid="stCaption"],
+        small {
+            color: #e5e7eb !important;
+            font-weight: 500 !important;
+        }
+
+        /* ===== Expander 스타일링 ===== */
+        [data-testid="stExpander"] {
+            background-color: #25262b !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            border-radius: 8px !important;
+        }
+
+        /* ===== 정보 박스 스타일링 ===== */
+        .stInfo, [data-testid="stInfo"] {
+            background-color: #1e3a5f !important;
+            border-left: 4px solid #3b82f6 !important;
+            color: #e0e7ff !important;
+        }
+
+        .stSuccess, [data-testid="stSuccess"] {
+            background-color: #1e4620 !important;
+            border-left: 4px solid #22c55e !important;
+            color: #dcfce7 !important;
+        }
+
+        .stWarning, [data-testid="stWarning"] {
+            background-color: #4a3510 !important;
+            border-left: 4px solid #f59e0b !important;
+            color: #fef3c7 !important;
+        }
+
+        .stError, [data-testid="stError"] {
+            background-color: #4a1515 !important;
+            border-left: 4px solid #ef4444 !important;
+            color: #fee2e2 !important;
         }
 
         /* ✅ 사이드바 내 전환 버튼 (원래의 주황색 복원) */
