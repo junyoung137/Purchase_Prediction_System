@@ -240,13 +240,26 @@ else:
         /* ===== 버튼 ===== */
         div.stButton > button {
             background-color: #2563eb !important;
-            color: #ffffff !important;  /* ✅ 흰색 텍스트로 고정 */
+            color: #ffffff !important;
             font-weight: 600 !important;
             border-radius: 8px !important;
             border: none !important;
         }
+
+        /* ✅ 내부 텍스트(span) 색상까지 강제 */
+        div.stButton > button > div > p,
+        div.stButton > button > span {
+            color: #ffffff !important;
+        }
+
         div.stButton > button:hover {
             background-color: #3b82f6 !important;
+            color: #ffffff !important;
+        }
+
+        /* ✅ hover 시에도 내부 텍스트 유지 */
+        div.stButton > button:hover > div > p,
+        div.stButton > button:hover > span {
             color: #ffffff !important;
         }
         </style>
