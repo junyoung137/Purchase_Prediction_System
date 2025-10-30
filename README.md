@@ -1,6 +1,6 @@
 # 🛒 E-commerce Purchase Prediction System
 
-> 실시간 데이터 수집부터 머신러닝 예측
+> 실시간 구매 가능성 예측 시스템 구축
 
 ## 📊 시스템 아키텍처
 
