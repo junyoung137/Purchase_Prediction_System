@@ -12,8 +12,8 @@ import time
 # =========================================
 API_URL = "https://purchase-prediction-system.onrender.com/predict"
 
-st.set_page_config(page_title="🛍️ 구매 예측 대시보드", layout="wide")
-st.title("🛍️ 구매 예측 대시보드")
+st.set_page_config(page_title="🛍️ 실시간 구매 가능성 예측", layout="wide")
+st.title("🛍️ 실시간 구매 가능성 예측")
 
 # =========================================
 # 📊 사이드바: 프리셋
