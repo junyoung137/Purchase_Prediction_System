@@ -129,14 +129,25 @@ st.sidebar.markdown("---")
 if selected_preset != "선택 안함":
     preset = preset_profiles[selected_preset]
     st.sidebar.markdown("### 📌 현재 선택된 프로필 요약")
-    st.sidebar.info(
-        f"""
-        - 🧭 총 방문: **{preset['total_visits']}회**  
-        - 🛒 장바구니: **{preset['cart_adds']}회**  
-        - 💳 결제 완료: **{preset['purchases']}회**  
-        - ⏰ 최근 활동: **{preset['last_activity_days']}일 전**
-        """
-    )
+    
+    if theme == "dark":
+        st.sidebar.markdown(f"""
+        <div style='background-color: #1e3a5f; padding: 16px; border-radius: 8px; border-left: 3px solid #3b82f6;'>
+            <p style='color: #ffffff; margin: 4px 0; font-size: 14px;'><strong>🧭 총 방문:</strong> {preset['total_visits']}회</p>
+            <p style='color: #ffffff; margin: 4px 0; font-size: 14px;'><strong>🛒 장바구니:</strong> {preset['cart_adds']}회</p>
+            <p style='color: #ffffff; margin: 4px 0; font-size: 14px;'><strong>💳 결제 완료:</strong> {preset['purchases']}회</p>
+            <p style='color: #ffffff; margin: 4px 0; font-size: 14px;'><strong>⏰ 최근 활동:</strong> {preset['last_activity_days']}일 전</p>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.sidebar.markdown(f"""
+        <div style='background-color: #dbeafe; padding: 16px; border-radius: 8px; border-left: 3px solid #3b82f6;'>
+            <p style='color: #1f2937; margin: 4px 0; font-size: 14px;'><strong>🧭 총 방문:</strong> {preset['total_visits']}회</p>
+            <p style='color: #1f2937; margin: 4px 0; font-size: 14px;'><strong>🛒 장바구니:</strong> {preset['cart_adds']}회</p>
+            <p style='color: #1f2937; margin: 4px 0; font-size: 14px;'><strong>💳 결제 완료:</strong> {preset['purchases']}회</p>
+            <p style='color: #1f2937; margin: 4px 0; font-size: 14px;'><strong>⏰ 최근 활동:</strong> {preset['last_activity_days']}일 전</p>
+        </div>
+        """, unsafe_allow_html=True)
 
 # 세그먼트 배지
 if selected_preset != "선택 안함":
