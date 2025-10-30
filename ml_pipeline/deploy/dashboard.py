@@ -126,113 +126,82 @@ st.sidebar.markdown("---")
 # =========================================
 # 🌙 라이트 모드 & 다크 모드
 # =========================================
-st.sidebar.markdown("---")
-st.sidebar.subheader("🎨 테마 설정")
+import streamlit as st
 
-theme = st.sidebar.radio("모드 선택", ["🌞 라이트 모드", "🌙 다크 모드"])
+# ==========================================
+# 🔹 페이지 기본 설정
+# ==========================================
+st.set_page_config(page_title="실시간 구매 가능성 예측", page_icon="🛍️", layout="centered")
 
-if theme == "🌙 다크 모드":
-    st.markdown("""
-        <style>
-        /* ===== 전체 영역 ===== */
-        .stApp {
-            background-color: #1e1f25;  
-            color: #f3f4f6 !important;
-        }
+# ==========================================
+# 🔹 스타일 커스터마이징 (버튼 포함)
+# ==========================================
+st.markdown("""
+<style>
+/* ==========================================
+   🧭 전체 페이지 기본 스타일
+   ========================================== */
+body {
+    background-color: #0e1525;
+    color: #ffffff;
+}
 
-        /* ===== 사이드바 ===== */
-        section[data-testid="stSidebar"] {
-            background-color: #252831 !important;
-            color: #e5e7eb !important;
-        }
+/* ==========================================
+   🔍 예측 실행 버튼 스타일
+   ========================================== */
+div.stButton > button:first-child {
+    background: linear-gradient(90deg, #2563eb, #1d4ed8) !important; /* 💙 파란색 그라데이션 */
+    color: white !important; /* ✅ 텍스트 흰색 고정 */
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 0.7em 2.5em !important;
+    font-weight: 600 !important;
+    font-size: 1.05rem !important;
+    letter-spacing: 0.3px !important;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 3px 10px rgba(37,99,235,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        /* ===== 텍스트 ===== */
-        h1, h2, h3, h4, h5, h6, p, span, label, li {
-            color: #f3f4f6 !important;
-        }
+div.stButton > button:first-child:hover {
+    background: linear-gradient(90deg, #1e40af, #1d4ed8) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(37,99,235,0.5);
+}
 
-        /* ===== CSV 안내박스 ===== */
-        .stAlert {
-            background-color: #1f2733 !important;
-            border-left: 4px solid #3b5ad6 !important;
-            border-radius: 8px !important;
-        }
-        .stAlert div, .stAlert p, .stAlert span, .stAlert li {
-            color: #f3f4f6 !important;
-        }
+/* ==========================================
+   🧾 제목 및 본문 스타일
+   ========================================== */
+h1, h2, h3 {
+    color: white !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
-        /* ===== 입력창 ===== */
-        input, textarea, select, div[data-baseweb="select"] > div {
-            background-color: #2b2f38 !important;
-            color: #f9fafb !important;
-            border: 1px solid #3f4552 !important;
-            border-radius: 6px !important;
-        }
+# ==========================================
+# 🔹 앱 제목 및 설명
+# ==========================================
+st.markdown("### 🛍️ 실시간 구매 가능성 예측")
+st.write("고객 세션의 주요 활동 정보를 입력하여 구매 확률을 예측합니다.")
 
-        /* ===== 버튼 ===== */
-        button[kind="primary"], button[kind="secondary"] {
-            background-color: #3b5ad6 !important;
-            color: #ffffff !important;
-            border-radius: 8px !important;
-        }
+# ==========================================
+# 🔹 입력 폼 구성
+# ==========================================
+col1, col2 = st.columns(2)
+with col1:
+    visits = st.number_input("총 방문 횟수", min_value=0.0, step=1.0)
+    events = st.number_input("전체 이벤트 수", min_value=0.0, step=1.0)
+with col2:
+    views = st.number_input("상품 조회 수", min_value=0.0, step=1.0)
+    carts = st.number_input("장바구니 담기 수", min_value=0.0, step=1.0)
 
-        button[kind="primary"]:hover, button[kind="secondary"]:hover {
-            background-color: #4c6ef5 !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
-
-else:
-    # ✅ 라이트 모드 완전 보정 (모바일 포함)
-    st.markdown("""
-        <style>
-        /* ===== 전체 영역 ===== */
-        .stApp {
-            background-color: #ffffff !important;
-            color: #111827 !important;  /* ✅ 진한 검정 */
-        }
-
-        /* ===== 사이드바 ===== */
-        section[data-testid="stSidebar"] {
-            background-color: #f8fafc !important;
-            color: #111827 !important;
-        }
-
-        /* ===== 제목 및 텍스트 ===== */
-        h1, h2, h3, h4, h5, h6, p, span, label, li {
-            color: #111827 !important;
-        }
-
-        /* ===== CSV 안내박스 ===== */
-        .stAlert {
-            background-color: #f1f5f9 !important;  /* ✅ 옅은 회색 */
-            border-left: 4px solid #2563eb !important; /* ✅ 파란 포인트 */
-            border-radius: 8px !important;
-        }
-        .stAlert div, .stAlert p, .stAlert span, .stAlert li {
-            color: #1e293b !important; /* ✅ 안정적 대비 */
-        }
-
-        /* ===== 입력창 ===== */
-        input, textarea, select, div[data-baseweb="select"] > div {
-            background-color: #ffffff !important;
-            color: #111827 !important;
-            border: 1px solid #cbd5e1 !important;
-            border-radius: 6px !important;
-        }
-
-        /* ===== 버튼 ===== */
-        button[kind="primary"], button[kind="secondary"] {
-            background-color: #2563eb !important;
-            color: #ffffff !important;
-            border-radius: 8px !important;
-        }
-
-        button[kind="primary"]:hover, button[kind="secondary"]:hover {
-            background-color: #3b82f6 !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
+# ==========================================
+# 🔹 예측 실행 버튼
+# ==========================================
+if st.button("🔍 예측 실행"):
+    st.success("✅ 예측이 완료되었습니다! (샘플 결과: 구매 확률 78%)")
 
 # =========================================
 # 1️⃣ 개별 예측
