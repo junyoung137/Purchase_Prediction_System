@@ -222,7 +222,7 @@ if theme == "dark":
             border-right: 1px solid rgba(255,255,255,0.05) !important;
         }
 
-        /* ===== Selectbox (드롭다운) ===== */
+        /* ===== Selectbox (드롭다운) - 메인 박스 ===== */
         div[data-baseweb="select"] > div {
             background-color: #2f323c !important;
             color: #ffffff !important;
@@ -231,43 +231,59 @@ if theme == "dark":
             box-shadow: 0 2px 6px rgba(0,0,0,0.25) !important;
         }
 
-        /* ✅ 선택된 텍스트 */
+        /* ===== 선택된 값 텍스트 (강력 설정) ===== */
         div[data-baseweb="select"] span, 
         div[data-baseweb="select"] input, 
-        div[data-baseweb="select"] div {
+        div[data-baseweb="select"] div,
+        div[data-baseweb="select"] * {
             color: #ffffff !important;
+            fill: #ffffff !important;
         }
 
-        /* ✅ 드롭다운 전체 영역 */
+        /* ===== 드롭다운 메뉴 전체 영역 ===== */
         ul[role="listbox"] {
             background-color: #2f323c !important;
             border: 1px solid rgba(255,255,255,0.15) !important;
             border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
         }
 
-        /* ✅ 각 항목 기본 상태 */
-        ul[role="listbox"] li {
+        /* ===== 드롭다운 항목 기본 상태 ===== */
+        ul[role="listbox"] li,
+        ul[role="listbox"] li *,
+        ul[role="listbox"] li span,
+        ul[role="listbox"] li div {
             color: #ffffff !important;
             font-weight: 500 !important;
-            padding: 6px 10px !important;
+            padding: 8px 12px !important;
+            background-color: transparent !important;
         }
 
-        /* ✅ hover 시 */
-        ul[role="listbox"] li:hover {
+        /* ===== hover 시 ===== */
+        ul[role="listbox"] li:hover,
+        ul[role="listbox"] li:hover * {
             background-color: #3a3d48 !important;
             color: #ffffff !important;
         }
 
-        /* ✅ 선택된 항목 */
-        ul[role="listbox"] li[aria-selected="true"] {
+        /* ===== 선택된 항목 ===== */
+        ul[role="listbox"] li[aria-selected="true"],
+        ul[role="listbox"] li[aria-selected="true"] * {
             background-color: #4b5563 !important;
             color: #ffffff !important;
             font-weight: 600 !important;
         }
 
-        /* ✅ 비활성('선택 안함') */
-        ul[role="listbox"] li[aria-disabled="true"] {
+        /* ===== 비활성 항목 ('선택 안함') ===== */
+        ul[role="listbox"] li[aria-disabled="true"],
+        ul[role="listbox"] li[aria-disabled="true"] * {
             color: #9ca3af !important;
+            opacity: 0.7 !important;
+        }
+        
+        /* ===== Selectbox 내부 모든 텍스트 강제 적용 ===== */
+        [data-baseweb="select"] [role="button"] * {
+            color: #ffffff !important;
         }
 
         /* ===== 텍스트 ===== */
