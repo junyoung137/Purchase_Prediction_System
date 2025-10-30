@@ -206,12 +206,34 @@ if theme == "dark":
             background-color: #252831;
             border-right: 1px solid rgba(255,255,255,0.05);
         }
+        
+        /* 모든 텍스트 색상 흰색으로 */
+        h1, h2, h3, h4, h5, h6, p, span, label, div {
+            color: #f3f4f6 !important;
+        }
+        
+        /* 메트릭 라벨 */
+        div[data-testid="stMetricLabel"] {
+            color: #e5e7eb !important;
+        }
+        
+        /* 메트릭 값 */
+        div[data-testid="stMetricValue"] {
+            color: #ffffff !important;
+        }
+        
+        /* 일반 버튼 */
         div.stButton > button {
             background-color: #3b5ad6;
             color: #ffffff;
             font-weight: 600;
             border-radius: 8px;
         }
+        div.stButton > button:hover {
+            background-color: #4c6ef5;
+        }
+        
+        /* 사이드바 버튼 */
         section[data-testid="stSidebar"] div.stButton > button {
             background-color: #b45309;
             color: #fefce8;
@@ -233,12 +255,34 @@ else:
             background-color: #f8fafc;
             border-right: 1px solid #e5e7eb;
         }
+        
+        /* 모든 텍스트 색상 진한 회색으로 */
+        h1, h2, h3, h4, h5, h6, p, span, label, div {
+            color: #111827 !important;
+        }
+        
+        /* 메트릭 라벨 */
+        div[data-testid="stMetricLabel"] {
+            color: #374151 !important;
+        }
+        
+        /* 메트릭 값 */
+        div[data-testid="stMetricValue"] {
+            color: #111827 !important;
+        }
+        
+        /* 일반 버튼 */
         div.stButton > button {
             background-color: #3b82f6;
             color: #ffffff;
             font-weight: 600;
             border-radius: 8px;
         }
+        div.stButton > button:hover {
+            background-color: #1e40af;
+        }
+        
+        /* 사이드바 버튼 */
         section[data-testid="stSidebar"] div.stButton > button {
             background-color: #b45309;
             color: #fefce8;
