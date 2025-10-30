@@ -39,7 +39,7 @@ with col1:
     total_pred = st.session_state["stats"]["total_predictions"]
     delta_pred = "+12" if total_pred > 0 else None
     st.metric(
-        label="🔢 오늘 예측 건수",
+        label="📢 오늘 예측 건수",
         value=f"{total_pred:,}건",
         delta=delta_pred
     )
@@ -131,7 +131,7 @@ if selected_preset != "선택 안함":
     st.sidebar.markdown("### 📌 현재 선택된 프로필 요약")
     st.sidebar.info(
         f"""
-        - 🧭 이 방문: **{preset['total_visits']}회**  
+        - 🧭 총 방문: **{preset['total_visits']}회**  
         - 🛒 장바구니: **{preset['cart_adds']}회**  
         - 💳 결제 완료: **{preset['purchases']}회**  
         - ⏰ 최근 활동: **{preset['last_activity_days']}일 전**
@@ -168,7 +168,7 @@ with st.sidebar.expander("🧠 시스템 상태"):
 if "log" not in st.session_state:
     st.session_state["log"] = []
 
-with st.sidebar.expander("🕒 최근 예측 기록"):
+with st.sidebar.expander("🕐 최근 예측 기록"):
     if len(st.session_state["log"]) == 0:
         st.write("아직 예측 기록이 없습니다.")
     else:
@@ -373,7 +373,7 @@ if theme == "dark":
                     padding: 16px; border-radius: 10px; margin-bottom: 20px; 
                     border-left: 4px solid #3b82f6;'>
             <h4 style='color: #60a5fa; margin: 0; font-size: 16px;'>
-                📝 고객 활동 데이터 입력
+                🔍 고객 활동 데이터 입력
             </h4>
         </div>
     """, unsafe_allow_html=True)
@@ -417,7 +417,7 @@ else:
                     padding: 16px; border-radius: 10px; margin-bottom: 20px; 
                     border-left: 4px solid #3b82f6;'>
             <h4 style='color: #1e40af; margin: 0; font-size: 16px;'>
-                📝 고객 활동 데이터 입력
+                🔍 고객 활동 데이터 입력
             </h4>
         </div>
     """, unsafe_allow_html=True)
@@ -425,7 +425,7 @@ else:
 col1, col2, col3 = st.columns(3, gap="medium")
 
 with col1:
-    st.number_input("이 방문 횟수", min_value=0.0, step=0.1, key="total_visits")
+    st.number_input("총 방문 횟수", min_value=0.0, step=0.1, key="total_visits")
     st.number_input("전체 이벤트 수", min_value=0.0, step=0.1, key="total_events")
     st.number_input("상품 조회 수", min_value=0.0, step=0.1, key="product_views")
     st.number_input("장바구니 담기 수", min_value=0.0, step=0.1, key="cart_adds")
@@ -536,25 +536,21 @@ st.caption("💡 첫 실행 시 서버 초기화로 1분가량 지연될 수 있
 st.markdown("---")
 st.markdown("### 2️⃣ 대량 고객 구매 가능성 예측 (CSV 업로드)")
 
-# 색상 구분된 안내 박스
+# 간결한 안내 메시지
 if theme == "dark":
     st.markdown("""
-        <div style='background-color: #1e3a5f; border-left: 4px solid #3b82f6; padding: 16px; border-radius: 8px; margin-bottom: 20px;'>
-            <h4 style='color: #60a5fa; margin-top: 0;'>📋 CSV 업로드 안내:</h4>
-            <ul style='color: #e5e7eb; line-height: 1.8; margin-bottom: 0;'>
-                <li>각 행은 <strong style='color: #ffffff;'>1명의 고객 세션</strong>입니다.</li>
-                <li>고객별 <strong style='color: #ffffff;'>주요 활동 데이터</strong>를 포함해야 합니다.</li>
-            </ul>
+        <div style='background-color: #1e3a5f; border-left: 3px solid #3b82f6; padding: 10px 14px; border-radius: 6px; margin-bottom: 16px;'>
+            <p style='color: #e5e7eb; margin: 0; font-size: 14px;'>
+                📋 고객 세션별 활동 데이터를 포함한 CSV 파일을 업로드해주세요.
+            </p>
         </div>
     """, unsafe_allow_html=True)
 else:
     st.markdown("""
-        <div style='background-color: #dbeafe; border-left: 4px solid #3b82f6; padding: 16px; border-radius: 8px; margin-bottom: 20px;'>
-            <h4 style='color: #1e40af; margin-top: 0;'>📋 CSV 업로드 안내:</h4>
-            <ul style='color: #1f2937; line-height: 1.8; margin-bottom: 0;'>
-                <li>각 행은 <strong style='color: #111827;'>1명의 고객 세션</strong>입니다.</li>
-                <li>고객별 <strong style='color: #111827;'>주요 활동 데이터</strong>를 포함해야 합니다.</li>
-            </ul>
+        <div style='background-color: #dbeafe; border-left: 3px solid #3b82f6; padding: 10px 14px; border-radius: 6px; margin-bottom: 16px;'>
+            <p style='color: #1f2937; margin: 0; font-size: 14px;'>
+                📋 고객 세션별 활동 데이터를 포함한 CSV 파일을 업로드해주세요.
+            </p>
         </div>
     """, unsafe_allow_html=True)
 
