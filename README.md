@@ -184,7 +184,7 @@
 
 **김준영 (Data Engineer)**
 
-📧 Email: ks1004mj@gmail.com  
+📧 Email: datajun137@gmail.com  
 🔗 GitHub: github.com/junyoung137
 
 ---
