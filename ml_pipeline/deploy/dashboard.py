@@ -179,8 +179,8 @@ if theme == "dark":
 
         /* ✅ 사이드바 전환 버튼 (라이트 모드로 전환) */
         section[data-testid="stSidebar"] div.stButton > button {
-            background-color: #b45309 !important;   /* 어두운 오렌지 (실무형 톤) */
-            color: #fefce8 !important;               /* 은은한 크림색 텍스트 */
+            background-color: #b45309 !important;
+            color: #fefce8 !important;
             font-weight: 600 !important;
             border-radius: 8px !important;
             border: 1px solid #92400e !important;
@@ -188,9 +188,9 @@ if theme == "dark":
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
         section[data-testid="stSidebar"] div.stButton > button:hover {
-            background-color: #d97706 !important;   /* hover 시 살짝 밝은 오렌지 */
+            background-color: #d97706 !important;
             border-color: #b45309 !important;
-            color: #fff8e1 !important;              /* hover 시 좀 더 화사한 크림톤 텍스트 */
+            color: #fff8e1 !important;
             box-shadow: 0 3px 8px rgba(0,0,0,0.3);
         }
         </style>
@@ -218,18 +218,17 @@ else:
             font-weight: 600 !important;
         }
 
-        /* ✅ 고객 세션 입력 섹션 (배경 강조 + 그림자 강화) */
+        /* ✅ 고객 세션 입력 섹션 */
         div[data-testid="stHorizontalBlock"] {
-            background-color: #f3f6fa !important; /* 살짝 더 진한 톤 */
-            border: 1px solid #d1d5db !important; /* 테두리 선 살짝 강조 */
+            background-color: #f3f6fa !important;
+            border: 1px solid #d1d5db !important;
             border-radius: 14px !important;
             padding: 30px 30px 15px 30px !important;
-            box-shadow: 0 6px 14px rgba(0,0,0,0.08); /* 기존보다 확실한 깊이감 */
+            box-shadow: 0 6px 14px rgba(0,0,0,0.08);
             margin-bottom: 30px !important;
             transition: all 0.3s ease-in-out;
         }
 
-        /* hover 시 은은한 부각 효과 */
         div[data-testid="stHorizontalBlock"]:hover {
             box-shadow: 0 8px 20px rgba(0,0,0,0.10);
             border-color: #cbd5e1 !important;
@@ -266,7 +265,7 @@ else:
             transition: background-color 0.2s ease-in-out;
         }
         div.stButton > button:hover {
-            background-color: #1e40af !important; /* 한 톤 진한 블루 */
+            background-color: #1e40af !important;
         }
 
         /* ===== 사이드바 전환 버튼 (다크 모드로 전환) ===== */
@@ -287,6 +286,16 @@ else:
             background-color: #f1f5f9 !important;
             border-left: 4px solid #3b82f6 !important;
             border-radius: 8px !important;
+        }
+
+        /* ✅ 안내박스 내 텍스트 색상 보정 (모바일 라이트 모드 가독성 향상) */
+        .stAlert p, .stAlert span, .stAlert li {
+            color: #111827 !important;
+        }
+        div[data-testid="stMarkdownContainer"] p,
+        div[data-testid="stMarkdownContainer"] li,
+        div[data-testid="stMarkdownContainer"] span {
+            color: #111827 !important;
         }
 
         /* ===== 경계선 ===== */
