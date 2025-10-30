@@ -223,6 +223,16 @@ if theme == "dark":
             border-right: 1px solid rgba(255,255,255,0.05) !important;
         }
 
+        /* ===== 사이드바 전체 텍스트 강제 ===== */
+        section[data-testid="stSidebar"] * {
+            color: #e5e7eb !important;
+        }
+        
+        /* ===== Selectbox 라벨 ===== */
+        section[data-testid="stSidebar"] label {
+            color: #e5e7eb !important;
+        }
+
         /* ===== Selectbox (드롭다운) ===== */
         div[data-baseweb="select"] > div {
             background-color: #2f323c !important;
@@ -232,7 +242,7 @@ if theme == "dark":
             box-shadow: 0 2px 6px rgba(0,0,0,0.25) !important;
         }
 
-        /* ✅ 선택된 텍스트 - 모든 요소 강제 */
+        /* ✅ 선택된 텍스트 - 최우선 적용 */
         div[data-baseweb="select"] span, 
         div[data-baseweb="select"] input, 
         div[data-baseweb="select"] div,
