@@ -147,17 +147,46 @@ theme = st.session_state["theme"]
 if theme == "dark":
     st.markdown("""
         <style>
+        /* ===== 전체 영역 ===== */
         .stApp {
             background-color: #1e1f25;
             color: #f3f4f6 !important;
         }
+
+        /* ===== 사이드바 ===== */
         section[data-testid="stSidebar"] {
-            background-color: #252831 !important;
+            background-color: #1f2128 !important; /* 약간 더 진한 톤 */
             color: #e5e7eb !important;
+            border-right: 1px solid rgba(255,255,255,0.06) !important;
+            padding-top: 1rem !important;
         }
+
+        /* ✅ Expander (탭 구분감 강화) */
+        details[data-testid="stExpander"] {
+            background-color: #2a2d37 !important;  /* 어두운 회색 블록 */
+            border: 1px solid rgba(255,255,255,0.08) !important;
+            border-radius: 10px !important;
+            padding: 6px 10px !important;
+            margin-bottom: 8px !important;
+            transition: all 0.25s ease-in-out;
+        }
+        details[data-testid="stExpander"]:hover {
+            background-color: #343844 !important;
+            border-color: rgba(255,255,255,0.12) !important;
+        }
+
+        /* ✅ Expander 제목 */
+        summary {
+            color: #f3f4f6 !important;
+            font-weight: 600 !important;
+        }
+
+        /* ===== 텍스트 ===== */
         h1, h2, h3, h4, h5, h6, p, span, label, li {
             color: #f3f4f6 !important;
         }
+
+        /* ===== 일반 버튼 ===== */
         div.stButton > button {
             background-color: #3b5ad6 !important;
             color: #ffffff !important;
@@ -169,6 +198,8 @@ if theme == "dark":
         div.stButton > button:hover {
             background-color: #4c6ef5 !important;
         }
+
+        /* ✅ 사이드바 전환 버튼 */
         section[data-testid="stSidebar"] div.stButton > button {
             background-color: #b45309 !important;
             color: #fefce8 !important;
@@ -183,6 +214,13 @@ if theme == "dark":
             border-color: #b45309 !important;
             color: #fff8e1 !important;
             box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+        }
+
+        /* ✅ 구분선 추가 (시각적 단절감 향상) */
+        section[data-testid="stSidebar"] hr {
+            border: none !important;
+            border-top: 1px solid rgba(255,255,255,0.08) !important;
+            margin: 0.8rem 0 !important;
         }
         </style>
     """, unsafe_allow_html=True)
