@@ -142,9 +142,8 @@ if st.sidebar.button(toggle_label, use_container_width=True):
 theme = st.session_state["theme"]
 
 # =========================================
-# 🌙 다크 모드 스타일 (기본)
+# 🌙 다크 / 라이트 모드 스타일
 # =========================================
-# ===== 다크 모드 스타일 =====
 if theme == "dark":
     st.markdown("""
         <style>
@@ -195,133 +194,6 @@ if theme == "dark":
         </style>
     """, unsafe_allow_html=True)
 
-else:
-    st.markdown("""
-        <style>
-        /* ===== 전체 영역 ===== */
-        .stApp {
-            background-color: #fafafa !important;
-            color: #111827 !important;
-            font-family: 'Pretendard', 'Inter', sans-serif;
-        }
-
-        /* ===== 사이드바 ===== */
-        section[data-testid="stSidebar"] {
-            background-color: #f9fafb !important;
-            border-right: 1px solid #e5e7eb !important;
-        }
-
-        /* ===== 텍스트 ===== */
-        h1, h2, h3, h4, h5, h6, p, span, label, li {
-            color: #111827 !important;
-        }
-
-        /* ===== 일반 버튼 ===== */
-        div.stButton > button {
-            background-color: #3b82f6 !important;
-            color: #ffffff !important;
-            font-weight: 600 !important;
-            border-radius: 8px !important;
-            border: none !important;
-            transition: background-color 0.2s ease-in-out;
-        }
-        div.stButton > button:hover {
-            background-color: #1d4ed8 !important;
-        }
-
-        /* ✅ 사이드바 전환 버튼 (다크 모드로 전환) */
-        section[data-testid="stSidebar"] div.stButton > button {
-            background-color: #e5e7eb !important;
-            color: #111827 !important;
-            font-weight: 500 !important;
-            border-radius: 8px !important;
-            border: 1px solid #d1d5db !important;
-            transition: all 0.2s ease-in-out;
-        }
-        section[data-testid="stSidebar"] div.stButton > button:hover {
-            background-color: #d1d5db !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
-
-# ===== 라이트 모드 스타일 =====
-else:
-    st.markdown("""
-        <style>
-        /* ===== 전체 영역 ===== */
-        .stApp {
-            background-color: #fafafa !important;
-            color: #111827 !important;
-            font-family: 'Pretendard', 'Inter', sans-serif;
-        }
-
-        /* ===== 사이드바 ===== */
-        section[data-testid="stSidebar"] {
-            background-color: #f9fafb !important;
-            border-right: 1px solid #e5e7eb !important;
-        }
-
-        /* ===== 일반 텍스트 ===== */
-        h1, h2, h3, h4, h5, h6, p, span, label, li {
-            color: #111827 !important;
-        }
-
-        /* ===== 라이트 모드 전환 버튼 (다크 모드로 전환용) ===== */
-        section[data-testid="stSidebar"] div.stButton > button {
-            background-color: #e5e7eb !important;
-            color: #111827 !important;
-            font-weight: 500 !important;
-            border-radius: 8px !important;
-            border: 1px solid #d1d5db !important;
-            transition: all 0.2s ease-in-out;
-        }
-        section[data-testid="stSidebar"] div.stButton > button:hover {
-            background-color: #d1d5db !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
-
-
-# ===== 라이트 모드 스타일 =====
-else:
-    st.markdown("""
-        <style>
-        /* ===== 전체 영역 ===== */
-        .stApp {
-            background-color: #fafafa !important;
-            color: #111827 !important;
-            font-family: 'Pretendard', 'Inter', sans-serif;
-        }
-
-        /* ===== 사이드바 ===== */
-        section[data-testid="stSidebar"] {
-            background-color: #f9fafb !important;
-            border-right: 1px solid #e5e7eb !important;
-        }
-
-        /* ===== 일반 텍스트 ===== */
-        h1, h2, h3, h4, h5, h6, p, span, label, li {
-            color: #111827 !important;
-        }
-
-        /* ===== 라이트 모드 전환 버튼 (다크 모드로 전환용) ===== */
-        section[data-testid="stSidebar"] div.stButton > button {
-            background-color: #e5e7eb !important;
-            color: #111827 !important;
-            font-weight: 500 !important;
-            border-radius: 8px !important;
-            border: 1px solid #d1d5db !important;
-            transition: all 0.2s ease-in-out;
-        }
-        section[data-testid="stSidebar"] div.stButton > button:hover {
-            background-color: #d1d5db !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
-
-# =========================================
-# 🌞 라이트 모드 스타일
-# =========================================
 else:
     st.markdown("""
         <style>
@@ -395,11 +267,14 @@ else:
             background-color: #1e40af !important; /* 한 톤 진한 블루 */
         }
 
-        /* ===== 다크모드 전환 버튼 (사이드바용) ===== */
+        /* ===== 사이드바 전환 버튼 (다크 모드로 전환) ===== */
         section[data-testid="stSidebar"] div.stButton > button {
             background-color: #e5e7eb !important;
             color: #111827 !important;
             font-weight: 500 !important;
+            border-radius: 8px !important;
+            border: 1px solid #d1d5db !important;
+            transition: all 0.2s ease-in-out;
         }
         section[data-testid="stSidebar"] div.stButton > button:hover {
             background-color: #d1d5db !important;
@@ -420,7 +295,6 @@ else:
         }
         </style>
     """, unsafe_allow_html=True)
-
 # =========================================
 # 1️⃣ 개별 예측
 # =========================================
