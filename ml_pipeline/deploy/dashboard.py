@@ -147,24 +147,17 @@ theme = st.session_state["theme"]
 if theme == "dark":
     st.markdown("""
         <style>
-        /* ===== 전체 영역 ===== */
         .stApp {
             background-color: #1e1f25;
             color: #f3f4f6 !important;
         }
-
-        /* ===== 사이드바 ===== */
         section[data-testid="stSidebar"] {
             background-color: #252831 !important;
             color: #e5e7eb !important;
         }
-
-        /* ===== 텍스트 ===== */
         h1, h2, h3, h4, h5, h6, p, span, label, li {
             color: #f3f4f6 !important;
         }
-
-        /* ===== 일반 버튼 ===== */
         div.stButton > button {
             background-color: #3b5ad6 !important;
             color: #ffffff !important;
@@ -176,8 +169,6 @@ if theme == "dark":
         div.stButton > button:hover {
             background-color: #4c6ef5 !important;
         }
-
-        /* ✅ 사이드바 전환 버튼 (라이트 모드로 전환) */
         section[data-testid="stSidebar"] div.stButton > button {
             background-color: #b45309 !important;
             color: #fefce8 !important;
@@ -226,15 +217,9 @@ else:
             padding: 30px 30px 15px 30px !important;
             box-shadow: 0 6px 14px rgba(0,0,0,0.08);
             margin-bottom: 30px !important;
-            transition: all 0.3s ease-in-out;
         }
 
-        div[data-testid="stHorizontalBlock"]:hover {
-            box-shadow: 0 8px 20px rgba(0,0,0,0.10);
-            border-color: #cbd5e1 !important;
-        }
-
-        /* ===== 입력칸 내부 ===== */
+        /* ===== 입력칸 ===== */
         div[data-testid="column"] > div > div {
             background-color: #ffffff !important;
             border: 1px solid #e5e7eb !important;
@@ -250,53 +235,45 @@ else:
             border: 1px solid #cbd5e1 !important;
             border-radius: 6px !important;
         }
-        input:focus {
-            border-color: #3b82f6 !important;
-            box-shadow: 0 0 0 2px rgba(59,130,246,0.15) !important;
-        }
 
-        /* ===== 일반 버튼 (예측 실행 포함) ===== */
+        /* ===== 버튼 (예측 실행 포함) ===== */
         div.stButton > button {
-            background-color: #3b82f6 !important;   /* 파란색 유지 */
-            color: #ffffff !important;              /* ✅ 항상 흰 글씨 유지 */
+            background-color: #3b82f6 !important;
+            color: #ffffff !important; /* ✅ 항상 흰색 유지 */
             font-weight: 600 !important;
             border-radius: 8px !important;
             border: none !important;
-            transition: background-color 0.2s ease-in-out;
+            transition: all 0.2s ease-in-out;
+        }
+        div.stButton > button span {
+            color: #ffffff !important; /* ✅ 버튼 내부 span 글씨도 강제 흰색 */
         }
         div.stButton > button:hover {
-            background-color: #1e40af !important; /* hover 시 한 톤 진한 파랑 */
+            background-color: #1e40af !important;
         }
 
-        /* ===== 사이드바 전환 버튼 (다크 모드로 전환) ===== */
+        /* ===== 사이드바 토글 버튼 ===== */
         section[data-testid="stSidebar"] div.stButton > button {
             background-color: #e5e7eb !important;
             color: #111827 !important;
-            font-weight: 500 !important;
-            border-radius: 8px !important;
             border: 1px solid #d1d5db !important;
-            transition: all 0.2s ease-in-out;
-        }
-        section[data-testid="stSidebar"] div.stButton > button:hover {
-            background-color: #d1d5db !important;
+            border-radius: 8px !important;
         }
 
         /* ===== 안내박스 (CSV 업로드 안내) ===== */
         .stAlert {
-            background-color: #dbeafe !important;     /* 기존보다 진한 하늘색 */
+            background-color: #dbeafe !important;
             border-left: 4px solid #3b82f6 !important;
             border-radius: 8px !important;
         }
-
-        /* ✅ 안내박스 내 텍스트 색상 보정 (모바일에서도 명확히 표시) */
-        .stAlert p, .stAlert span, .stAlert li, .stAlert strong {
+        .stAlert p, .stAlert span, .stAlert li {
             color: #111827 !important;
             font-weight: 500 !important;
         }
 
-        /* ✅ 캡션 및 일반 문장 텍스트 색상 (💡 안내문 포함) */
-        div[data-testid="stMarkdownContainer"] p,
-        div[data-testid="stMarkdownContainer"] span,
+        /* ✅ 일반 텍스트 (💡 안내문 포함) */
+        div[data-testid="stMarkdownContainer"] p:not(button p),
+        div[data-testid="stMarkdownContainer"] span:not(button span),
         div[data-testid="stMarkdownContainer"] li {
             color: #111827 !important;
         }
