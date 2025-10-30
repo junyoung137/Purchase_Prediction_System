@@ -133,7 +133,7 @@ st.sidebar.subheader("🎨 테마 설정")
 if "theme" not in st.session_state:
     st.session_state["theme"] = "dark"
 
-# ✅ 토글 버튼 방식
+# ✅ 토글 버튼
 toggle_label = "🌞 라이트 모드로 전환" if st.session_state["theme"] == "dark" else "🌙 다크 모드로 전환"
 if st.sidebar.button(toggle_label, use_container_width=True):
     st.session_state["theme"] = "light" if st.session_state["theme"] == "dark" else "dark"
@@ -142,25 +142,25 @@ if st.sidebar.button(toggle_label, use_container_width=True):
 theme = st.session_state["theme"]
 
 # =========================================
-# 🌙 다크 / 라이트 모드 스타일
+# 🌙 다크 / 라이트 모드 스타일 정의
 # =========================================
 if theme == "dark":
     st.markdown("""
         <style>
         /* ===== 전체 영역 ===== */
         .stApp {
-            background-color: #1e1f25;
+            background-color: #1e1f25 !important;
             color: #f3f4f6 !important;
         }
 
         /* ===== 사이드바 ===== */
         section[data-testid="stSidebar"] {
-            background-color: #252831 !important; /* 원래 색 유지 */
+            background-color: #252831 !important;
             color: #e5e7eb !important;
             border-right: 1px solid rgba(255,255,255,0.05) !important;
         }
 
-        /* ✅ Expander (탭 구분감 강화) */
+        /* ✅ Expander */
         details[data-testid="stExpander"] {
             background-color: #2f323c !important;
             border: 1px solid rgba(255,255,255,0.08) !important;
@@ -187,21 +187,33 @@ if theme == "dark":
             border-radius: 6px !important;
             box-shadow: 0 2px 6px rgba(0,0,0,0.25) !important;
         }
+
+        /* ✅ 선택된 텍스트 색상 */
+        div[data-baseweb="select"] span, 
+        div[data-baseweb="select"] input, 
+        div[data-baseweb="select"] div {
+            color: #ffffff !important;
+        }
+
+        /* ✅ 드롭다운 목록 */
         ul[role="listbox"] {
             background-color: #2f323c !important;
             border: 1px solid rgba(255,255,255,0.15) !important;
             border-radius: 8px !important;
         }
         ul[role="listbox"] li {
-            color: #f3f4f6 !important;
+            color: #f9fafb !important;
             font-weight: 500 !important;
             padding: 6px 10px !important;
         }
         ul[role="listbox"] li:hover {
             background-color: #3a3d48 !important;
+            color: #ffffff !important;
         }
-        div[data-baseweb="select"] span {
-            color: #f3f4f6 !important;
+
+        /* ✅ placeholder 색상 */
+        div[data-baseweb="select"] div[data-testid="stMarkdownContainer"] p {
+            color: #d1d5db !important;
         }
 
         /* ===== 텍스트 ===== */
@@ -273,43 +285,18 @@ else:
             font-weight: 600 !important;
         }
 
-        /* ===== 고객 세션 입력 섹션 ===== */
-        div[data-testid="stHorizontalBlock"] {
-            background-color: #f3f6fa !important;
-            border: 1px solid #d1d5db !important;
-            border-radius: 14px !important;
-            padding: 30px 30px 15px 30px !important;
-            box-shadow: 0 6px 14px rgba(0,0,0,0.08);
-            margin-bottom: 30px !important;
-            transition: all 0.3s ease-in-out;
-        }
-        div[data-testid="stHorizontalBlock"]:hover {
-            box-shadow: 0 8px 20px rgba(0,0,0,0.10);
-            border-color: #cbd5e1 !important;
-        }
-
-        /* ===== 입력칸 ===== */
-        div[data-testid="column"] > div > div {
-            background-color: #ffffff !important;
-            border: 1px solid #e5e7eb !important;
-            border-radius: 10px !important;
-            padding: 20px 16px !important;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-        }
-
         /* ===== 입력창 ===== */
-        input, textarea, select, div[data-baseweb="select"] > div {
+        div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
             color: #111827 !important;
             border: 1px solid #cbd5e1 !important;
             border-radius: 6px !important;
         }
-        input:focus {
-            border-color: #3b82f6 !important;
-            box-shadow: 0 0 0 2px rgba(59,130,246,0.15) !important;
+        ul[role="listbox"] li {
+            color: #111827 !important;
         }
 
-        /* ===== 버튼 (예측 실행 포함) ===== */
+        /* ===== 버튼 ===== */
         div.stButton > button {
             background-color: #3b82f6 !important;
             color: #ffffff !important;
@@ -318,54 +305,11 @@ else:
             border: none !important;
             transition: all 0.2s ease-in-out;
         }
-        div.stButton > button span {
-            color: #ffffff !important;
-        }
         div.stButton > button:hover {
             background-color: #1e40af !important;
         }
-
-        /* ===== 사이드바 전환 버튼 ===== */
-        section[data-testid="stSidebar"] div.stButton > button {
-            background-color: #e5e7eb !important;
-            color: #111827 !important;
-            font-weight: 500 !important;
-            border-radius: 8px !important;
-            border: 1px solid #d1d5db !important;
-            transition: all 0.2s ease-in-out;
-        }
-        section[data-testid="stSidebar"] div.stButton > button:hover {
-            background-color: #d1d5db !important;
-        }
-
-        /* ===== 안내박스 ===== */
-        .stAlert {
-            background-color: #dbeafe !important;
-            border-left: 4px solid #3b82f6 !important;
-            border-radius: 8px !important;
-        }
-        .stAlert p, .stAlert span, .stAlert li {
-            color: #111827 !important;
-            font-weight: 500 !important;
-        }
-
-        /* 일반 텍스트 (💡 안내문 포함) */
-        div[data-testid="stMarkdownContainer"] p,
-        div[data-testid="stMarkdownContainer"] span,
-        div[data-testid="stMarkdownContainer"] li {
-            color: #111827 !important;
-        }
-
-        /* ===== 경계선 ===== */
-        hr {
-            border: 0;
-            border-top: 1px solid #e5e7eb !important;
-            margin: 1.5rem 0;
-        }
         </style>
     """, unsafe_allow_html=True)
-
-
 # =========================================
 # 1️⃣ 개별 예측
 # =========================================
