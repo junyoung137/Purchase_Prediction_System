@@ -204,29 +204,30 @@ else:
         <style>
         /* ===== 전체 영역 ===== */
         .stApp {
-            background-color: #ffffff !important;
+            background-color: #fafafa !important;
             color: #111827 !important;
+            font-family: 'Pretendard', 'Inter', sans-serif;
         }
 
         /* ===== 사이드바 ===== */
         section[data-testid="stSidebar"] {
-            background-color: #f8fafc !important;
-            color: #111827 !important;
+            background-color: #f9fafb !important;
+            border-right: 1px solid #e5e7eb !important;
         }
 
         /* ===== 제목 및 텍스트 ===== */
-        h1, h2, h3, h4, h5, h6, p, span, label, li {
+        h1, h2, h3, h4, h5, h6, label {
             color: #111827 !important;
+            font-weight: 600 !important;
         }
 
-        /* ===== CSV 안내박스 ===== */
-        .stAlert {
-            background-color: #f1f5f9 !important;
-            border-left: 4px solid #2563eb !important;
-            border-radius: 8px !important;
-        }
-        .stAlert div, .stAlert p, .stAlert span, .stAlert li {
-            color: #1e293b !important;
+        /* ===== 세션 입력 구역 카드 스타일 ===== */
+        div[data-testid="column"] > div > div {
+            background-color: #ffffff !important;
+            border: 1px solid #e5e7eb !important;
+            border-radius: 12px !important;
+            padding: 20px 18px !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         /* ===== 입력창 ===== */
@@ -236,31 +237,46 @@ else:
             border: 1px solid #cbd5e1 !important;
             border-radius: 6px !important;
         }
+        input:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59,130,246,0.2) !important;
+        }
 
         /* ===== 버튼 ===== */
         div.stButton > button {
-            background-color: #2563eb !important;
+            background-color: #3b82f6 !important; /* 톤 다운 블루 */
             color: #ffffff !important;
             font-weight: 600 !important;
             border-radius: 8px !important;
             border: none !important;
+            transition: background-color 0.2s ease-in-out;
         }
-
-        /* ✅ 내부 텍스트(span) 색상까지 강제 */
-        div.stButton > button > div > p,
-        div.stButton > button > span {
-            color: #ffffff !important;
-        }
-
         div.stButton > button:hover {
-            background-color: #3b82f6 !important;
-            color: #ffffff !important;
+            background-color: #1d4ed8 !important;
         }
 
-        /* ✅ hover 시에도 내부 텍스트 유지 */
-        div.stButton > button:hover > div > p,
-        div.stButton > button:hover > span {
-            color: #ffffff !important;
+        /* ===== 다크모드 전환 버튼 (사이드바용) ===== */
+        section[data-testid="stSidebar"] div.stButton > button {
+            background-color: #e5e7eb !important;
+            color: #111827 !important;
+            font-weight: 500 !important;
+        }
+        section[data-testid="stSidebar"] div.stButton > button:hover {
+            background-color: #d1d5db !important;
+        }
+
+        /* ===== 안내박스 ===== */
+        .stAlert {
+            background-color: #f1f5f9 !important;
+            border-left: 4px solid #3b82f6 !important;
+            border-radius: 8px !important;
+        }
+
+        /* ===== 경계선 ===== */
+        hr {
+            border: 0;
+            border-top: 1px solid #e5e7eb !important;
+            margin: 1.5rem 0;
         }
         </style>
     """, unsafe_allow_html=True)
