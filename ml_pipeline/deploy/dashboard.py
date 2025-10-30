@@ -1,5 +1,5 @@
 # =====================================================
-# dashboard.py (실시간 통계 대시보드 추가 버전)
+# dashboard.py (확장 사이드바 버전 + 통계 대시보드)
 # =====================================================
 import streamlit as st
 import pandas as pd
@@ -170,6 +170,7 @@ with st.sidebar.expander("🧠 시스템 상태"):
     except:
         st.error("❌ 서버 오프라인")
 
+
 # =========================================
 # ⬆️ 추가됨: 최근 예측 로그
 # =========================================
@@ -271,21 +272,8 @@ if theme == "dark":
         }
 
         /* ===== 텍스트 ===== */
-        h1, h2, h3, h4, h5, h6, p, span, label, li, div {
+        h1, h2, h3, h4, h5, h6, p, span, label, li {
             color: #f3f4f6 !important;
-        }
-        
-        /* ===== Metric 카드 텍스트 ===== */
-        [data-testid="stMetricLabel"], 
-        [data-testid="stMetricValue"],
-        [data-testid="stMetricDelta"] {
-            color: #f3f4f6 !important;
-        }
-        
-        /* ===== Metric 값 강조 ===== */
-        [data-testid="stMetricValue"] {
-            font-size: 1.5rem !important;
-            font-weight: 700 !important;
         }
 
         /* ===== 일반 버튼 ===== */
@@ -343,22 +331,9 @@ else:
         }
 
         /* ===== 제목 및 텍스트 ===== */
-        h1, h2, h3, h4, h5, h6, label, p, span, div {
+        h1, h2, h3, h4, h5, h6, label {
             color: #111827 !important;
             font-weight: 600 !important;
-        }
-        
-        /* ===== Metric 카드 텍스트 ===== */
-        [data-testid="stMetricLabel"], 
-        [data-testid="stMetricValue"],
-        [data-testid="stMetricDelta"] {
-            color: #111827 !important;
-        }
-        
-        /* ===== Metric 값 강조 ===== */
-        [data-testid="stMetricValue"] {
-            font-size: 1.5rem !important;
-            font-weight: 700 !important;
         }
 
         /* ===== Selectbox ===== */
