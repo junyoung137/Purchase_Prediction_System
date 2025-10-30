@@ -331,9 +331,17 @@ else:
         }
 
         /* ===== 제목 및 텍스트 ===== */
-        h1, h2, h3, h4, h5, h6, label {
+        h1, h2, h3, h4, h5, h6, label, p, span, li {
             color: #111827 !important;
             font-weight: 600 !important;
+        }
+
+        /* ✅ caption 텍스트 (경고 메시지) */
+        .stCaption, 
+        [data-testid="stCaption"],
+        small {
+            color: #374151 !important;
+            font-weight: 500 !important;
         }
 
         /* ===== Selectbox ===== */
@@ -343,12 +351,21 @@ else:
             border: 1px solid #cbd5e1 !important;
             border-radius: 6px !important;
         }
+        
+        /* ✅ selectbox 내 모든 텍스트 */
+        div[data-baseweb="select"] * {
+            color: #111827 !important;
+        }
+        
         ul[role="listbox"] {
             background-color: #ffffff !important;
             border: 1px solid #e5e7eb !important;
             border-radius: 8px !important;
         }
         ul[role="listbox"] li {
+            color: #111827 !important;
+        }
+        ul[role="listbox"] li * {
             color: #111827 !important;
         }
         ul[role="listbox"] li:hover {
@@ -366,6 +383,11 @@ else:
         }
         div.stButton > button:hover {
             background-color: #1e40af !important;
+        }
+        
+        /* ✅ 버튼 텍스트 강제 흰색 */
+        div.stButton > button * {
+            color: #ffffff !important;
         }
 
         /* ✅ 사이드바 전환 버튼 (라이트 모드에서도 동일 주황색 유지) */
