@@ -5,6 +5,7 @@ import streamlit as st
 import pandas as pd
 import requests
 import plotly.graph_objects as go
+import time
 
 # =========================================
 # 🔧 API 설정 (FastAPI 기준)
@@ -14,6 +15,9 @@ API_URL = "https://purchase-prediction-system.onrender.com/predict"
 st.set_page_config(page_title="🛍️ 구매 예측 대시보드", layout="wide")
 st.title("🛍️ 구매 예측 대시보드")
 
+# 💡 초기 안내 메시지
+st.info("💡 첫 실행 시 서버가 초기화 중일 수 있습니다. 최대 1분 정도 소요될 수 있습니다.")
+
 # =========================================
 # 📊 사이드바: 프리셋
 # =========================================
@@ -22,11 +26,11 @@ st.sidebar.subheader("🎯 고객 프로필 프리셋")
 
 preset_profiles = {
     "🔥 고관심 고객": {
-        "total_visits": 15.0,        # session_id
-        "total_events": 50.0,        # event_count
-        "product_views": 30.0,       # n_view
-        "cart_adds": 5.0,            # n_cart
-        "purchases": 4.0,            # n_trans
+        "total_visits": 15.0,
+        "total_events": 50.0,
+        "product_views": 30.0,
+        "cart_adds": 5.0,
+        "purchases": 4.0,
         "last_activity_days": 2.0,
         "activity_freq": 20.0,
         "avg_session_time": 12.0,
@@ -38,7 +42,7 @@ preset_profiles = {
         "total_events": 8.0,
         "product_views": 5.0,
         "cart_adds": 0.0,
-        "purchases": 0.0,           # ✅ 구매 0
+        "purchases": 0.0,
         "last_activity_days": 30.0,
         "activity_freq": 2.0,
         "avg_session_time": 2.0,
@@ -76,7 +80,7 @@ selected_preset = st.sidebar.selectbox(
     ["선택 안함"] + list(preset_profiles.keys())
 )
 
-# ✅ 프리셋 클릭 시 세션 상태에 값 저장
+# ✅ 프리셋 적용
 if selected_preset != "선택 안함":
     if st.sidebar.button("📋 값 적용하기", use_container_width=True):
         for k, v in preset_profiles[selected_preset].items():
@@ -92,17 +96,16 @@ st.sidebar.markdown("---")
 st.markdown("### 1️⃣ 개별 고객 구매 가능성 예측")
 st.markdown("고객 세션의 주요 활동 정보를 입력하여 구매 확률을 예측합니다.")
 
-# ✅ 각 입력창을 session_state에 직접 연결
 col1, col2, col3 = st.columns(3, gap="medium")
 
 with col1:
-    st.number_input("총 방문 횟수", min_value=0.0, step=0.1, key="total_visits", help="session_id")
-    st.number_input("전체 이벤트 수", min_value=0.0, step=0.1, key="total_events", help="event_count")
-    st.number_input("상품 조회 수", min_value=0.0, step=0.1, key="product_views", help="n_view")
-    st.number_input("장바구니 담기 수", min_value=0.0, step=0.1, key="cart_adds", help="n_cart")
+    st.number_input("총 방문 횟수", min_value=0.0, step=0.1, key="total_visits")
+    st.number_input("전체 이벤트 수", min_value=0.0, step=0.1, key="total_events")
+    st.number_input("상품 조회 수", min_value=0.0, step=0.1, key="product_views")
+    st.number_input("장바구니 담기 수", min_value=0.0, step=0.1, key="cart_adds")
 
 with col2:
-    st.number_input("결제 완료 수", min_value=0.0, step=0.1, key="purchases", help="n_trans")
+    st.number_input("결제 완료 수", min_value=0.0, step=0.1, key="purchases")
     st.number_input("마지막 활동 후 경과일", min_value=0.0, step=0.1, key="last_activity_days")
     st.number_input("활동 빈도", min_value=0.0, step=0.1, key="activity_freq")
 
@@ -112,34 +115,55 @@ with col3:
     st.number_input("할인 상품 조회", min_value=0.0, step=0.1, key="discount_views")
 
 st.markdown("---")
+
+# =========================================
+# 🔍 예측 실행 버튼 (자동 재시도 포함)
+# =========================================
 if st.button("🔍 예측 실행", use_container_width=True):
-    # ✅ 입력값 가져오기
     total_visits = float(st.session_state.get("total_visits", 0))
-    total_events = float(st.session_state.get("total_events", 0))
+    total_events = max(float(st.session_state.get("total_events", 0)), 1.0)
     product_views = float(st.session_state.get("product_views", 0))
     cart_adds = float(st.session_state.get("cart_adds", 0))
     purchases = float(st.session_state.get("purchases", 0))
-    
-    # ✅ 0으로 나누기 방지
-    total_events = max(total_events, 1.0)
-    
-    # ✅ API 요청용 payload (모델이 학습한 7개 feature)
+
     payload = {
-        "feature_1": total_visits,           # session_id
-        "feature_2": total_events,           # event_count
-        "feature_3": product_views,          # n_view
-        "feature_4": cart_adds,              # n_cart
-        "feature_5": purchases,              # n_trans
-        "feature_6": purchases / total_events,  # n_trans_ratio
-        "feature_7": product_views / total_events  # n_view_ratio
+        "feature_1": total_visits,
+        "feature_2": total_events,
+        "feature_3": product_views,
+        "feature_4": cart_adds,
+        "feature_5": purchases,
+        "feature_6": purchases / total_events,
+        "feature_7": product_views / total_events,
     }
 
-    try:
-        with st.spinner("예측 중..."):
-            res = requests.post(API_URL, json=payload, timeout=10)
-            res.raise_for_status()
-            result = res.json()
+    max_retries = 3
+    delay_sec = 10
+    result = None
+    success = False
 
+    for attempt in range(1, max_retries + 1):
+        try:
+            with st.spinner(f"⏳ 서버와 통신 중... (시도 {attempt}/{max_retries})"):
+                res = requests.post(API_URL, json=payload, timeout=10)
+                res.raise_for_status()
+                result = res.json()
+                success = True
+                break
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+            if attempt < max_retries:
+                st.info(f"⚙️ 서버가 아직 준비 중입니다. {delay_sec}초 후 다시 시도합니다...")
+                time.sleep(delay_sec)
+            else:
+                st.warning("🚀 서버 초기화 중입니다. 잠시 후 다시 시도해주세요. (약 30~60초 소요될 수 있음)")
+        except requests.exceptions.RequestException as e:
+            st.error(f"❌ 서버 요청 중 오류가 발생했습니다: {e}")
+            break
+        except Exception as e:
+            st.error(f"❌ 예측 실행 중 알 수 없는 오류가 발생했습니다: {e}")
+            break
+
+    # ✅ 예측 성공 시 결과 표시
+    if success and result:
         prob = result.get("probability", 0)
         pred = result.get("prediction", 0)
         threshold = result.get("threshold", 0.5)
@@ -149,9 +173,8 @@ if st.button("🔍 예측 실행", use_container_width=True):
         col_a.metric("예측 결과", label)
         col_b.metric("구매 확률", f"{prob:.2%}")
         col_c.metric("Threshold", f"{threshold:.2f}")
-        st.success("✅ 예측 성공")
+        st.success("✅ 예측이 성공적으로 완료되었습니다!")
 
-        # 게이지 차트
         fig = go.Figure(go.Indicator(
             mode="gauge+number+delta",
             value=prob * 100,
@@ -171,16 +194,6 @@ if st.button("🔍 예측 실행", use_container_width=True):
         fig.update_layout(height=280)
         st.plotly_chart(fig, use_container_width=True)
 
-        with st.expander("📋 응답 상세 정보"):
-            st.json(result)
-            st.markdown("**📊 전송된 Feature 값:**")
-            st.json(payload)
-
-    except requests.exceptions.RequestException as e:
-        st.error(f"❌ API 요청 실패: {e}")
-    except Exception as e:
-        st.error(f"❌ 예측 실패: {e}")
-
 # =========================================
 # 2️⃣ 배치 예측 (CSV)
 # =========================================
@@ -194,10 +207,10 @@ st.info("""
 - CSV는 UTF-8 인코딩 권장, 숫자(float) 형식이어야 합니다.
 """)
 
-with st.expander("📘 자세한 컬럼 정의 보기 "):
+with st.expander("📘 자세한 컬럼 정의 보기"):
     st.markdown("""
     | 컬럼명 | 설명 |
-    |:--------|:------------------------------------------------|
+    |:--------|:--------------------------------------------|
     | `session_id` | 고객 세션 ID (총 방문 횟수) |
     | `event_count` | 전체 이벤트 발생 횟수 |
     | `n_view` | 상품 조회 횟수 |
