@@ -5,7 +5,7 @@ import streamlit as st
 import pandas as pd
 import requests
 import plotly.graph_objects as go
-import time
+import time  
 
 # =========================================
 # 🔧 API 설정 (FastAPI 기준)
@@ -14,9 +14,6 @@ API_URL = "https://purchase-prediction-system.onrender.com/predict"
 
 st.set_page_config(page_title="🛍️ 구매 예측 대시보드", layout="wide")
 st.title("🛍️ 구매 예측 대시보드")
-
-# 💡 초기 안내 메시지
-st.info("💡 첫 실행 시 서버가 초기화 중일 수 있습니다. 최대 1분 정도 소요될 수 있습니다.")
 
 # =========================================
 # 📊 사이드바: 프리셋
@@ -193,6 +190,9 @@ if st.button("🔍 예측 실행", use_container_width=True):
         ))
         fig.update_layout(height=280)
         st.plotly_chart(fig, use_container_width=True)
+
+# 💡 안내문 (버튼 아래로 이동)
+st.caption("💡 첫 실행 시 서버가 초기화 중일 수 있습니다. 약 1분 정도 소요될 수 있습니다.")
 
 # =========================================
 # 2️⃣ 배치 예측 (CSV)
