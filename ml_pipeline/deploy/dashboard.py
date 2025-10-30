@@ -124,6 +124,42 @@ with st.sidebar.expander("🕒 최근 예측 기록"):
 st.sidebar.markdown("---")
 
 # =========================================
+# 🌙 테마 토글 버튼 (라이트 / 다크 모드)
+# =========================================
+st.sidebar.markdown("---")
+st.sidebar.subheader("🎨 테마 설정")
+
+theme = st.sidebar.radio("모드 선택", ["🌞 라이트 모드", "🌙 다크 모드"])
+
+if theme == "🌙 다크 모드":
+    st.markdown("""
+        <style>
+        .stApp {
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+        .stSidebar {
+            background-color: #1e293b;
+        }
+        div[data-testid="stMetricValue"] {
+            color: #22d3ee;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+else:
+    st.markdown("""
+        <style>
+        .stApp {
+            background-color: #ffffff;
+            color: #000000;
+        }
+        .stSidebar {
+            background-color: #f8fafc;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+# =========================================
 # 1️⃣ 개별 예측
 # =========================================
 st.markdown("### 1️⃣ 개별 고객 구매 가능성 예측")
