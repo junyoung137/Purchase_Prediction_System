@@ -179,17 +179,19 @@ if theme == "dark":
 
         /* ✅ 사이드바 전환 버튼 (라이트 모드로 전환) */
         section[data-testid="stSidebar"] div.stButton > button {
-            background-color: #f4eebd !important;   /* 톤다운된 크림색 */
-            color: #111827 !important;               /* 어두운 텍스트 */
-            font-weight: 500 !important;
+            background-color: #b45309 !important;   /* 어두운 오렌지 (실무형 톤) */
+            color: #fefce8 !important;               /* 은은한 크림색 텍스트 */
+            font-weight: 600 !important;
             border-radius: 8px !important;
-            border: 1px solid #e2e8f0 !important;
-            transition: all 0.2s ease-in-out;
+            border: 1px solid #92400e !important;
+            transition: all 0.25s ease-in-out;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
         section[data-testid="stSidebar"] div.stButton > button:hover {
-            background-color: #f0e68c !important;   /* hover 시 부드럽게 강조 */
-            border-color: #eab308 !important;
-            color: #111827 !important;
+            background-color: #d97706 !important;   /* hover 시 살짝 밝은 오렌지 */
+            border-color: #b45309 !important;
+            color: #fff8e1 !important;              /* hover 시 좀 더 화사한 크림톤 텍스트 */
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
         }
         </style>
     """, unsafe_allow_html=True)
