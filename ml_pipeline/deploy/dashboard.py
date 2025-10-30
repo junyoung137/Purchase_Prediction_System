@@ -155,24 +155,23 @@ if theme == "dark":
 
         /* ===== 사이드바 ===== */
         section[data-testid="stSidebar"] {
-            background-color: #1f2128 !important; /* 약간 더 진한 톤 */
+            background-color: #252831 !important; /* ✅ 원래 색상 유지 */
             color: #e5e7eb !important;
-            border-right: 1px solid rgba(255,255,255,0.06) !important;
-            padding-top: 1rem !important;
+            border-right: 1px solid rgba(255,255,255,0.05) !important;
         }
 
-        /* ✅ Expander (탭 구분감 강화) */
+        /* ✅ Expander (탭만 밝게 구분) */
         details[data-testid="stExpander"] {
-            background-color: #2a2d37 !important;  /* 어두운 회색 블록 */
+            background-color: #2f323c !important; /* 사이드바보다 살짝 밝은 회색 */
             border: 1px solid rgba(255,255,255,0.08) !important;
             border-radius: 10px !important;
             padding: 6px 10px !important;
-            margin-bottom: 8px !important;
+            margin-bottom: 10px !important;
             transition: all 0.25s ease-in-out;
         }
         details[data-testid="stExpander"]:hover {
-            background-color: #343844 !important;
-            border-color: rgba(255,255,255,0.12) !important;
+            background-color: #3a3d48 !important; /* hover 시 부드럽게 강조 */
+            border-color: rgba(255,255,255,0.15) !important;
         }
 
         /* ✅ Expander 제목 */
@@ -199,7 +198,7 @@ if theme == "dark":
             background-color: #4c6ef5 !important;
         }
 
-        /* ✅ 사이드바 전환 버튼 */
+        /* ✅ 사이드바 전환 버튼 (라이트 모드로 전환) */
         section[data-testid="stSidebar"] div.stButton > button {
             background-color: #b45309 !important;
             color: #fefce8 !important;
@@ -216,11 +215,11 @@ if theme == "dark":
             box-shadow: 0 3px 8px rgba(0,0,0,0.3);
         }
 
-        /* ✅ 구분선 추가 (시각적 단절감 향상) */
+        /* ✅ 구분선 보완 */
         section[data-testid="stSidebar"] hr {
             border: none !important;
             border-top: 1px solid rgba(255,255,255,0.08) !important;
-            margin: 0.8rem 0 !important;
+            margin: 1rem 0 !important;
         }
         </style>
     """, unsafe_allow_html=True)
