@@ -1,5 +1,5 @@
 # =====================================================
-# dashboard.py (실시간 통계 KPI + 드롭다운 수정 버전)
+# dashboard.py (최종 안정 버전)
 # =====================================================
 import streamlit as st
 import pandas as pd
@@ -125,9 +125,7 @@ if selected_preset != "선택 안함":
 
 st.sidebar.markdown("---")
 
-# =========================================
-# ⬆️ 추가됨: 프로필 요약 카드
-# =========================================
+# 프로필 요약 카드
 if selected_preset != "선택 안함":
     preset = preset_profiles[selected_preset]
     st.sidebar.markdown("### 📌 현재 선택된 프로필 요약")
@@ -140,9 +138,7 @@ if selected_preset != "선택 안함":
         """
     )
 
-# =========================================
-# ⬆️ 추가됨: 세그먼트 배지
-# =========================================
+# 세그먼트 배지
 if selected_preset != "선택 안함":
     color_map = {
         "🔥 고관심 고객": "#f97316",
@@ -156,9 +152,7 @@ if selected_preset != "선택 안함":
         f"<b>{selected_preset}</b></div>", unsafe_allow_html=True
     )
 
-# =========================================
-# ⬆️ 추가됨: 서버 상태 표시
-# =========================================
+# 서버 상태 표시
 with st.sidebar.expander("🧠 시스템 상태"):
     st.write("모델 버전: **v5.0**")
     try:
@@ -170,9 +164,7 @@ with st.sidebar.expander("🧠 시스템 상태"):
     except:
         st.error("❌ 서버 오프라인")
 
-# =========================================
-# ⬆️ 추가됨: 최근 예측 로그
-# =========================================
+# 최근 예측 로그
 if "log" not in st.session_state:
     st.session_state["log"] = []
 
@@ -188,14 +180,11 @@ st.sidebar.markdown("---")
 # =========================================
 # 🌙 라이트 모드 & 다크 모드
 # =========================================
-st.sidebar.markdown("---")
 st.sidebar.subheader("🎨 테마 설정")
 
-# ✅ 기본값: 다크 모드
 if "theme" not in st.session_state:
     st.session_state["theme"] = "dark"
 
-# ✅ 토글 버튼
 toggle_label = "🌞 라이트 모드로 전환" if st.session_state["theme"] == "dark" else "🌙 다크 모드로 전환"
 if st.sidebar.button(toggle_label, use_container_width=True):
     st.session_state["theme"] = "light" if st.session_state["theme"] == "dark" else "dark"
@@ -204,286 +193,59 @@ if st.sidebar.button(toggle_label, use_container_width=True):
 theme = st.session_state["theme"]
 
 # =========================================
-# 🌙 다크 / 라이트 모드 스타일 정의 (드롭다운 수정)
+# 🎨 테마 스타일
 # =========================================
 if theme == "dark":
     st.markdown("""
         <style>
-        /* ===== 전체 영역 ===== */
         .stApp {
-            background-color: #1e1f25 !important;
-            color: #f3f4f6 !important;
+            background-color: #1e1f25;
+            color: #f3f4f6;
         }
-
-        /* ===== 사이드바 ===== */
         section[data-testid="stSidebar"] {
-            background-color: #252831 !important;
-            color: #e5e7eb !important;
-            border-right: 1px solid rgba(255,255,255,0.05) !important;
+            background-color: #252831;
+            border-right: 1px solid rgba(255,255,255,0.05);
         }
-
-        /* ===== Selectbox (드롭다운) - 초강력 가독성 버전 ===== */
-        div[data-baseweb="select"] > div {
-            background-color: #3a3d48 !important;
-            color: #ffffff !important;
-            border: 2px solid rgba(255,255,255,0.3) !important;
-            border-radius: 8px !important;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.35) !important;
-            padding: 8px 12px !important;
-        }
-
-        /* ✅ 선택된 텍스트 - 절대 흰색 */
-        div[data-baseweb="select"] span, 
-        div[data-baseweb="select"] input, 
-        div[data-baseweb="select"] div,
-        div[data-baseweb="select"] p,
-        div[data-baseweb="select"] * {
-            color: #ffffff !important;
-            font-weight: 600 !important;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
-        }
-
-        /* ✅ 드롭다운 메뉴 컨테이너 */
-        div[data-baseweb="popover"] {
-            background-color: transparent !important;
-        }
-
-        /* ✅ 드롭다운 메뉴 전체 */
-        ul[role="listbox"] {
-            background-color: #2d3139 !important;
-            border: 2px solid rgba(255,255,255,0.3) !important;
-            border-radius: 10px !important;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important;
-            padding: 6px !important;
-        }
-
-        /* ✅ 각 항목 - 최고 명도 */
-        ul[role="listbox"] li,
-        ul[role="listbox"] li *,
-        ul[role="listbox"] li span,
-        ul[role="listbox"] li div {
-            color: #ffffff !important;
-            font-weight: 600 !important;
-            padding: 12px 16px !important;
-            transition: all 0.15s ease !important;
-            border-radius: 6px !important;
-            margin: 2px 0 !important;
-            background-color: transparent !important;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
-        }
-
-        /* ✅ hover 시 - 밝은 배경 */
-        ul[role="listbox"] li:hover,
-        ul[role="listbox"] li:hover * {
-            background-color: #4b5563 !important;
-            color: #ffffff !important;
-            transform: translateX(3px) !important;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2) !important;
-        }
-
-        /* ✅ 선택된 항목 - 강조 */
-        ul[role="listbox"] li[aria-selected="true"],
-        ul[role="listbox"] li[aria-selected="true"] * {
-            background-color: #5a6270 !important;
-            color: #ffffff !important;
-            font-weight: 700 !important;
-            border-left: 3px solid #60a5fa !important;
-        }
-
-        /* ✅ 비활성('선택 안함') - 회색 */
-        ul[role="listbox"] li[aria-disabled="true"],
-        ul[role="listbox"] li[aria-disabled="true"] * {
-            color: #9ca3af !important;
-            font-weight: 500 !important;
-            font-style: italic !important;
-        }
-
-        /* ✅ placeholder 텍스트 */
-        div[data-baseweb="select"] input::placeholder {
-            color: #e5e7eb !important;
-            opacity: 1 !important;
-            font-weight: 500 !important;
-        }
-        
-        /* ✅ 사이드바 내 라벨 텍스트 강화 */
-        section[data-testid="stSidebar"] label,
-        section[data-testid="stSidebar"] label * {
-            color: #f3f4f6 !important;
-            font-weight: 600 !important;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2) !important;
-        }
-        
-        /* ✅ 프로필 선택 텍스트 */
-        section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label {
-            color: #f9fafb !important;
-            font-size: 14px !important;
-            font-weight: 700 !important;
-        }
-
-        /* ===== 텍스트 - 최대 명도 ===== */
-        h1, h2, h3, h4, h5, h6, p, span, label, li {
-            color: #ffffff !important;
-            font-weight: 500 !important;
-        }
-        
-        /* ===== 헤더 텍스트 더 강조 ===== */
-        h1, h2, h3 {
-            font-weight: 700 !important;
-            text-shadow: 0 0 2px rgba(255,255,255,0.1) !important;
-        }
-        
-        /* ===== 메트릭 라벨 강화 ===== */
-        div[data-testid="stMetricLabel"] {
-            color: #e5e7eb !important;
-            font-weight: 600 !important;
-        }
-        
-        /* ===== 메트릭 값 강화 ===== */
-        div[data-testid="stMetricValue"] {
-            color: #ffffff !important;
-            font-weight: 700 !important;
-        }
-
-        /* ===== 일반 버튼 ===== */
         div.stButton > button {
-            background-color: #3b5ad6 !important;
-            color: #ffffff !important;
-            font-weight: 600 !important;
-            border-radius: 8px !important;
-            border: none !important;
-            transition: background-color 0.2s ease-in-out;
+            background-color: #3b5ad6;
+            color: #ffffff;
+            font-weight: 600;
+            border-radius: 8px;
         }
-        div.stButton > button:hover {
-            background-color: #4c6ef5 !important;
-        }
-
-        /* ✅ 사이드바 내 전환 버튼 (원래의 주황색 복원) */
         section[data-testid="stSidebar"] div.stButton > button {
-            background-color: #b45309 !important;
-            color: #fefce8 !important;
-            font-weight: 600 !important;
-            border-radius: 8px !important;
-            border: 1px solid #92400e !important;
-            transition: all 0.25s ease-in-out;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            background-color: #b45309;
+            color: #fefce8;
+            border: 1px solid #92400e;
         }
         section[data-testid="stSidebar"] div.stButton > button:hover {
-            background-color: #d97706 !important;
-            border-color: #b45309 !important;
-            color: #fff8e1 !important;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-        }
-
-        /* ===== 구분선 ===== */
-        section[data-testid="stSidebar"] hr {
-            border-top: 1px solid rgba(255,255,255,0.08) !important;
-            margin: 1rem 0 !important;
+            background-color: #d97706;
         }
         </style>
     """, unsafe_allow_html=True)
-
 else:
     st.markdown("""
         <style>
-        /* ===== 전체 영역 ===== */
         .stApp {
-            background-color: #f9fafb !important;
-            color: #111827 !important;
-            font-family: 'Pretendard', 'Inter', sans-serif;
+            background-color: #f9fafb;
+            color: #111827;
         }
-
-        /* ===== 사이드바 ===== */
         section[data-testid="stSidebar"] {
-            background-color: #f8fafc !important;
-            border-right: 1px solid #e5e7eb !important;
+            background-color: #f8fafc;
+            border-right: 1px solid #e5e7eb;
         }
-
-        /* ===== 제목 및 텍스트 ===== */
-        h1, h2, h3, h4, h5, h6, label {
-            color: #111827 !important;
-            font-weight: 600 !important;
-        }
-
-        /* ===== Selectbox - 라이트 모드 최대 가독성 ===== */
-        div[data-baseweb="select"] > div {
-            background-color: #ffffff !important;
-            color: #111827 !important;
-            border: 2px solid #94a3b8 !important;
-            border-radius: 8px !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
-            padding: 6px 12px !important;
-        }
-        
-        div[data-baseweb="select"] span, 
-        div[data-baseweb="select"] input, 
-        div[data-baseweb="select"] div,
-        div[data-baseweb="select"] * {
-            color: #111827 !important;
-            font-weight: 600 !important;
-        }
-        
-        ul[role="listbox"] {
-            background-color: #ffffff !important;
-            border: 2px solid #cbd5e1 !important;
-            border-radius: 10px !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-            padding: 4px !important;
-        }
-        ul[role="listbox"] li {
-            color: #111827 !important;
-            font-weight: 600 !important;
-            padding: 12px 16px !important;
-            border-radius: 6px !important;
-            margin: 2px 0 !important;
-        }
-        ul[role="listbox"] li:hover {
-            background-color: #f1f5f9 !important;
-            transform: translateX(2px) !important;
-        }
-        ul[role="listbox"] li[aria-selected="true"] {
-            background-color: #e2e8f0 !important;
-            font-weight: 700 !important;
-        }
-        
-        /* ===== 사이드바 내 라벨 텍스트 강화 ===== */
-        section[data-testid="stSidebar"] label {
-            color: #1f2937 !important;
-            font-weight: 600 !important;
-        }
-
-        /* ===== 일반 버튼 ===== */
         div.stButton > button {
-            background-color: #3b82f6 !important;
-            color: #ffffff !important;
-            font-weight: 600 !important;
-            border-radius: 8px !important;
-            border: none !important;
-            transition: all 0.2s ease-in-out;
+            background-color: #3b82f6;
+            color: #ffffff;
+            font-weight: 600;
+            border-radius: 8px;
         }
-        div.stButton > button:hover {
-            background-color: #1e40af !important;
-        }
-
-        /* ✅ 사이드바 전환 버튼 (라이트 모드에서도 동일 주황색 유지) */
         section[data-testid="stSidebar"] div.stButton > button {
-            background-color: #b45309 !important;
-            color: #fefce8 !important;
-            font-weight: 600 !important;
-            border-radius: 8px !important;
-            border: 1px solid #92400e !important;
-            transition: all 0.25s ease-in-out;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            background-color: #b45309;
+            color: #fefce8;
+            border: 1px solid #92400e;
         }
         section[data-testid="stSidebar"] div.stButton > button:hover {
-            background-color: #d97706 !important;
-            border-color: #b45309 !important;
-            color: #fff8e1 !important;
-        }
-
-        /* ===== 구분선 ===== */
-        section[data-testid="stSidebar"] hr {
-            border-top: 1px solid #e5e7eb !important;
-            margin: 1rem 0 !important;
+            background-color: #d97706;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -559,25 +321,20 @@ if st.button("🔍 예측 실행", use_container_width=True):
         # ✅ 통계 업데이트
         st.session_state["stats"]["total_predictions"] += 1
         
-        # 평균 구매확률 계산 (이동평균)
         current_avg = st.session_state["stats"]["avg_probability"]
         total = st.session_state["stats"]["total_predictions"]
         new_avg = (current_avg * (total - 1) + prob) / total
         st.session_state["stats"]["avg_probability"] = new_avg
         
-        # 고확률 고객 수 업데이트
         if prob >= 0.7:
             st.session_state["stats"]["high_prob_customers"] += 1
         
-        # 전환율 계산
         if total > 0:
             high_prob_rate = st.session_state["stats"]["high_prob_customers"] / total
             st.session_state["stats"]["conversion_rate"] = high_prob_rate * 0.85
         
-        # 업데이트 시간 기록
         st.session_state["stats"]["last_updated"] = datetime.now().strftime("%H:%M:%S")
 
-        # ⬆️ 로그 저장
         st.session_state["log"].append({
             "preset": selected_preset,
             "time": time.strftime("%H:%M:%S")
@@ -603,7 +360,6 @@ if st.button("🔍 예측 실행", use_container_width=True):
         st.plotly_chart(fig, use_container_width=True)
         st.success("✅ 예측 완료!")
         
-        # 상단 KPI 업데이트를 위해 리로드
         st.rerun()
 
 st.caption("💡 첫 실행 시 서버 초기화로 1분가량 지연될 수 있습니다.")
