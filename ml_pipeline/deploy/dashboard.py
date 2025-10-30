@@ -437,21 +437,30 @@ if theme == "dark":
             color: #fee2e2 !important;
         }
 
-        /* ✅ 사이드바 내 전환 버튼 (다크모드: 밝은 라이트 느낌) */
+        /* ✅ 사이드바 내 전환 버튼 (다크모드: 은은한 밝은 톤) */
         section[data-testid="stSidebar"] div.stButton > button {
-            background-color: #f3f4f6 !important;
-            color: #1f2937 !important;
+            background-color: #4b5563 !important;
+            color: #e5e7eb !important;
             font-weight: 600 !important;
             border-radius: 8px !important;
-            border: 1px solid #e5e7eb !important;
+            border: 1px solid #6b7280 !important;
             transition: all 0.25s ease-in-out;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
         section[data-testid="stSidebar"] div.stButton > button:hover {
-            background-color: #ffffff !important;
-            border-color: #d1d5db !important;
-            color: #111827 !important;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            background-color: #6b7280 !important;
+            border-color: #9ca3af !important;
+            color: #f9fafb !important;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+        }
+        
+        /* 버튼 텍스트 강제 적용 */
+        section[data-testid="stSidebar"] div.stButton > button * {
+            color: #e5e7eb !important;
+        }
+        
+        section[data-testid="stSidebar"] div.stButton > button:hover * {
+            color: #f9fafb !important;
         }
 
         /* ===== 구분선 ===== */
@@ -538,21 +547,30 @@ else:
             color: #ffffff !important;
         }
 
-        /* ✅ 사이드바 전환 버튼 (라이트모드: 다크 느낌) */
+        /* ✅ 사이드바 전환 버튼 (라이트모드: 적당한 다크 톤) */
         section[data-testid="stSidebar"] div.stButton > button {
-            background-color: #1f2937 !important;
-            color: #f9fafb !important;
+            background-color: #374151 !important;
+            color: #f3f4f6 !important;
             font-weight: 600 !important;
             border-radius: 8px !important;
-            border: 1px solid #374151 !important;
+            border: 1px solid #4b5563 !important;
             transition: all 0.25s ease-in-out;
             box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
         section[data-testid="stSidebar"] div.stButton > button:hover {
-            background-color: #111827 !important;
-            border-color: #4b5563 !important;
+            background-color: #4b5563 !important;
+            border-color: #6b7280 !important;
             color: #ffffff !important;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        /* 버튼 텍스트 강제 적용 */
+        section[data-testid="stSidebar"] div.stButton > button * {
+            color: #f3f4f6 !important;
+        }
+        
+        section[data-testid="stSidebar"] div.stButton > button:hover * {
+            color: #ffffff !important;
         }
 
         /* ===== 구분선 ===== */
