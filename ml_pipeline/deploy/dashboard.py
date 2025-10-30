@@ -263,6 +263,14 @@ if theme == "dark":
             color: #f3f4f6 !important;
         }
 
+        /* ✅ caption 텍스트는 밝은 회색으로 (경고 메시지 가독성) */
+        .stCaption, 
+        [data-testid="stCaption"],
+        small {
+            color: #e5e7eb !important;
+            font-weight: 500 !important;
+        }
+
         /* ===== 일반 버튼 ===== */
         div.stButton > button {
             background-color: #3b5ad6 !important;
@@ -274,6 +282,11 @@ if theme == "dark":
         }
         div.stButton > button:hover {
             background-color: #4c6ef5 !important;
+        }
+
+        /* ✅ 버튼 텍스트 강제 흰색 */
+        div.stButton > button * {
+            color: #ffffff !important;
         }
 
         /* ✅ 사이드바 내 전환 버튼 (원래의 주황색 복원) */
