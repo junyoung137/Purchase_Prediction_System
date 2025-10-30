@@ -17,10 +17,10 @@ st.set_page_config(page_title="🛍️ 실시간 구매 가능성 예측", layou
 st.title("🛍️ 실시간 구매 가능성 예측")
 
 # =========================================
-# 📊 실시간 통계 대시보드 (KPI)
+# 🛒 실시간 통계 대시보드 (KPI)
 # =========================================
 st.markdown("---")
-st.markdown("### 📊 실시간 통계 현황")
+st.markdown("### 🛒 실시간 통계 현황")
 
 # 세션 상태에 통계 데이터 초기화
 if "stats" not in st.session_state:
@@ -331,6 +331,96 @@ else:
 # =========================================
 st.markdown("### 1️⃣ 개별 고객 구매 가능성 예측")
 st.markdown("고객 세션의 주요 활동 정보를 입력하여 구매 확률을 예측합니다.")
+
+# 시각적으로 구분된 입력 섹션
+if theme == "dark":
+    st.markdown("""
+        <style>
+        /* 다크 모드 입력 섹션 스타일 */
+        div[data-testid="column"] {
+            background-color: #252831;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* 입력 필드 라벨 */
+        div[data-testid="column"] label {
+            color: #e5e7eb !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+        }
+        
+        /* 입력 필드 */
+        div[data-testid="column"] input {
+            background-color: #1e1f25 !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(255,255,255,0.2) !important;
+            border-radius: 8px !important;
+        }
+        
+        /* 입력 필드 포커스 */
+        div[data-testid="column"] input:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59,130,246,0.2) !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    # 섹션 헤더
+    st.markdown("""
+        <div style='background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); 
+                    padding: 16px; border-radius: 10px; margin-bottom: 20px; 
+                    border-left: 4px solid #3b82f6;'>
+            <h4 style='color: #60a5fa; margin: 0; font-size: 16px;'>
+                📝 고객 활동 데이터 입력
+            </h4>
+        </div>
+    """, unsafe_allow_html=True)
+else:
+    st.markdown("""
+        <style>
+        /* 라이트 모드 입력 섹션 스타일 */
+        div[data-testid="column"] {
+            background-color: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        /* 입력 필드 라벨 */
+        div[data-testid="column"] label {
+            color: #1f2937 !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+        }
+        
+        /* 입력 필드 */
+        div[data-testid="column"] input {
+            background-color: #ffffff !important;
+            color: #111827 !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 8px !important;
+        }
+        
+        /* 입력 필드 포커스 */
+        div[data-testid="column"] input:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59,130,246,0.1) !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    # 섹션 헤더
+    st.markdown("""
+        <div style='background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); 
+                    padding: 16px; border-radius: 10px; margin-bottom: 20px; 
+                    border-left: 4px solid #3b82f6;'>
+            <h4 style='color: #1e40af; margin: 0; font-size: 16px;'>
+                📝 고객 활동 데이터 입력
+            </h4>
+        </div>
+    """, unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns(3, gap="medium")
 
