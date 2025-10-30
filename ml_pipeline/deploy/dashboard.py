@@ -207,9 +207,22 @@ if theme == "dark":
             border-right: 1px solid rgba(255,255,255,0.05);
         }
         
-        /* 모든 텍스트 색상 흰색으로 */
-        h1, h2, h3, h4, h5, h6, p, span, label, div {
+        /* 일반 텍스트만 색상 적용 (드롭다운 제외) */
+        h1, h2, h3, h4, h5, h6 {
             color: #f3f4f6 !important;
+        }
+        
+        p:not([role]) {
+            color: #f3f4f6 !important;
+        }
+        
+        /* 사이드바 텍스트 */
+        section[data-testid="stSidebar"] h1,
+        section[data-testid="stSidebar"] h2,
+        section[data-testid="stSidebar"] h3,
+        section[data-testid="stSidebar"] label,
+        section[data-testid="stSidebar"] p {
+            color: #e5e7eb !important;
         }
         
         /* 메트릭 라벨 */
@@ -256,9 +269,22 @@ else:
             border-right: 1px solid #e5e7eb;
         }
         
-        /* 모든 텍스트 색상 진한 회색으로 */
-        h1, h2, h3, h4, h5, h6, p, span, label, div {
+        /* 일반 텍스트만 색상 적용 (드롭다운 제외) */
+        h1, h2, h3, h4, h5, h6 {
             color: #111827 !important;
+        }
+        
+        p:not([role]) {
+            color: #111827 !important;
+        }
+        
+        /* 사이드바 텍스트 */
+        section[data-testid="stSidebar"] h1,
+        section[data-testid="stSidebar"] h2,
+        section[data-testid="stSidebar"] h3,
+        section[data-testid="stSidebar"] label,
+        section[data-testid="stSidebar"] p {
+            color: #1f2937 !important;
         }
         
         /* 메트릭 라벨 */
