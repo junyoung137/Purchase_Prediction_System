@@ -204,14 +204,14 @@ else:
         <style>
         /* ===== 전체 영역 ===== */
         .stApp {
-            background-color: #fafafa !important;
+            background-color: #f9fafb !important;
             color: #111827 !important;
             font-family: 'Pretendard', 'Inter', sans-serif;
         }
 
         /* ===== 사이드바 ===== */
         section[data-testid="stSidebar"] {
-            background-color: #f9fafb !important;
+            background-color: #f8fafc !important;
             border-right: 1px solid #e5e7eb !important;
         }
 
@@ -221,17 +221,24 @@ else:
             font-weight: 600 !important;
         }
 
-        /* ✅ 고객 세션 입력 섹션 전체 배경 */
+        /* ✅ 고객 세션 입력 섹션 (배경 강조 + 그림자 강화) */
         div[data-testid="stHorizontalBlock"] {
-            background-color: #f8fafc !important; /* 옅은 하늘톤 */
-            border: 1px solid #e5e7eb !important;
+            background-color: #f3f6fa !important; /* 살짝 더 진한 톤 */
+            border: 1px solid #d1d5db !important; /* 테두리 선 살짝 강조 */
             border-radius: 14px !important;
-            padding: 25px 25px 10px 25px !important;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            margin-bottom: 25px !important;
+            padding: 30px 30px 15px 30px !important;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.08); /* 기존보다 확실한 깊이감 */
+            margin-bottom: 30px !important;
+            transition: all 0.3s ease-in-out;
         }
 
-        /* ===== 각 입력칸 내부 ===== */
+        /* hover 시 은은한 부각 효과 */
+        div[data-testid="stHorizontalBlock"]:hover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.10);
+            border-color: #cbd5e1 !important;
+        }
+
+        /* ===== 입력칸 내부 ===== */
         div[data-testid="column"] > div > div {
             background-color: #ffffff !important;
             border: 1px solid #e5e7eb !important;
@@ -262,7 +269,7 @@ else:
             transition: background-color 0.2s ease-in-out;
         }
         div.stButton > button:hover {
-            background-color: #1d4ed8 !important;
+            background-color: #1e40af !important; /* 한 톤 진한 블루 */
         }
 
         /* ===== 다크모드 전환 버튼 (사이드바용) ===== */
