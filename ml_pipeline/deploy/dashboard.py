@@ -439,24 +439,58 @@ st.caption("💡 첫 실행 시 서버 초기화로 1분가량 지연될 수 있
 # =========================================
 st.markdown("---")
 st.markdown("### 2️⃣ 대량 고객 구매 가능성 예측 (CSV 업로드)")
-st.info("""
-📋 **CSV 업로드 안내:**
-- 각 행은 1명의 고객 세션입니다.
-- 고객별 주요 활동 데이터를 포함해야 합니다.
-""")
+
+# 색상 구분된 안내 박스
+if theme == "dark":
+    st.markdown("""
+        <div style='background-color: #1e3a5f; border-left: 4px solid #3b82f6; padding: 16px; border-radius: 8px; margin-bottom: 20px;'>
+            <h4 style='color: #60a5fa; margin-top: 0;'>📋 CSV 업로드 안내:</h4>
+            <ul style='color: #e5e7eb; line-height: 1.8; margin-bottom: 0;'>
+                <li>각 행은 <strong style='color: #ffffff;'>1명의 고객 세션</strong>입니다.</li>
+                <li>고객별 <strong style='color: #ffffff;'>주요 활동 데이터</strong>를 포함해야 합니다.</li>
+            </ul>
+        </div>
+    """, unsafe_allow_html=True)
+else:
+    st.markdown("""
+        <div style='background-color: #dbeafe; border-left: 4px solid #3b82f6; padding: 16px; border-radius: 8px; margin-bottom: 20px;'>
+            <h4 style='color: #1e40af; margin-top: 0;'>📋 CSV 업로드 안내:</h4>
+            <ul style='color: #1f2937; line-height: 1.8; margin-bottom: 0;'>
+                <li>각 행은 <strong style='color: #111827;'>1명의 고객 세션</strong>입니다.</li>
+                <li>고객별 <strong style='color: #111827;'>주요 활동 데이터</strong>를 포함해야 합니다.</li>
+            </ul>
+        </div>
+    """, unsafe_allow_html=True)
 
 with st.expander("📘 컬럼 정의"):
-    st.markdown("""
-    | 컬럼명 | 설명 |
-    |:--------|:--------------------------------------------|
-    | `session_id` | 고객 세션 ID |
-    | `event_count` | 전체 이벤트 수 |
-    | `n_view` | 상품 조회 수 |
-    | `n_cart` | 장바구니 담기 수 |
-    | `n_trans` | 결제 완료 수 |
-    | `n_trans_ratio` | 결제 전환율 |
-    | `n_view_ratio` | 조회 비율 |
-    """)
+    if theme == "dark":
+        st.markdown("""
+        <div style='color: #e5e7eb;'>
+        
+        | 컬럼명 | 설명 |
+        |:--------|:--------------------------------------------|
+        | `session_id` | 고객 세션 ID |
+        | `event_count` | 전체 이벤트 수 |
+        | `n_view` | 상품 조회 수 |
+        | `n_cart` | 장바구니 담기 수 |
+        | `n_trans` | 결제 완료 수 |
+        | `n_trans_ratio` | 결제 전환율 |
+        | `n_view_ratio` | 조회 비율 |
+        
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        | 컬럼명 | 설명 |
+        |:--------|:--------------------------------------------|
+        | `session_id` | 고객 세션 ID |
+        | `event_count` | 전체 이벤트 수 |
+        | `n_view` | 상품 조회 수 |
+        | `n_cart` | 장바구니 담기 수 |
+        | `n_trans` | 결제 완료 수 |
+        | `n_trans_ratio` | 결제 전환율 |
+        | `n_view_ratio` | 조회 비율 |
+        """)
 
 uploaded = st.file_uploader("📂 CSV 파일 업로드", type=["csv"])
 if uploaded:
