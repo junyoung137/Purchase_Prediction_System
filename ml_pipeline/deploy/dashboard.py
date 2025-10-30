@@ -144,6 +144,7 @@ theme = st.session_state["theme"]
 # =========================================
 # 🌙 다크 모드 스타일 (기본)
 # =========================================
+# ===== 다크 모드 스타일 =====
 if theme == "dark":
     st.markdown("""
         <style>
@@ -192,6 +193,44 @@ if theme == "dark":
         }
         </style>
     """, unsafe_allow_html=True)
+
+# ===== 라이트 모드 스타일 =====
+else:
+    st.markdown("""
+        <style>
+        /* ===== 전체 영역 ===== */
+        .stApp {
+            background-color: #fafafa !important;
+            color: #111827 !important;
+            font-family: 'Pretendard', 'Inter', sans-serif;
+        }
+
+        /* ===== 사이드바 ===== */
+        section[data-testid="stSidebar"] {
+            background-color: #f9fafb !important;
+            border-right: 1px solid #e5e7eb !important;
+        }
+
+        /* ===== 일반 텍스트 ===== */
+        h1, h2, h3, h4, h5, h6, p, span, label, li {
+            color: #111827 !important;
+        }
+
+        /* ===== 라이트 모드 전환 버튼 (다크 모드로 전환용) ===== */
+        section[data-testid="stSidebar"] div.stButton > button {
+            background-color: #e5e7eb !important;
+            color: #111827 !important;
+            font-weight: 500 !important;
+            border-radius: 8px !important;
+            border: 1px solid #d1d5db !important;
+            transition: all 0.2s ease-in-out;
+        }
+        section[data-testid="stSidebar"] div.stButton > button:hover {
+            background-color: #d1d5db !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
 
 # ===== 라이트 모드 스타일 =====
 else:
