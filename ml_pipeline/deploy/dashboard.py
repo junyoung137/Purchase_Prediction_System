@@ -124,7 +124,7 @@ with st.sidebar.expander("🕒 최근 예측 기록"):
 st.sidebar.markdown("---")
 
 # =========================================
-# 🌙 실무형 다크모드 (v6.1)
+# 🌙 라이트 모드 & 다크 모드
 # =========================================
 st.sidebar.markdown("---")
 st.sidebar.subheader("🎨 테마 설정")
@@ -136,7 +136,7 @@ if theme == "🌙 다크 모드":
         <style>
         /* ===== 전체 영역 ===== */
         .stApp {
-            background-color: #1e1f25;  /* ✅ 중간톤 다크 */
+            background-color: #1e1f25;  
             color: #e5e7eb;
         }
 
@@ -151,9 +151,25 @@ if theme == "🌙 다크 모드":
             color: #f3f4f6 !important;
         }
 
-        /* ===== CSV 안내문 및 캡션 ===== */
-        .stAlert, .stCaption, .stMarkdown p {
-            color: #f3f4f6 !important;
+        /* ===== CSV 업로드 안내박스 ===== */
+        .stAlert {
+            background-color: #1f2733 !important;
+            border-left: 4px solid #3b5ad6 !important;
+            border-radius: 8px !important;
+        }
+
+        /* ===== CSV 안내문 텍스트 (강제 적용) ===== */
+        .stAlert p,
+        .stAlert div,
+        .stAlert span,
+        .stAlert li {
+            color: #f3f4f6 !important;  /* ✅ 제목과 동일한 흰색톤 */
+            font-weight: 500 !important;
+        }
+
+        /* ===== 리스트 포인트 색상 ===== */
+        .stAlert ul li::marker {
+            color: #60a5fa !important;
         }
 
         /* ===== 입력창, 셀렉트박스 ===== */
@@ -166,7 +182,7 @@ if theme == "🌙 다크 모드":
 
         /* ===== 버튼 ===== */
         button[kind="primary"], button[kind="secondary"] {
-            background-color: #3b5ad6 !important; /* ✅ 톤다운된 블루 */
+            background-color: #3b5ad6 !important;
             color: #f9fafb !important;
             border: none !important;
             border-radius: 8px !important;
@@ -174,7 +190,7 @@ if theme == "🌙 다크 모드":
         }
 
         button[kind="primary"]:hover, button[kind="secondary"]:hover {
-            background-color: #4c6ef5 !important; /* hover 시 은은하게 */
+            background-color: #4c6ef5 !important;
         }
 
         /* ===== Metric ===== */
@@ -182,7 +198,7 @@ if theme == "🌙 다크 모드":
             color: #60a5fa !important;
         }
 
-        /* ===== Expander (펼치기) ===== */
+        /* ===== Expander ===== */
         div.streamlit-expanderHeader {
             background-color: #2b2f38 !important;
             color: #f3f4f6 !important;
@@ -192,24 +208,6 @@ if theme == "🌙 다크 모드":
             background-color: #1f2229 !important;
             color: #d1d5db !important;
             border-radius: 6px !important;
-        }
-
-        /* ===== CSV 업로드 안내박스 ===== */
-        .stAlert {
-            background-color: #1f2733 !important; /* ✅ 어두운 네이비 톤 */
-            border-left: 4px solid #3b5ad6 !important;
-            border-radius: 8px !important;
-        }
-
-        /* ===== CSV 설명 텍스트 (제목과 동일한 톤) ===== */
-        .stAlert p {
-            color: #f3f4f6 !important;  /* ✅ 제목 색상과 동일 */
-            font-weight: 500 !important;
-        }
-
-        /* ===== 리스트 포인트 (•) 색상 강조 ===== */
-        .stAlert ul li::marker {
-            color: #60a5fa !important;  /* ✅ 밝은 파란색 포인트 */
         }
 
         /* ===== DataFrame 영역 ===== */
@@ -232,7 +230,6 @@ if theme == "🌙 다크 모드":
     """, unsafe_allow_html=True)
 
 else:
-    # 라이트 모드 (기본)
     st.markdown("""
         <style>
         .stApp {
@@ -244,6 +241,7 @@ else:
         }
         </style>
     """, unsafe_allow_html=True)
+
 # =========================================
 # 1️⃣ 개별 예측
 # =========================================
