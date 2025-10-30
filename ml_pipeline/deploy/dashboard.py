@@ -540,17 +540,25 @@ st.markdown("### 2️⃣ 대량 고객 구매 가능성 예측 (CSV 업로드)")
 if theme == "dark":
     st.markdown("""
         <div style='background-color: #1e3a5f; border-left: 3px solid #3b82f6; padding: 10px 14px; border-radius: 6px; margin-bottom: 16px;'>
-            <p style='color: #e5e7eb; margin: 0; font-size: 14px;'>
-                📋 고객 세션별 활동 데이터를 포함한 CSV 파일을 업로드해주세요.
+            <p style='color: #e5e7eb; margin: 0; font-size: 14px; font-weight: 600;'>
+                📄 CSV 업로드 안내:
             </p>
+            <ul style='color: #e5e7eb; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px;'>
+                <li>각 행은 1명의 고객 세션입니다.</li>
+                <li>고객별 주요 활동 데이터를 포함해야 합니다.</li>
+            </ul>
         </div>
     """, unsafe_allow_html=True)
 else:
     st.markdown("""
         <div style='background-color: #dbeafe; border-left: 3px solid #3b82f6; padding: 10px 14px; border-radius: 6px; margin-bottom: 16px;'>
-            <p style='color: #1f2937; margin: 0; font-size: 14px;'>
-                📋 고객 세션별 활동 데이터를 포함한 CSV 파일을 업로드해주세요.
+            <p style='color: #1f2937; margin: 0; font-size: 14px; font-weight: 600;'>
+                📄 CSV 업로드 안내:
             </p>
+            <ul style='color: #1f2937; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px;'>
+                <li>각 행은 1명의 고객 세션입니다.</li>
+                <li>고객별 주요 활동 데이터를 포함해야 합니다.</li>
+            </ul>
         </div>
     """, unsafe_allow_html=True)
 
