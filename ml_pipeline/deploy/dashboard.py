@@ -124,7 +124,7 @@ with st.sidebar.expander("🕒 최근 예측 기록"):
 st.sidebar.markdown("---")
 
 # =========================================
-# 🌙 테마 토글 버튼 (라이트 / 다크 모드)
+# 🌙 테마 토글 (시각 최적화 다크모드)
 # =========================================
 st.sidebar.markdown("---")
 st.sidebar.subheader("🎨 테마 설정")
@@ -134,15 +134,44 @@ theme = st.sidebar.radio("모드 선택", ["🌞 라이트 모드", "🌙 다크
 if theme == "🌙 다크 모드":
     st.markdown("""
         <style>
+        /* 전체 배경 및 텍스트 */
         .stApp {
-            background-color: #0f172a;
+            background-color: #0b1120;
+            color: #f8fafc;
+        }
+        /* 사이드바 */
+        section[data-testid="stSidebar"] {
+            background-color: #111827;
             color: #f1f5f9;
         }
-        .stSidebar {
-            background-color: #1e293b;
+        /* 제목, 헤더 */
+        h1, h2, h3, h4, h5, h6, p, label {
+            color: #e2e8f0 !important;
         }
+        /* 입력창 (input, number_input 등) */
+        input, textarea {
+            background-color: #1e293b !important;
+            color: #f8fafc !important;
+            border: 1px solid #334155 !important;
+        }
+        /* 버튼 */
+        button {
+            background-color: #2563eb !important;
+            color: #f8fafc !important;
+            border-radius: 6px !important;
+        }
+        /* Metric 값 */
         div[data-testid="stMetricValue"] {
-            color: #22d3ee;
+            color: #38bdf8 !important;
+        }
+        /* Expander 배경 */
+        div.streamlit-expanderHeader {
+            background-color: #1e293b !important;
+            color: #f8fafc !important;
+        }
+        /* 구분선 및 라벨 강조 */
+        hr, .stMarkdown {
+            color: #94a3b8 !important;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -153,12 +182,11 @@ else:
             background-color: #ffffff;
             color: #000000;
         }
-        .stSidebar {
+        section[data-testid="stSidebar"] {
             background-color: #f8fafc;
         }
         </style>
     """, unsafe_allow_html=True)
-
 # =========================================
 # 1️⃣ 개별 예측
 # =========================================
