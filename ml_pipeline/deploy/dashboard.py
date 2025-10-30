@@ -137,42 +137,31 @@ if theme == "🌙 다크 모드":
         /* ===== 전체 영역 ===== */
         .stApp {
             background-color: #1e1f25;  
-            color: #e5e7eb;
+            color: #f3f4f6 !important;
         }
 
         /* ===== 사이드바 ===== */
         section[data-testid="stSidebar"] {
-            background-color: #252831;
-            color: #e5e7eb;
+            background-color: #252831 !important;
+            color: #e5e7eb !important;
         }
 
-        /* ===== 텍스트, 제목 ===== */
-        h1, h2, h3, h4, h5, h6, label, p, span {
+        /* ===== 텍스트 ===== */
+        h1, h2, h3, h4, h5, h6, p, span, label, li {
             color: #f3f4f6 !important;
         }
 
-        /* ===== CSV 업로드 안내박스 ===== */
+        /* ===== CSV 안내박스 ===== */
         .stAlert {
             background-color: #1f2733 !important;
             border-left: 4px solid #3b5ad6 !important;
             border-radius: 8px !important;
         }
-
-        /* ===== CSV 안내문 텍스트 (강제 적용) ===== */
-        .stAlert p,
-        .stAlert div,
-        .stAlert span,
-        .stAlert li {
-            color: #f3f4f6 !important;  /* ✅ 제목과 동일한 흰색톤 */
-            font-weight: 500 !important;
+        .stAlert div, .stAlert p, .stAlert span, .stAlert li {
+            color: #f3f4f6 !important;
         }
 
-        /* ===== 리스트 포인트 색상 ===== */
-        .stAlert ul li::marker {
-            color: #60a5fa !important;
-        }
-
-        /* ===== 입력창, 셀렉트박스 ===== */
+        /* ===== 입력창 ===== */
         input, textarea, select, div[data-baseweb="select"] > div {
             background-color: #2b2f38 !important;
             color: #f9fafb !important;
@@ -183,61 +172,64 @@ if theme == "🌙 다크 모드":
         /* ===== 버튼 ===== */
         button[kind="primary"], button[kind="secondary"] {
             background-color: #3b5ad6 !important;
-            color: #f9fafb !important;
-            border: none !important;
+            color: #ffffff !important;
             border-radius: 8px !important;
-            font-weight: 500 !important;
         }
 
         button[kind="primary"]:hover, button[kind="secondary"]:hover {
             background-color: #4c6ef5 !important;
         }
-
-        /* ===== Metric ===== */
-        div[data-testid="stMetricValue"] {
-            color: #60a5fa !important;
-        }
-
-        /* ===== Expander ===== */
-        div.streamlit-expanderHeader {
-            background-color: #2b2f38 !important;
-            color: #f3f4f6 !important;
-            border-radius: 6px !important;
-        }
-        div.streamlit-expanderContent {
-            background-color: #1f2229 !important;
-            color: #d1d5db !important;
-            border-radius: 6px !important;
-        }
-
-        /* ===== DataFrame 영역 ===== */
-        div[data-testid="stDataFrame"] {
-            background-color: #1f242c !important;
-            color: #f3f4f6 !important;
-        }
-
-        /* ===== number_input 버튼 ===== */
-        button[title="Decrease"], button[title="Increase"] {
-            background-color: #3a3f4b !important;
-            color: #e5e7eb !important;
-        }
-
-        /* ===== 구분선 ===== */
-        hr {
-            border: 0.5px solid #374151 !important;
-        }
         </style>
     """, unsafe_allow_html=True)
 
 else:
+    # ✅ 라이트 모드 완전 보정 (모바일 포함)
     st.markdown("""
         <style>
+        /* ===== 전체 영역 ===== */
         .stApp {
-            background-color: #ffffff;
-            color: #000000;
+            background-color: #ffffff !important;
+            color: #111827 !important;  /* ✅ 진한 검정 */
         }
+
+        /* ===== 사이드바 ===== */
         section[data-testid="stSidebar"] {
-            background-color: #f8fafc;
+            background-color: #f8fafc !important;
+            color: #111827 !important;
+        }
+
+        /* ===== 제목 및 텍스트 ===== */
+        h1, h2, h3, h4, h5, h6, p, span, label, li {
+            color: #111827 !important;
+        }
+
+        /* ===== CSV 안내박스 ===== */
+        .stAlert {
+            background-color: #f1f5f9 !important;  /* ✅ 옅은 회색 */
+            border-left: 4px solid #2563eb !important; /* ✅ 파란 포인트 */
+            border-radius: 8px !important;
+        }
+        .stAlert div, .stAlert p, .stAlert span, .stAlert li {
+            color: #1e293b !important; /* ✅ 안정적 대비 */
+        }
+
+        /* ===== 입력창 ===== */
+        input, textarea, select, div[data-baseweb="select"] > div {
+            background-color: #ffffff !important;
+            color: #111827 !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+        }
+
+        /* ===== 버튼 ===== */
+        button[kind="primary"], button[kind="secondary"] {
+            background-color: #2563eb !important;
+            color: #ffffff !important;
+            border-radius: 8px !important;
+        }
+
+        button[kind="primary"]:hover, button[kind="secondary"]:hover {
+            background-color: #3b82f6 !important;
         }
         </style>
     """, unsafe_allow_html=True)
