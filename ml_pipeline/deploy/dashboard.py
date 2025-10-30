@@ -152,8 +152,8 @@ if theme == "🌙 다크 모드":
         }
 
         /* ===== CSV 안내문 및 캡션 ===== */
-        .stAlert p, .stCaption, .stMarkdown p {
-            color: #d1d5db !important;  /* ✅ 더 밝게 수정 */
+        .stAlert, .stCaption, .stMarkdown p {
+            color: #f3f4f6 !important;
         }
 
         /* ===== 입력창, 셀렉트박스 ===== */
@@ -201,9 +201,15 @@ if theme == "🌙 다크 모드":
             border-radius: 8px !important;
         }
 
-        /* ===== CSV 설명 텍스트 ===== */
+        /* ===== CSV 설명 텍스트 (제목과 동일한 톤) ===== */
         .stAlert p {
-            color: #e5e7eb !important;
+            color: #f3f4f6 !important;  /* ✅ 제목 색상과 동일 */
+            font-weight: 500 !important;
+        }
+
+        /* ===== 리스트 포인트 (•) 색상 강조 ===== */
+        .stAlert ul li::marker {
+            color: #60a5fa !important;  /* ✅ 밝은 파란색 포인트 */
         }
 
         /* ===== DataFrame 영역 ===== */
