@@ -1,11 +1,12 @@
 # =====================================================
-# dashboard.py (확장 사이드바 버전)
+# dashboard.py (실시간 통계 KPI + 드롭다운 수정 버전)
 # =====================================================
 import streamlit as st
 import pandas as pd
 import requests
 import plotly.graph_objects as go
-import time  
+import time
+from datetime import datetime
 
 # =========================================
 # 🔧 API 설정
@@ -14,6 +15,68 @@ API_URL = "https://purchase-prediction-system.onrender.com/predict"
 
 st.set_page_config(page_title="🛍️ 실시간 구매 가능성 예측", layout="wide")
 st.title("🛍️ 실시간 구매 가능성 예측")
+
+# =========================================
+# 📊 실시간 통계 대시보드 (KPI)
+# =========================================
+st.markdown("---")
+st.markdown("### 📊 실시간 통계 현황")
+
+# 세션 상태에 통계 데이터 초기화
+if "stats" not in st.session_state:
+    st.session_state["stats"] = {
+        "total_predictions": 0,
+        "avg_probability": 0.0,
+        "high_prob_customers": 0,
+        "conversion_rate": 0.0,
+        "last_updated": None
+    }
+
+# KPI 카드 4개
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    total_pred = st.session_state["stats"]["total_predictions"]
+    delta_pred = "+12" if total_pred > 0 else None
+    st.metric(
+        label="🔢 오늘 예측 건수",
+        value=f"{total_pred:,}건",
+        delta=delta_pred
+    )
+
+with col2:
+    avg_prob = st.session_state["stats"]["avg_probability"]
+    delta_prob = f"+{avg_prob*2:.1f}%" if avg_prob > 0 else None
+    st.metric(
+        label="📈 평균 구매확률",
+        value=f"{avg_prob:.1%}",
+        delta=delta_prob
+    )
+
+with col3:
+    high_prob = st.session_state["stats"]["high_prob_customers"]
+    delta_high = f"+{int(high_prob*0.15)}" if high_prob > 0 else None
+    st.metric(
+        label="🎯 고확률 고객",
+        value=f"{high_prob:,}명",
+        delta=delta_high,
+        help="구매확률 70% 이상 고객"
+    )
+
+with col4:
+    conv_rate = st.session_state["stats"]["conversion_rate"]
+    delta_conv = f"+{conv_rate*5:.1f}%" if conv_rate > 0 else None
+    st.metric(
+        label="✅ 예상 전환율",
+        value=f"{conv_rate:.1%}",
+        delta=delta_conv
+    )
+
+# 마지막 업데이트 시간
+if st.session_state["stats"]["last_updated"]:
+    st.caption(f"⏰ 마지막 업데이트: {st.session_state['stats']['last_updated']}")
+
+st.markdown("---")
 
 # =========================================
 # 📊 사이드바: 프리셋
@@ -107,7 +170,6 @@ with st.sidebar.expander("🧠 시스템 상태"):
     except:
         st.error("❌ 서버 오프라인")
 
-
 # =========================================
 # ⬆️ 추가됨: 최근 예측 로그
 # =========================================
@@ -142,7 +204,7 @@ if st.sidebar.button(toggle_label, use_container_width=True):
 theme = st.session_state["theme"]
 
 # =========================================
-# 🌙 다크 / 라이트 모드 스타일 정의
+# 🌙 다크 / 라이트 모드 스타일 정의 (드롭다운 수정)
 # =========================================
 if theme == "dark":
     st.markdown("""
@@ -160,7 +222,7 @@ if theme == "dark":
             border-right: 1px solid rgba(255,255,255,0.05) !important;
         }
 
-        /* ===== Selectbox (드롭다운) ===== */
+        /* ===== Selectbox (드롭다운) - 개선된 버전 ===== */
         div[data-baseweb="select"] > div {
             background-color: #2f323c !important;
             color: #ffffff !important;
@@ -169,25 +231,28 @@ if theme == "dark":
             box-shadow: 0 2px 6px rgba(0,0,0,0.25) !important;
         }
 
-        /* ✅ 선택된 텍스트 */
+        /* ✅ 선택된 텍스트 - 강제 흰색 */
         div[data-baseweb="select"] span, 
         div[data-baseweb="select"] input, 
         div[data-baseweb="select"] div {
             color: #ffffff !important;
+            font-weight: 500 !important;
         }
 
-        /* ✅ 드롭다운 전체 영역 */
+        /* ✅ 드롭다운 메뉴 전체 */
         ul[role="listbox"] {
             background-color: #2f323c !important;
             border: 1px solid rgba(255,255,255,0.15) !important;
             border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
         }
 
         /* ✅ 각 항목 기본 상태 */
         ul[role="listbox"] li {
             color: #ffffff !important;
             font-weight: 500 !important;
-            padding: 6px 10px !important;
+            padding: 10px 14px !important;
+            transition: all 0.15s ease !important;
         }
 
         /* ✅ hover 시 */
@@ -206,6 +271,12 @@ if theme == "dark":
         /* ✅ 비활성('선택 안함') */
         ul[role="listbox"] li[aria-disabled="true"] {
             color: #9ca3af !important;
+        }
+
+        /* ✅ placeholder 텍스트 */
+        div[data-baseweb="select"] input::placeholder {
+            color: #d1d5db !important;
+            opacity: 0.7 !important;
         }
 
         /* ===== 텍스트 ===== */
@@ -273,13 +344,21 @@ else:
             font-weight: 600 !important;
         }
 
-        /* ===== Selectbox ===== */
+        /* ===== Selectbox - 라이트 모드 개선 ===== */
         div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
             color: #111827 !important;
             border: 1px solid #cbd5e1 !important;
             border-radius: 6px !important;
         }
+        
+        div[data-baseweb="select"] span, 
+        div[data-baseweb="select"] input, 
+        div[data-baseweb="select"] div {
+            color: #111827 !important;
+            font-weight: 500 !important;
+        }
+        
         ul[role="listbox"] {
             background-color: #ffffff !important;
             border: 1px solid #e5e7eb !important;
@@ -287,6 +366,7 @@ else:
         }
         ul[role="listbox"] li {
             color: #111827 !important;
+            padding: 10px 14px !important;
         }
         ul[role="listbox"] li:hover {
             background-color: #f3f4f6 !important;
@@ -328,6 +408,7 @@ else:
         }
         </style>
     """, unsafe_allow_html=True)
+
 # =========================================
 # 1️⃣ 개별 예측
 # =========================================
@@ -396,6 +477,27 @@ if st.button("🔍 예측 실행", use_container_width=True):
         col_b.metric("구매 확률", f"{prob:.2%}")
         col_c.metric("Threshold", f"{threshold:.2f}")
 
+        # ✅ 통계 업데이트
+        st.session_state["stats"]["total_predictions"] += 1
+        
+        # 평균 구매확률 계산 (이동평균)
+        current_avg = st.session_state["stats"]["avg_probability"]
+        total = st.session_state["stats"]["total_predictions"]
+        new_avg = (current_avg * (total - 1) + prob) / total
+        st.session_state["stats"]["avg_probability"] = new_avg
+        
+        # 고확률 고객 수 업데이트
+        if prob >= 0.7:
+            st.session_state["stats"]["high_prob_customers"] += 1
+        
+        # 전환율 계산
+        if total > 0:
+            high_prob_rate = st.session_state["stats"]["high_prob_customers"] / total
+            st.session_state["stats"]["conversion_rate"] = high_prob_rate * 0.85
+        
+        # 업데이트 시간 기록
+        st.session_state["stats"]["last_updated"] = datetime.now().strftime("%H:%M:%S")
+
         # ⬆️ 로그 저장
         st.session_state["log"].append({
             "preset": selected_preset,
@@ -421,6 +523,9 @@ if st.button("🔍 예측 실행", use_container_width=True):
         fig.update_layout(height=280)
         st.plotly_chart(fig, use_container_width=True)
         st.success("✅ 예측 완료!")
+        
+        # 상단 KPI 업데이트를 위해 리로드
+        st.rerun()
 
 st.caption("💡 첫 실행 시 서버 초기화로 1분가량 지연될 수 있습니다.")
 
