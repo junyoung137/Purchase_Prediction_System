@@ -222,77 +222,102 @@ if theme == "dark":
             border-right: 1px solid rgba(255,255,255,0.05) !important;
         }
 
-        /* ===== Selectbox (드롭다운) - 최대 가독성 버전 ===== */
+        /* ===== Selectbox (드롭다운) - 초강력 가독성 버전 ===== */
         div[data-baseweb="select"] > div {
             background-color: #3a3d48 !important;
             color: #ffffff !important;
-            border: 2px solid rgba(255,255,255,0.25) !important;
+            border: 2px solid rgba(255,255,255,0.3) !important;
             border-radius: 8px !important;
             box-shadow: 0 3px 8px rgba(0,0,0,0.35) !important;
-            padding: 6px 12px !important;
+            padding: 8px 12px !important;
         }
 
-        /* ✅ 선택된 텍스트 - 최대 명도 */
+        /* ✅ 선택된 텍스트 - 절대 흰색 */
         div[data-baseweb="select"] span, 
         div[data-baseweb="select"] input, 
         div[data-baseweb="select"] div,
+        div[data-baseweb="select"] p,
         div[data-baseweb="select"] * {
             color: #ffffff !important;
             font-weight: 600 !important;
-            text-shadow: 0 0 1px rgba(255,255,255,0.3) !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
+        }
+
+        /* ✅ 드롭다운 메뉴 컨테이너 */
+        div[data-baseweb="popover"] {
+            background-color: transparent !important;
         }
 
         /* ✅ 드롭다운 메뉴 전체 */
         ul[role="listbox"] {
-            background-color: #3a3d48 !important;
-            border: 2px solid rgba(255,255,255,0.25) !important;
+            background-color: #2d3139 !important;
+            border: 2px solid rgba(255,255,255,0.3) !important;
             border-radius: 10px !important;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.4) !important;
-            padding: 4px !important;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important;
+            padding: 6px !important;
         }
 
-        /* ✅ 각 항목 기본 상태 */
-        ul[role="listbox"] li {
+        /* ✅ 각 항목 - 최고 명도 */
+        ul[role="listbox"] li,
+        ul[role="listbox"] li *,
+        ul[role="listbox"] li span,
+        ul[role="listbox"] li div {
             color: #ffffff !important;
             font-weight: 600 !important;
             padding: 12px 16px !important;
             transition: all 0.15s ease !important;
             border-radius: 6px !important;
             margin: 2px 0 !important;
+            background-color: transparent !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
         }
 
-        /* ✅ hover 시 */
-        ul[role="listbox"] li:hover {
+        /* ✅ hover 시 - 밝은 배경 */
+        ul[role="listbox"] li:hover,
+        ul[role="listbox"] li:hover * {
             background-color: #4b5563 !important;
             color: #ffffff !important;
-            transform: translateX(2px) !important;
+            transform: translateX(3px) !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2) !important;
         }
 
-        /* ✅ 선택된 항목 */
-        ul[role="listbox"] li[aria-selected="true"] {
+        /* ✅ 선택된 항목 - 강조 */
+        ul[role="listbox"] li[aria-selected="true"],
+        ul[role="listbox"] li[aria-selected="true"] * {
             background-color: #5a6270 !important;
             color: #ffffff !important;
             font-weight: 700 !important;
+            border-left: 3px solid #60a5fa !important;
         }
 
-        /* ✅ 비활성('선택 안함') */
-        ul[role="listbox"] li[aria-disabled="true"] {
-            color: #d1d5db !important;
+        /* ✅ 비활성('선택 안함') - 회색 */
+        ul[role="listbox"] li[aria-disabled="true"],
+        ul[role="listbox"] li[aria-disabled="true"] * {
+            color: #9ca3af !important;
             font-weight: 500 !important;
+            font-style: italic !important;
         }
 
         /* ✅ placeholder 텍스트 */
         div[data-baseweb="select"] input::placeholder {
             color: #e5e7eb !important;
-            opacity: 0.9 !important;
+            opacity: 1 !important;
             font-weight: 500 !important;
         }
         
         /* ✅ 사이드바 내 라벨 텍스트 강화 */
-        section[data-testid="stSidebar"] label {
+        section[data-testid="stSidebar"] label,
+        section[data-testid="stSidebar"] label * {
             color: #f3f4f6 !important;
             font-weight: 600 !important;
-            text-shadow: 0 0 1px rgba(255,255,255,0.2) !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2) !important;
+        }
+        
+        /* ✅ 프로필 선택 텍스트 */
+        section[data-testid="stSidebar"] div[data-testid="stSelectbox"] label {
+            color: #f9fafb !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
         }
 
         /* ===== 텍스트 - 최대 명도 ===== */
