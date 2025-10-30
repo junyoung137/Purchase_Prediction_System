@@ -232,11 +232,14 @@ if theme == "dark":
             box-shadow: 0 2px 6px rgba(0,0,0,0.25) !important;
         }
 
-        /* ✅ 선택된 텍스트 */
+        /* ✅ 선택된 텍스트 - 모든 요소 강제 */
         div[data-baseweb="select"] span, 
         div[data-baseweb="select"] input, 
-        div[data-baseweb="select"] div {
+        div[data-baseweb="select"] div,
+        div[data-baseweb="select"] *,
+        div[data-baseweb="select"] p {
             color: #ffffff !important;
+            background-color: transparent !important;
         }
 
         /* ✅ 드롭다운 전체 영역 */
@@ -246,28 +249,35 @@ if theme == "dark":
             border-radius: 8px !important;
         }
 
-        /* ✅ 각 항목 기본 상태 */
-        ul[role="listbox"] li {
+        /* ✅ 각 항목 기본 상태 - 모든 하위 요소 포함 */
+        ul[role="listbox"] li,
+        ul[role="listbox"] li *,
+        ul[role="listbox"] li span,
+        ul[role="listbox"] li div,
+        ul[role="listbox"] li p {
             color: #ffffff !important;
             font-weight: 500 !important;
             padding: 6px 10px !important;
         }
 
         /* ✅ hover 시 */
-        ul[role="listbox"] li:hover {
+        ul[role="listbox"] li:hover,
+        ul[role="listbox"] li:hover * {
             background-color: #3a3d48 !important;
             color: #ffffff !important;
         }
 
         /* ✅ 선택된 항목 */
-        ul[role="listbox"] li[aria-selected="true"] {
+        ul[role="listbox"] li[aria-selected="true"],
+        ul[role="listbox"] li[aria-selected="true"] * {
             background-color: #4b5563 !important;
             color: #ffffff !important;
             font-weight: 600 !important;
         }
 
         /* ✅ 비활성('선택 안함') */
-        ul[role="listbox"] li[aria-disabled="true"] {
+        ul[role="listbox"] li[aria-disabled="true"],
+        ul[role="listbox"] li[aria-disabled="true"] * {
             color: #9ca3af !important;
         }
 
@@ -373,16 +383,35 @@ else:
             border: 1px solid #cbd5e1 !important;
             border-radius: 6px !important;
         }
+        
+        /* ✅ 선택된 텍스트 - 모든 요소 강제 */
+        div[data-baseweb="select"] span,
+        div[data-baseweb="select"] input,
+        div[data-baseweb="select"] div,
+        div[data-baseweb="select"] *,
+        div[data-baseweb="select"] p {
+            color: #111827 !important;
+            background-color: transparent !important;
+        }
+        
         ul[role="listbox"] {
             background-color: #ffffff !important;
             border: 1px solid #e5e7eb !important;
             border-radius: 8px !important;
         }
-        ul[role="listbox"] li {
+        
+        ul[role="listbox"] li,
+        ul[role="listbox"] li *,
+        ul[role="listbox"] li span,
+        ul[role="listbox"] li div,
+        ul[role="listbox"] li p {
             color: #111827 !important;
         }
-        ul[role="listbox"] li:hover {
+        
+        ul[role="listbox"] li:hover,
+        ul[role="listbox"] li:hover * {
             background-color: #f3f4f6 !important;
+            color: #111827 !important;
         }
 
         /* ===== 일반 버튼 ===== */
